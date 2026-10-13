@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/.cloud/:path*", "destination": "/api/proxy?p=:path*" }
+  ],
+  "functions": {
+    "api/proxy.js": { "maxDuration": 60 }
+  }
+}

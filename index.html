@@ -1,0 +1,2297 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f5f2">
+<title>每日英语学习台</title>
+<style>
+  :root{
+    --bg:#f7f5f2; --card:#fff; --ink:#241f1a; --ink-2:#5b544c; --ink-3:#8d857a;
+    --line:#efece6; --border:#e3ddd3; --accent:#c2543a; --accent-deep:#a03f2a;
+    --soft:#f9eae4; --soft-line:#f0d9cf; --ok:#4f7a3f; --ok-soft:#eef4e9;
+    --warn:#b9832a; --shadow:0 1px 2px rgba(60,50,40,.04),0 6px 18px rgba(60,50,40,.05);
+    --radius:14px;
+    /* 分组层用：--border-2 比 --border 深一档，卡片边界才看得出来；
+       --grp-bg 比页面底色 (#f7f5f2) 再深一点，白卡才能「浮」在组底上 */
+    --border-2:#d7ccbc; --grp-bg:#efeae0;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font:15px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  [hidden]{display:none!important}
+  button{font-family:inherit;cursor:pointer}
+  h1,h2,h3,p{margin:0}
+  .muted{color:var(--ink-3)}
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+
+  /* ---------- 启动 / 登录 ---------- */
+  #boot{display:flex;align-items:center;justify-content:center;min-height:70vh;color:var(--ink-3);font-size:14px}
+  .login{max-width:400px;margin:0 auto;padding:56px 20px 40px}
+  .login h1{font-size:25px;letter-spacing:-.01em}
+  .login .sub{color:var(--ink-3);font-size:13px;margin-top:8px;line-height:1.7}
+  .field{margin-top:22px}
+  .field label{display:block;font-size:12.5px;color:var(--ink-2);font-weight:650;margin-bottom:7px}
+  .field input{
+    width:100%;font-family:inherit;font-size:16px;color:var(--ink);background:var(--card);
+    border:1px solid var(--border);border-radius:11px;padding:12px 14px;
+  }
+  .field input:focus{outline:none;border-color:var(--accent)}
+  .row-btn{display:flex;gap:9px;margin-top:14px}
+  .row-btn .grow{flex:1}
+  .btn{
+    font-size:14px;font-weight:650;border:1px solid var(--border);background:var(--card);
+    color:var(--ink-2);border-radius:11px;padding:11px 16px;transition:all .14s;line-height:1.35;
+  }
+  .btn:hover{border-color:#d6cfc3;color:var(--ink)}
+  .btn:active{transform:translateY(1px)}
+  .btn:disabled{opacity:.5;cursor:default;transform:none}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{background:var(--accent-deep);border-color:var(--accent-deep);color:#fff}
+  .btn.ghost{background:transparent}
+  .btn.sm{font-size:12.5px;padding:7px 12px;border-radius:9px}
+  .err{color:#c0392b;font-size:12.5px;margin-top:10px;min-height:18px}
+  .tip{font-size:12px;color:var(--ink-3);margin-top:14px;line-height:1.75}
+  .or{display:flex;align-items:center;gap:10px;margin:20px 0 4px;color:var(--ink-3);font-size:11.8px}
+  .or:before,.or:after{content:"";flex:1;height:1px;background:var(--border)}
+
+  /* ---------- 游客模式提示条 ---------- */
+  .guest-bar{
+    display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:16px 0 0;
+    background:#fff8ef;border:1px solid #f0dcc6;border-radius:11px;padding:9px 13px;
+    font-size:12.2px;color:#7a3907;
+  }
+  .guest-bar .gb-t{font-weight:700}
+  .guest-bar .gb-n{color:#9a6a3c;font-size:11.5px}
+  .guest-bar .gb-x{
+    margin-left:auto;font-size:11.8px;font-weight:650;color:#7a3907;background:#fff;
+    border:1px solid #f0dcc6;border-radius:8px;padding:3px 10px;line-height:1.5;
+  }
+
+  /* ---------- 页头（跟着内容滚走，只有板块条吸顶） ---------- */
+  .top{padding:20px 0 0;padding-top:calc(20px + env(safe-area-inset-top))}
+  .top-in{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+  .top h1{font-size:21px;font-weight:700;letter-spacing:-.01em}
+  .top .who{font-size:11.8px;color:var(--ink-3);margin-left:auto;text-align:right;line-height:1.5}
+  .top .who b{display:block;color:var(--accent-deep);font-size:12.8px;font-weight:700}
+  .howto{
+    margin-top:14px;background:var(--soft);border:1px solid var(--soft-line);border-radius:11px;
+    padding:12px 15px;font-size:12.7px;color:#7c3f29;line-height:1.85;
+  }
+  .howto b{font-weight:650;color:var(--accent-deep)}
+  .howto .hw{margin-top:4px}
+
+  /* ---------- 主区 ---------- */
+  main{padding:2px 0 72px}
+  /* 板块框：主列里每个板块自成一个框，和「篇目」的分组同一套语言
+     —— 板块头（竖条 + 16px 大字 + 说明 + 计数）在最上面，内容在下面的组底上。
+     不这么框的话，一节接一节平铺下去，看不出这是几块。 */
+  .sec{border:1px solid var(--border-2);border-radius:var(--radius);background:var(--grp-bg);overflow:hidden;margin-bottom:16px}
+  .sec-bd{padding:12px;display:grid;gap:12px}
+  .sec-bd[hidden]{display:none!important}
+  .sec-bd > .empty{margin:0}
+  .sec-hd{display:flex;align-items:center;gap:9px;margin:22px 0 11px;flex-wrap:wrap}
+  .sec-hd:first-child{margin-top:6px}
+  .sec-hd h2{font-size:16px;font-weight:800;letter-spacing:-.01em;line-height:1.3}
+  .sec-hd .note{font-size:11.8px;color:var(--ink-3)}
+  .sec-hd .g-bar{flex:0 0 auto;width:4px;align-self:stretch;min-height:18px;border-radius:2px;background:var(--accent)}
+  .sec-hd .badge{margin-left:auto}
+  /* 框里的板块头：白底 + 底部实线，和 .grp-hd 对齐 */
+  .sec > .sec-hd{margin:0;padding:11px 15px 11px 11px;background:var(--card);border-bottom:1px solid var(--border-2)}
+  .badge{font-size:11.5px;font-weight:700;color:var(--accent-deep);background:var(--soft);border-radius:99px;padding:2px 9px}
+  .empty{
+    background:var(--card);border:1px dashed var(--border);border-radius:var(--radius);
+    padding:20px 18px;color:var(--ink-2);font-size:13.2px;line-height:1.8;
+  }
+  .empty b{display:block;color:var(--ink);font-size:13.8px;margin-bottom:5px}
+
+  .list{display:grid;gap:12px}
+  .row{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:14px 15px;display:flex;gap:12px;align-items:center;
+  }
+  .row.hot{border-color:var(--soft-line);background:linear-gradient(0deg,var(--soft),#fff 62%)}
+  .row-main{flex:1;min-width:0}
+  .row-main .en{font-size:14.2px;font-weight:650;line-height:1.45;word-break:break-word}
+  .row-main .zh{font-size:12.5px;color:var(--ink-2);margin-top:3px;word-break:break-word}
+  .row-main .meta{font-size:11.5px;color:var(--ink-3);margin-top:7px;display:flex;gap:8px;flex-wrap:wrap}
+  .row-main .meta i{font-style:normal;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:1px 7px}
+  .row-main .meta i.due{background:var(--soft);border-color:var(--soft-line);color:var(--accent-deep);font-weight:650}
+  .row-main .meta i.done{background:var(--ok-soft);border-color:#dbe8d4;color:var(--ok);font-weight:650}
+  .row .go{flex-shrink:0}
+
+  /* ---------- 板块条（吸顶分页） ---------- */
+  .secnav{
+    position:sticky;top:0;z-index:30;margin:15px -16px 2px;padding:9px 16px 10px;
+    background:rgba(247,245,242,.94);backdrop-filter:saturate(180%) blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .secnav-in{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+  .secnav-in::-webkit-scrollbar{display:none}
+  .secnav button{
+    flex:0 0 auto;font-size:12.5px;font-weight:650;color:var(--ink-2);background:var(--card);
+    border:1px solid var(--border);border-radius:18px;padding:5px 13px;white-space:nowrap;
+    line-height:1.45;transition:all .14s;display:inline-flex;align-items:center;gap:6px;
+  }
+  .secnav button:hover{border-color:#d6cfc3;color:var(--ink)}
+  .secnav button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .secnav button .n{
+    font-size:10.5px;font-weight:400;background:var(--soft);color:var(--accent-deep);
+    border-radius:99px;padding:0 6px;min-width:17px;text-align:center;line-height:1.6;
+  }
+  .secnav button.on .n{background:rgba(255,255,255,.24);color:#fff}
+
+  /* ---------- 骨架：常驻侧栏目录 + 主列 ---------- */
+  .bb{max-width:760px;margin:0 auto;padding:0 16px}
+  .col{min-width:0}
+  .sidenav{display:none}
+  .nav-fab{
+    position:fixed;right:16px;bottom:20px;z-index:60;font-size:12.8px;font-weight:650;
+    border:1px solid var(--border);background:var(--card);color:var(--accent-deep);
+    border-radius:22px;padding:9px 17px;box-shadow:0 2px 10px rgba(60,50,40,.14);line-height:1.35;
+  }
+  .nav-fab:active{transform:translateY(1px)}
+  .nav-mask{position:fixed;inset:0;background:rgba(36,31,26,.32);z-index:70;display:none}
+  .nav-drawer{
+    position:fixed;top:0;right:0;bottom:0;width:min(320px,86vw);background:var(--bg);
+    border-left:1px solid var(--border);z-index:80;overflow-y:auto;
+    padding:18px 16px calc(40px + env(safe-area-inset-bottom));transform:translateX(102%);
+    transition:transform .18s ease;
+  }
+  body.nav-open .nav-mask{display:block}
+  body.nav-open .nav-drawer{transform:none}
+
+  /* 侧栏也走「框」那套：顶部控制块 / 每个主题组各是一个框，组里每条素材是一张小卡。
+     之前是一列平铺的文字（组名 + 缩进条目），组与组之间只靠留白分开。 */
+  .sn-top{background:var(--card);border:1px solid var(--border-2);border-radius:9px;padding:11px 11px 10px;margin-bottom:11px}
+  .sn-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+  .sn-hd .nt{font-size:13.5px;font-weight:800;letter-spacing:.3px}
+  .sn-hd .nx{font-size:12px;color:var(--ink-3);background:none;border:none;padding:2px 6px}
+  .sidenav .sn-hd .nx{display:none}
+  .sn-sum{font-size:11.5px;color:var(--ink-3);line-height:1.75;padding:0 0 9px;border-bottom:1px solid var(--line);margin-bottom:9px}
+  .sn-sw{display:flex;gap:6px}
+  .sn-sw button{
+    flex:1;font-size:12px;font-weight:650;color:var(--ink-2);background:var(--card);
+    border:1px solid var(--border);border-radius:9px;padding:5px 8px;line-height:1.4;
+  }
+  .sn-sw button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .sn-sec{font-size:11.5px;font-weight:700;color:var(--ink-3);letter-spacing:.8px;margin:13px 2px 6px}
+  .sn-grp{
+    border:1px solid var(--border-2);border-radius:9px;background:var(--grp-bg);
+    overflow:hidden;margin-bottom:9px;
+  }
+  .sn-grp-hd{
+    display:flex;align-items:center;gap:6px;padding:7px 8px 7px 6px;font-size:12.8px;color:var(--ink-2);
+    background:var(--card);border-bottom:1px solid var(--border-2);cursor:pointer;line-height:1.45;
+  }
+  .sn-grp:not(.open) .sn-grp-hd{border-bottom-color:transparent}
+  .sn-grp-hd:hover{background:var(--soft)}
+  .sn-grp-hd .g-bar{flex:0 0 auto;width:3px;align-self:stretch;min-height:15px;border-radius:2px;background:var(--accent)}
+  .sn-grp-hd .gn{flex:1 1 auto;min-width:0;font-weight:750;color:var(--ink);word-break:break-word}
+  .sn-grp-hd .gcn{flex:0 0 auto;font-size:11px;color:var(--ink-3)}
+  .sn-grp-hd .caret{flex:0 0 auto;font-size:10px;color:var(--ink-3)}
+  /* 必须写 minmax(0,1fr)：grid 的列不会自动收缩到容器宽，只写 auto 会被最长的那条标题顶宽 */
+  .sn-items{display:none;padding:7px;gap:5px}
+  .sn-grp.open .sn-items{display:grid;grid-template-columns:minmax(0,1fr)}
+  .sn-grp .sn-items[hidden]{display:none!important}
+  .sn-item{
+    display:flex;gap:6px;align-items:baseline;padding:5px 7px;font-size:12.2px;
+    color:var(--ink-2);background:var(--card);border:1px solid var(--border-2);
+    border-radius:7px;cursor:pointer;line-height:1.5;
+  }
+  .sn-item:hover{border-color:#c9bcaa;color:var(--accent-deep)}
+  .sn-item .si-t{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sn-item .si-k{flex:0 0 auto;font-size:10.5px;color:var(--accent-deep);background:var(--soft);border-radius:4px;padding:0 5px}
+  .sn-item.cur{border-color:var(--accent);background:var(--soft);color:var(--accent-deep);font-weight:650}
+  .sn-item.cur .si-k{background:#fff}
+
+  @media (min-width:1100px){
+    .bb{display:flex;align-items:flex-start;gap:26px;max-width:1180px;padding:0 20px}
+    .sidenav{
+      display:block;flex:0 0 228px;position:sticky;top:16px;
+      max-height:calc(100vh - 32px);overflow-y:auto;padding:20px 2px 30px;
+    }
+    .col{flex:1 1 auto;max-width:760px}
+    .nav-fab,.nav-mask,.nav-drawer{display:none}
+    body.nav-open .nav-mask,body.nav-open .nav-drawer{display:none}
+    /* 板块条在宽屏也是吸顶的，别把底色去掉 —— 去掉之后内容会从它底下透出来 */
+    .secnav{margin-left:0;margin-right:0;padding-left:0;padding-right:0}
+  }
+
+  /* ---------- 复述页 ---------- */
+  .back{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+  .back button{font-size:13px;font-weight:650;color:var(--accent-deep);background:none;border:none;padding:4px 0}
+  .title-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 16px 14px}
+  .title-card .en{font-size:16.5px;font-weight:700;line-height:1.45}
+  .title-card .zh{font-size:12.8px;color:var(--ink-2);margin-top:5px}
+  .title-card .tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+  .title-card .tags i{font-style:normal;font-size:11.3px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:2px 8px;color:var(--ink-2)}
+  .title-card .tags i.round{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+  .hint{
+    margin-top:11px;background:var(--soft);border:1px solid var(--soft-line);border-radius:11px;
+    padding:11px 13px;font-size:12.8px;color:#7a3626;line-height:1.75;
+  }
+  .hint b{color:var(--accent-deep)}
+
+  .mask{margin-top:13px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .mask-lid{padding:22px 18px;text-align:center}
+  .mask-lid .t{font-size:14px;font-weight:700}
+  .mask-lid .n{font-size:12.5px;color:var(--ink-3);margin-top:6px;line-height:1.7}
+  .mask-lid button{margin-top:13px}
+  .peek-bar{
+    display:flex;align-items:center;gap:8px;background:var(--soft);border-bottom:1px solid var(--soft-line);
+    padding:9px 14px;font-size:12px;color:#7a3626;font-weight:650;
+  }
+  .peek-bar .bar{flex:1;height:3px;background:#f0d9cf;border-radius:99px;overflow:hidden}
+  .peek-bar .bar i{display:block;height:100%;background:var(--accent);width:100%;transition:width 1s linear}
+  .script{padding:15px 16px;font-size:13.8px;line-height:1.95;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
+  .script-en{border-bottom:1px dashed var(--line)}
+  .script-zh{padding:13px 16px;font-size:12.8px;line-height:1.9;color:var(--ink-2);white-space:pre-wrap;background:#fbfaf8}
+
+  .fold{margin-top:11px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+  .fold-hd{padding:12px 15px;font-size:13px;font-weight:650;color:var(--ink-2);display:flex;align-items:center;gap:8px;cursor:pointer}
+  .fold-hd .caret{margin-left:auto;color:var(--ink-3);font-size:11px}
+  .fold-body{padding:0 15px 15px;font-size:12.8px;line-height:1.85;color:var(--ink-2);white-space:pre-wrap;word-break:break-word}
+
+  .say{margin-top:13px}
+  .say label{display:block;font-size:12.8px;font-weight:650;color:var(--ink-2);margin-bottom:8px}
+  .say textarea{
+    width:100%;min-height:150px;font-family:inherit;font-size:15px;line-height:1.75;color:var(--ink);
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 14px;resize:vertical;
+  }
+  .say textarea:focus{outline:none;border-color:var(--accent)}
+  .say .tools{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap}
+  .rec{background:var(--accent);border-color:var(--accent);color:#fff}
+  .rec.live{background:#c0392b;border-color:#c0392b;animation:pulse 1.3s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
+  .say .count{font-size:11.5px;color:var(--ink-3);margin-left:auto}
+
+  /* ---------- 结果 ---------- */
+  .result{margin-top:14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .result-hd{padding:15px 16px 13px;border-bottom:1px solid var(--line)}
+  .result-hd .top-line{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .verdict{font-size:12.5px;font-weight:700;border-radius:99px;padding:3px 11px}
+  .verdict.ok{background:var(--ok-soft);color:var(--ok)}
+  .verdict.mid{background:#fdf3e3;color:var(--warn)}
+  .verdict.bad{background:#fbeceb;color:#c0392b}
+  .result-hd .score{font-size:22px;font-weight:700;margin-left:auto;letter-spacing:-.02em}
+  .result-hd .score small{font-size:12px;color:var(--ink-3);font-weight:600;margin-left:5px;letter-spacing:0}
+  .result-hd .sub{font-size:12.5px;color:var(--ink-2);margin-top:9px;line-height:1.75}
+  .result-hd .sub b{color:var(--accent-deep)}
+  .dims{padding:6px 16px 12px}
+  .dim{display:flex;gap:11px;padding:9px 0;border-bottom:1px dashed var(--line)}
+  .dim:last-child{border-bottom:none}
+  .dim .k{font-size:12.8px;font-weight:700;width:46px;flex-shrink:0;color:var(--ink-2)}
+  .dim .v{font-size:12.5px;color:var(--ink-3);flex-shrink:0;letter-spacing:1px}
+  .dim .why{font-size:12.3px;color:var(--ink-2);line-height:1.7}
+  .notes{padding:0 16px 14px}
+  .notes .nt{font-size:12.5px;font-weight:700;color:var(--ink-2);margin-bottom:7px}
+  .notes ul{margin:0;padding-left:18px}
+  .notes li{font-size:12.8px;color:var(--ink-2);line-height:1.8;margin-bottom:4px}
+  .result-ft{padding:12px 16px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .result-ft .msg{font-size:11.8px;color:var(--ink-3);margin-left:auto}
+  .archived{background:var(--ok-soft);border:1px solid #dbe8d4;border-radius:10px;padding:10px 13px;font-size:12.6px;color:var(--ok);font-weight:650;margin:0 16px 14px}
+
+  /* ---------- 修正轮次浮层 ---------- */
+  .sheet{position:fixed;inset:0;z-index:60;background:rgba(36,31,26,.34);display:flex;align-items:flex-end;justify-content:center}
+  .sheet-in{background:var(--card);width:100%;max-width:520px;border-radius:16px 16px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom))}
+  .sheet-in h3{font-size:14.5px;font-weight:700;margin-bottom:5px}
+  .sheet-in .n{font-size:12.3px;color:var(--ink-3);line-height:1.7;margin-bottom:14px}
+  .chips{display:flex;gap:7px;flex-wrap:wrap}
+  .chips button{
+    font-size:12.5px;font-weight:650;border:1px solid var(--border);background:var(--card);color:var(--ink-2);
+    border-radius:99px;padding:7px 13px;
+  }
+  .chips button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .sheet-in .foot{display:flex;gap:8px;margin-top:18px}
+  .sheet-in .foot .grow{flex:1}
+
+  /* ---------- 记录 ---------- */
+  .log{display:grid;gap:9px}
+  .log-row{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px;box-shadow:var(--shadow)}
+  .log-row .l1{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .log-row .l1 .t{font-size:13.5px;font-weight:650;flex:1;min-width:120px}
+  .log-row .l1 .s{font-size:12.5px;font-weight:700;color:var(--ink-2)}
+  .log-row .l2{font-size:11.8px;color:var(--ink-3);margin-top:6px}
+  .log-row .l3{font-size:12.5px;color:var(--ink-2);margin-top:8px;line-height:1.75}
+  .log-row .l3 ul{margin:0;padding-left:17px}
+  .log-row .tr{margin-top:9px;font-size:12.3px;color:var(--ink-3);line-height:1.75;white-space:pre-wrap;word-break:break-word;max-height:120px;overflow:hidden}
+
+  .toast{
+    position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(10px);
+    background:#2f2b26;color:#f6f3ed;font-size:12.8px;font-weight:600;padding:10px 18px;border-radius:99px;
+    box-shadow:0 10px 26px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;
+    z-index:90;max-width:88vw;text-align:center;
+  }
+  .toast.on{opacity:1;transform:translateX(-50%)}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:7px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .spin.dark{border-color:var(--border);border-top-color:var(--accent);}
+
+  /* ---------- 学习台：目录分段开关 ---------- */
+  .seg{display:inline-flex;background:var(--bg);border:1px solid var(--border);border-radius:99px;padding:2px;gap:2px;margin-bottom:13px}
+  .seg button{font-size:12.3px;font-weight:650;color:var(--ink-3);background:none;border:none;border-radius:99px;padding:6px 14px}
+  .seg button.on{background:var(--card);color:var(--accent-deep);box-shadow:0 1px 2px rgba(60,50,40,.08)}
+
+  /* ---------- 学习台：素材卡 ---------- */
+  /* 卡片用比 --shadow 重一档的投影：组底压深之后，卡片得真的「浮」起来才像一块块独立的纸片 */
+  .card{
+    background:var(--card);border:1px solid var(--border-2);border-radius:var(--radius);overflow:hidden;
+    box-shadow:0 1px 2px rgba(60,50,40,.05),0 4px 14px rgba(60,50,40,.07);
+  }
+  .card.is-main{border-color:var(--soft-line);background:linear-gradient(0deg,var(--soft),#fff 30%)}
+  .card-hd{padding:14px 15px 12px}
+  .card-hd .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  .card-hd .tags i{font-style:normal;font-size:11.3px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:2px 8px;color:var(--ink-2)}
+  .card-hd .tags i.pick{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+  .card-hd .tags i.alt{background:#fff;color:var(--ink-3)}
+  .card-hd .tags i.due{background:var(--soft);border-color:var(--soft-line);color:var(--accent-deep);font-weight:650}
+  .card-hd .tags i.ok{background:var(--ok-soft);border-color:#dbe8d4;color:var(--ok);font-weight:650}
+  .card-hd .tags i.cat,.card-hd .tags i.lv{background:#fff;color:var(--ink-3)}
+  /* 播报台的元信息行：技能点 / 主题线 —— 与资料库页面上的卡片一一对应 */
+  .card-hd .meta-row{display:flex;gap:15px;flex-wrap:wrap;margin:0 0 8px;font-size:11.8px;color:var(--ink-3);line-height:1.55}
+  .card-hd .meta-row .mk-k{color:var(--ink-3)}
+  .card-hd .meta-row .mk{color:var(--ink-2);font-weight:650}
+  .card-hd .en{font-size:15px;font-weight:700;line-height:1.45;word-break:break-word}
+  .card-hd .zh{font-size:12.6px;color:var(--ink-2);margin-top:4px;word-break:break-word}
+  .card-hd .hd-btn{margin-top:11px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .card-hd .hd-btn .stamp{font-size:11.5px;color:var(--ink-3);margin-left:auto}
+
+  .ctabs{display:flex;gap:4px;padding:0 11px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow-x:auto}
+  .ctabs button{flex:0 0 auto;background:none;border:none;border-bottom:2px solid transparent;font-size:12.3px;font-weight:650;color:var(--ink-3);padding:9px 9px 8px}
+  .ctabs button.on{color:var(--accent-deep);border-bottom-color:var(--accent)}
+  .pane{display:none}
+  .pane.on{display:block}
+
+  /* 术语表：五列里有四列是 nowrap，窄到 320px 时整张表的最小宽度会超过卡片，
+     而 .card 是 overflow:hidden —— 多出来的部分会被直接裁掉。
+     两层保险：① 让能折行的列真的能折（overflow-wrap:anywhere 只在放不下时才断词，宽屏看不出差别）
+     ② 外面套一层横向滚动容器，兜住任何还想往外顶的情况。
+     另外：释义和例句必须是两格。挤成一格的时候，这一格会把剩下的宽度全吃掉
+     （实测 732px 的表里它占 498px），右边空一大片、频次被顶到最边上，看着像表格坏了。 */
+  .glos-wrap{overflow-x:auto;overscroll-behavior-x:contain}
+  .glos{width:100%;border-collapse:collapse;font-size:12.2px}
+  .glos td{padding:7px 14px 7px 0;border-bottom:1px dashed var(--line);vertical-align:top;color:var(--ink-2);line-height:1.65;overflow-wrap:anywhere}
+  .glos tr:last-child td{border-bottom:none}
+  .glos td.g-word{font-weight:700;color:var(--ink);white-space:nowrap;width:1%}
+  .glos .g-ipa{color:var(--ink-3);font-size:11.6px;white-space:nowrap;width:1%}
+  .glos .g-pos{color:var(--ink-3);font-size:11.6px;white-space:nowrap;width:1%}
+  .glos .g-ex{color:var(--ink-3);font-size:11.6px;line-height:1.6}
+  .glos .g-freq{color:var(--accent-deep);font-weight:650;white-space:nowrap;width:1%;text-align:right;padding-right:0}
+
+  /* 再窄一点（≤520）五列真的排不开：四个 nowrap 列把「释义+例句」挤成一条。
+     这里把整张表从「表格」改成「一行一条」的自然流：
+       第一行  word  ipa  pos                        频次（靠右）
+       第二行  中文释义 + 例句
+     用 flex + order 摆频次 —— float 那版在 300px 会把 g-freq 压成 2px 宽、内容 13px 溢出去。
+     另外别用 overflow-wrap:anywhere 去救：那会把 min-content 掉到一个字母，
+     列宽塌成「一列一字」（launch 竖排成 l/a/u/n/c/h 就是这么来的）。 */
+  @media (max-width:520px){
+    .glos,.glos tbody{display:block}
+    .glos tr{
+      display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 6px;
+      padding:9px 0;border-bottom:1px dashed var(--line);
+    }
+    .glos tr:last-child{border-bottom:none}
+    .glos td{flex:0 1 auto;min-width:0;padding:0;border-bottom:none;font-size:12.2px}
+    /* 基础规则里这几列写了 width:1%，在 flex 里会被当成 flex-basis → 掉成 2px 宽。
+       必须把 width 显式还原成 auto，再用 flex:0 0 auto 让它们按内容宽度排。 */
+    .glos td.g-word{font-size:13.6px;white-space:normal;width:auto}
+    .glos .g-ipa,.glos .g-pos{font-size:11.4px;width:auto;flex:0 0 auto}
+    .glos .g-freq{order:8;margin-left:auto;font-size:11.4px;width:auto;flex:0 0 auto}
+    .glos td.g-def{flex:0 0 100%;order:9;margin-top:3px;overflow-wrap:normal;width:auto}
+    .glos td.g-ex{flex:0 0 100%;order:10;font-size:11.4px;margin-top:2px;overflow-wrap:normal;width:auto}
+  }
+
+  .plist{margin:0;padding:0;list-style:none}
+  .plist li{padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px;line-height:1.7}
+  .plist li:last-child{border-bottom:none}
+  .plist .p-en{display:block;color:var(--ink);font-weight:650}
+  .plist .p-cn{display:block;color:var(--ink-3);font-size:12.2px;margin-top:2px}
+
+  .slist{margin:0;padding:0;list-style:none}
+  .slist li{padding:9px 0;border-bottom:1px dashed var(--line);font-size:13px;line-height:1.7}
+  .slist li:last-child{border-bottom:none}
+  .slist .s-step{font-size:11.6px;font-weight:700;color:var(--accent-deep);display:block;margin-bottom:3px}
+  .slist .s-en{display:block;color:var(--ink);font-weight:650}
+  .slist .s-note{display:block;color:var(--ink-3);font-size:12.2px;margin-top:3px}
+
+  .dlist{margin:0;padding-left:17px}
+  .dlist li{font-size:12.6px;color:var(--ink-2);line-height:1.8;margin-bottom:6px}
+  .dlist li .d-key{font-weight:700;color:var(--ink)}
+
+  /* ---------- 学习台：分组折叠 ----------
+     三层要一眼分得开（原来的毛病就是「组头白底、卡片也白底、组底只有一丝灰」，
+     日期跟日期、篇目跟篇目糊成一片）：
+       组头  白底 + 左侧 4px 竖条 + 16px/800 大字 + 底部实线  ← 最重
+       组底  #f2efe8（比页面底色更深）                        ← 中间层
+       卡片  纯白 + 深一档边框 + 阴影，间距 12px               ← 最轻但边界清楚 */
+  .grp{border:1px solid var(--border-2);border-radius:var(--radius);background:var(--grp-bg);overflow:hidden;margin-bottom:18px}
+  .grp-hd{
+    display:flex;align-items:center;gap:11px;padding:10px 14px 10px 11px;cursor:pointer;
+    background:var(--card);border-bottom:1px solid var(--border-2);
+  }
+  .grp-hd:hover{background:#fdfcfa}
+  .grp-hd .g-bar{flex:0 0 auto;width:4px;align-self:stretch;min-height:22px;border-radius:2px;background:var(--accent)}
+  .grp-hd .g-txt{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+  .grp-hd .g-name{font-size:16px;font-weight:800;letter-spacing:-.01em;line-height:1.3;word-break:break-word;color:var(--ink)}
+  .grp-hd .g-sub{font-size:11.6px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .grp-hd .g-n{flex:0 0 auto;font-size:11.4px;font-weight:700;color:var(--accent-deep);background:var(--soft);border-radius:99px;padding:2px 9px}
+  .grp-hd .caret{flex:0 0 auto;color:var(--ink-3);font-size:11px}
+  .grp-bd{padding:12px;display:grid;gap:12px}
+  .grp-bd[hidden]{display:none!important}
+  /* 折叠起来时，组头底下那条线就没意义了（下面没东西），收掉 */
+  .grp:has(.grp-bd[hidden]) .grp-hd{border-bottom-color:transparent}
+  /* 组头收窄时（窄屏 / 抽屉里）别把篇数挤下去 */
+  @media (max-width:420px){
+    .grp-hd{padding:10px 12px 10px 9px;gap:9px}
+    .grp-hd .g-name{font-size:15px}
+    .grp-hd .g-sub{font-size:11.2px}
+  }
+
+  /* ---------- 学习台：排期表 ---------- */
+  .plan{border:1px solid var(--border);border-radius:var(--radius);background:var(--card);overflow:hidden}
+  .plan-row{display:flex;gap:10px;align-items:center;padding:13px 14px;border-bottom:1px solid var(--border)}
+  .plan-row:last-child{border-bottom:none}
+  .plan-row .pm{flex:1;min-width:0}
+  .plan-row .pm .t{font-size:13.2px;font-weight:650;line-height:1.45;word-break:break-word}
+  .plan-row .pm .m{font-size:11.4px;color:var(--ink-3);margin-top:5px;display:flex;gap:6px;flex-wrap:wrap}
+  .plan-row .pm .m i{font-style:normal;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:1px 7px}
+  .plan-row .pm .m i.due{background:var(--soft);border-color:var(--soft-line);color:var(--accent-deep);font-weight:650}
+  .plan-row .pm .m i.ok{background:var(--ok-soft);border-color:#dbe8d4;color:var(--ok);font-weight:650}
+  .plan-row.soft{opacity:.62}
+
+  /* ---------- 学习台：沉底 ---------- */
+  /* 沉底区现在也是一个板块框（头是 .sec-hd，身是 .sec-bd），这里只管「它是灰色的」 */
+  .sunk-hd{cursor:pointer}
+  .sunk-hd:hover{background:#fdfcfa}
+  .sunk-hd .g-bar{background:var(--ink-3)}
+  .sunk-hd .caret{color:var(--ink-3);font-size:11px}
+  .sunk-bd{opacity:.62}
+
+  /* ---------- 学习台：我的积累 ---------- */
+  .kpis{display:grid;grid-template-columns:1fr;gap:9px;margin-bottom:3px}
+  .kpi{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:12px 15px}
+  .kpi .kv{font-size:21px;font-weight:700;color:var(--accent-deep);line-height:1.25}
+  .kpi .kl{font-size:12.2px;color:var(--ink-2);margin-top:3px}
+  .kpi .ks{font-size:11.3px;color:var(--ink-3);margin-top:2px}
+  .map{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:15px 16px}
+  .skill{display:flex;align-items:center;gap:9px;padding:5px 0}
+  .skill .sn{font-size:12.8px;color:var(--ink-2);flex:0 0 auto;min-width:132px;line-height:1.45}
+  .skill .bar{flex:1 1 auto;height:7px;background:var(--bg);border:1px solid var(--line);border-radius:5px;overflow:hidden;min-width:40px}
+  .skill .fill{display:block;height:100%;background:var(--accent);border-radius:5px}
+  .skill .sv{font-size:11.3px;color:var(--ink-3);flex:0 0 auto;min-width:36px;text-align:right}
+  .skill.full .sv{color:var(--accent-deep);font-weight:650}
+  .skill.zero .sn{color:var(--ink-3)}
+
+  /* ---------- 学习台：卡片页脚与内页补充 ---------- */
+  .card-foot{
+    margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    font-size:11.8px;color:var(--ink-3);
+  }
+  .ebbing{display:flex;align-items:center;gap:5px}
+  .ebbing .dot{width:9px;height:9px;border-radius:50%;background:var(--bg);border:1px solid var(--border)}
+  .ebbing .dot.done{background:var(--accent);border-color:var(--accent)}
+  .ebbing .dot.now{background:var(--accent-deep);border-color:var(--accent-deep);box-shadow:0 0 0 3px var(--soft)}
+  .ebbing .lbl{margin-left:4px;font-size:11.3px}
+  .saylist{margin:0;padding:0;list-style:none}
+  .say-en{
+    position:relative;padding:10px 0 10px 15px;border-bottom:1px dashed var(--line);
+    font-family:Georgia,"Times New Roman",serif;font-size:15px;line-height:1.7;color:var(--ink);
+  }
+  .say-en:last-child{border-bottom:none}
+  .say-en:before{content:"";position:absolute;left:0;top:17px;width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.5}
+  .say-hint{font-size:11.8px;color:var(--ink-3);margin-bottom:6px;line-height:1.7}
+  .zh-tip{font-size:11.8px;color:var(--ink-3);margin-bottom:7px}
+  .script-zh.hide{filter:blur(5px);cursor:pointer;user-select:none}
+
+  @media (min-width:700px){
+    .kpis{grid-template-columns:repeat(4,1fr)}
+  }
+  @media (max-width:520px){
+    .skill .sn{min-width:96px;font-size:12.2px}
+  }
+</style>
+</head>
+<body>
+
+<div id="boot">正在连接…</div>
+
+<div id="login" hidden>
+  <div class="login">
+    <h1>每日英语学习台</h1>
+    <p class="sub">每天几篇英文播报：先跟读打卡，再合上讲一遍，交给 AI 判。<br>素材、判定、复习排期都在这里，跨设备不丢。</p>
+
+    <div id="step1">
+      <div class="field">
+        <label for="phone">手机号</label>
+        <input id="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="11 位手机号">
+      </div>
+      <div class="row-btn"><button class="btn primary grow" id="send-btn" type="button">获取验证码</button></div>
+    </div>
+
+    <div id="step2" hidden>
+      <div class="field">
+        <label for="code">验证码</label>
+        <input id="code" type="tel" inputmode="numeric" autocomplete="one-time-code" placeholder="6 位数字">
+      </div>
+      <div class="row-btn">
+        <button class="btn primary grow" id="login-btn" type="button">登录 / 注册</button>
+        <button class="btn" id="resend-btn" type="button">重发</button>
+      </div>
+      <p class="tip" id="code-tip"></p>
+    </div>
+
+    <div class="err" id="login-err"></div>
+    <p class="tip">素材由每天早上的定时任务产出，直接写进你的账号。换手机、换电脑，登录同一个号就能接着练。</p>
+
+    <div class="or">或</div>
+    <div class="row-btn"><button class="btn ghost grow" id="guest-btn" type="button">游客模式（不用验证码）</button></div>
+    <p class="tip">游客模式铺的是内置演示素材，进度只存在这台设备的浏览器里，随时可重置。「交给 AI 判」要登录才能用。</p>
+  </div>
+</div>
+
+<div id="main" hidden>
+  <div class="bb">
+    <aside class="sidenav" id="sidenav"></aside>
+    <div class="col">
+      <div class="guest-bar" id="guest-bar" hidden></div>
+      <header class="top">
+        <div class="top-in">
+          <h1 id="top-title">每日英语学习台</h1>
+          <div class="who" id="top-who"></div>
+        </div>
+        <div class="howto">
+          <div><b>练法</b> 先看「口播结构」，把 4 步的骨架记住（别背稿）→ 通读英文稿 → 点「遮中文」盲测 → 再按结构用自己的话讲一遍，录 1–3 分钟</div>
+          <div class="hw"><b>复习</b> 艾宾浩斯节奏：学完次日 → 第 2 天 → 第 4 天 → 第 7 天 → 第 15 天。轮次由复述判定推进，跟读打卡只记今天动过</div>
+        </div>
+      </header>
+      <nav class="secnav"><div class="secnav-in" id="tabs"></div></nav>
+      <main id="view"></main>
+    </div>
+  </div>
+  <button class="nav-fab" id="nav-fab" type="button">目录</button>
+  <div class="nav-mask" id="nav-mask"></div>
+  <aside class="nav-drawer" id="nav-drawer"></aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
+<!-- 游客模式的演示素材。只放编的演示数据，不放真实素材（这个文件部署后是公开可读的）。 -->
+<script src="guest-seed.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ================= 配置（来自云服务返回的 publicConfig，四项之外没有别的） ================= */
+  var CONFIG = {
+    endpoint: location.origin,   /* 云服务不认公网域名的来源，Vercel 上由 vercel.json 把 /.cloud/* 重写到同源代理函数 api/proxy.js（服务端再转发，不带 Origin） */
+    oauthRelayBaseUrl: 'https://www.workbuddy.cn/v2/as/genie-baas/oauth',
+    publishableKey: 'wbpk_1RWFmB5RskKQ3eTa1yFkl6_VrE4mvNDq0CBEVWXCpoZdKr1GL6LUkmf'
+  };
+
+  var INTERVALS = [1, 2, 4, 7, 15];
+  var ROUND_NAMES = ['新学', '第 1 轮', '第 2 轮', '第 3 轮', '第 4 轮', '第 5 轮', '已巩固'];
+  var ROUND_HINT = [
+    '第一次过这篇。先把稿子读两遍，然后合上，用自己的话讲一遍，卡壳没关系。',
+    '遮住正文，只看着篇名讲一遍。数字和因果关系不能错。',
+    '遮住正文讲一遍，把这篇的目标术语尽量用上。',
+    '先在心里把四步过一遍（开场判断 / 事实 / 转折 / 自己的观点），再开口。',
+    '讲完加一句原稿里没有的判断，说说你怎么看这件事。',
+    '按「讲给别人听」的标准来一遍，这是最完整的一次。',
+    '已经巩固了，不用再排期。想加练就再讲一遍。'
+  ];
+
+  /* ================= 判定标准（与 复述判定标准.md 一致） ================= */
+  var SYSTEM_PROMPT = [
+    '你是「英文复述判定员」。用户刚用英文复述了一篇商业播报稿，你把语音转写文本与原文对照，按固定标准打分。',
+    '只输出一个 JSON 对象，不要任何解释、不要 markdown 代码块。',
+    '',
+    '【四个维度，每维 0-2 分，总分 8】',
+    '1. 结构 s_structure：口播四步齐不齐 —— 开场给判断 / 事实或数字支撑 / 转折或细节 / 收尾给观点。0 分=少于两步或讲成流水账；1 分=三步，缺的是收尾或转折；2 分=四步都在且顺序对。',
+    '2. 准确 s_accuracy：关键事实、数字、因果关系对不对。0 分=有硬伤（数字说错、因果说反、主体搞混）；1 分=大意对但细节含糊或漏掉关键数字；2 分=事实与数字对得上。',
+    '3. 语言 s_language：本篇的目标术语和商务句型有没有用上，句子像不像人说的话。0 分=一个目标术语都没用上，或整段中文直译腔；1 分=用上一部分，其余靠大白话绕过去；2 分=术语与句型基本用上且句子读得顺。',
+    '4. 自主 s_autonomy：有没有脱离原稿句子、换词重组、接上自己的判断。0 分=基本在背原句；1 分=一半照原句一半自己的话；2 分=明显是自己的话，还多说了原稿没有的一句判断。',
+    '',
+    '【不判什么】不判流利度（转写看不出卡顿停顿），不判发音（纯文本判不了）。',
+    '【转写误差】明显是语音识别造成的专有名词拼写错误（例如 clip-on 被写成 click on），在要点里标注「疑似转写误差」，不计入准确分的扣分。',
+    '【尺度】对首次复述的人不要苛求；她讲得比原稿简单但把事情说清楚了，准确和结构该给分就给分。',
+    '',
+    '【输出格式】严格输出这个 JSON：',
+    '{"s_structure":0,"why_structure":"","s_accuracy":0,"why_accuracy":"","s_language":0,"why_language":"","s_autonomy":0,"why_autonomy":"","notes":["",""]}',
+    'why_ 开头各项各一句话、20 字以内，说清为什么给这个分。notes 写 2 到 4 条中文要点：具体指出哪一处说对了（可以引用她的原句片段）、哪一处下次要带上。'
+  ].join('\n');
+
+  /* ================= 小工具 ================= */
+  function $(id) { return document.getElementById(id); }
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function ymd(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function today() { return ymd(new Date()); }
+  function addDays(ds, n) {
+    var p = String(ds).split('-');
+    var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]) + n);
+    return ymd(d);
+  }
+  function md(ds) { return ds ? String(ds).slice(5).replace('-', ' / ') : ''; }
+  function dayLabel(ds) {
+    if (!ds) return '';
+    var t = today();
+    if (ds === t) return '今天';
+    if (ds === addDays(t, 1)) return '明天';
+    if (ds === addDays(t, -1)) return '昨天';
+    return md(ds);
+  }
+  function stamp(v) {
+    if (!v) return '';
+    var d = new Date(v);
+    if (isNaN(d.getTime())) return String(v).slice(0, 16);
+    return pad(d.getMonth() + 1) + ' / ' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+  function h(tag, attrs, kids) {
+    var e = document.createElement(tag), k, v;
+    if (attrs) {
+      for (k in attrs) {
+        if (!attrs.hasOwnProperty(k)) continue;
+        v = attrs[k];
+        if (v === null || v === undefined || v === false) continue;
+        if (k === 'class') e.className = v;
+        else if (k === 'text') e.textContent = v;
+        else if (k.slice(0, 2) === 'on') e.addEventListener(k.slice(2), v);
+        else e.setAttribute(k, v === true ? '' : v);
+      }
+    }
+    var list = (kids === undefined || kids === null) ? [] : (Array.isArray(kids) ? kids : [kids]);
+    for (var i = 0; i < list.length; i++) {
+      var c = list[i];
+      if (c === null || c === undefined || c === false || c === '') continue;
+      e.appendChild(c && c.nodeType ? c : document.createTextNode(String(c)));
+    }
+    return e;
+  }
+  var TOAST_T = 0;
+  function toast(msg) {
+    var box = $('toast');
+    box.textContent = msg;
+    box.className = 'toast on';
+    if (TOAST_T) clearTimeout(TOAST_T);
+    TOAST_T = setTimeout(function () { box.className = 'toast'; }, 2800);
+  }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+  /* 查询所有，返回真数组（NodeList 在老 Safari 上没有 forEach） */
+  function qa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function mapError(e) {
+    if (!e) return '出了点问题，稍后再试。';
+    var msg = e.message || String(e);
+    var code = (e.error && e.error.code) || e.code || '';
+    if (code.indexOf('quota_') === 0 && code !== 'quota_rate_limited') return 'AI 判定的额度用完了，去 WorkBuddy 里看一下用量。';
+    if (code === 'quota_rate_limited') return '调用太频繁了，等一会儿再试。';
+    if (code.indexOf('auth_') === 0) return '登录状态失效了，重新登录一次。';
+    if (code.indexOf('gateway_') === 0 || code.indexOf('model_') === 0) return '模型暂时不可用，再点一次试试。';
+    if (code === '42501') return '没有权限改这条记录，确认是不是登录了同一个手机号。';
+    if (code === '42P01') return '数据表还没建好，先找我说一句。';
+    if (code === '23505') return '这条已经存在了。';
+    return msg;
+  }
+
+  /* ================= 全局状态 ================= */
+  var cloud = null, SESSION = null, MODEL = null;
+  var MATERIALS = [], ATTEMPTS = [];
+  var VIEW = 'today', CUR = null, JUDGE = null, REC = null;
+  var PEEKED = false, PEEK_TIMER = 0;   /* PEEKED = 这一次复述过程中是否看过原文 */
+
+  /* ================= 游客模式 =================
+     目的：改界面时不用每次走手机验证码。
+     做法：不开云服务，把素材与进度放在浏览器 localStorage 里，用同一套渲染代码跑起来。
+     代价：判定要调大模型，必须有登录态，所以游客模式下「交给 AI 判」不可用。
+     数据：用内置的演示素材铺底（不是你的真实素材），随时可重置。 */
+  var GUEST = false, GD = null;
+  var GKEY = 'rt_guest_v1';
+
+  function isGuest() {
+    try { return localStorage.getItem(GKEY + '_on') === '1'; } catch (e) { return false; }
+  }
+  function gLoad() {
+    try { var s = localStorage.getItem(GKEY); if (s) return JSON.parse(s); } catch (e) {}
+    var d = { seq: 0, m: [], a: [] };
+    (window.GUEST_SEED || []).forEach(function (src) {
+      d.seq++;
+      d.m.push(Object.assign({
+        id: d.seq, verdict: '未判定', review_round: 0, mastery: null,
+        last_at: null, next_review: null, practice_status: '未开始'
+      }, src));
+    });
+    (window.GUEST_ATTEMPTS || []).forEach(function (a) {
+      d.seq++;
+      d.a.push(Object.assign({ id: d.seq, created_at: new Date().toISOString() }, a));
+    });
+    return d;
+  }
+  function gSave() {
+    try { localStorage.setItem(GKEY, JSON.stringify(GD)); } catch (e) { toast('这台浏览器存不下游客数据。'); }
+  }
+  function gWipe() {
+    try { localStorage.removeItem(GKEY); localStorage.removeItem(GKEY + '_on'); } catch (e) {}
+  }
+
+  function gSortM(list) {
+    return list.slice().sort(function (a, b) {
+      return String(a.broadcast_date || '').localeCompare(String(b.broadcast_date || ''));
+    });
+  }
+  function gSortA(list) {
+    return list.slice().sort(function (a, b) {
+      return String(b.created_at || '').localeCompare(String(a.created_at || ''));
+    });
+  }
+
+  /* 数据层适配：云端 6 个触点收敛到这里，游客模式换成读写本地。
+     返回形状与 SDK 一致（{data, error}），上层不用改。 */
+  var DB = {
+    countMaterials: function () {
+      if (GUEST) { GD = GD || gLoad(); return Promise.resolve({ data: [], count: GD.m.length, error: null }); }
+      return cloud.database.from('materials').select('id', { count: 'exact', head: true });
+    },
+    insertMaterials: function (rows) {
+      if (GUEST) {
+        GD = GD || gLoad();
+        var made = rows.map(function (r) {
+          GD.seq++;
+          var x = Object.assign({
+            id: GD.seq, verdict: '未判定', review_round: 0, mastery: null,
+            last_at: null, next_review: null, practice_status: '未开始'
+          }, r);
+          GD.m.push(x); return x;
+        });
+        gSave();
+        return Promise.resolve({ data: made, error: null });
+      }
+      return cloud.database.from('materials').insert(rows).select();
+    },
+    listMaterials: function () {
+      if (GUEST) { GD = GD || gLoad(); return Promise.resolve({ data: gSortM(GD.m), error: null }); }
+      return cloud.database.from('materials').select('*').order('broadcast_date', { ascending: true });
+    },
+    listAttempts: function () {
+      if (GUEST) { GD = GD || gLoad(); return Promise.resolve({ data: gSortA(GD.a), error: null }); }
+      return cloud.database.from('attempts').select('*').order('created_at', { ascending: false }).limit(300);
+    },
+    updateMaterial: function (id, patch) {
+      if (GUEST) {
+        GD = GD || gLoad();
+        var hit = null;
+        GD.m.forEach(function (x) { if (String(x.id) === String(id)) { Object.assign(x, patch); hit = x; } });
+        gSave();
+        return Promise.resolve(hit ? { data: [hit], error: null } : { data: [], error: new Error('没找到这条。') });
+      }
+      return cloud.database.from('materials').update(patch).eq('id', id).select();
+    },
+    insertAttempt: function (rec) {
+      if (GUEST) {
+        GD = GD || gLoad();
+        GD.seq++;
+        var r = Object.assign({ id: GD.seq }, rec);
+        GD.a.unshift(r); gSave();
+        return Promise.resolve({ data: [r], error: null });
+      }
+      return cloud.database.from('attempts').insert(rec).select();
+    },
+    deleteAttempt: function (id) {
+      if (GUEST) {
+        GD = GD || gLoad();
+        GD.a = GD.a.filter(function (x) { return String(x.id) !== String(id); });
+        gSave();
+        return Promise.resolve({ data: [], error: null });
+      }
+      return cloud.database.from('attempts').delete().eq('id', id);
+    }
+  };
+
+  /* ================= 启动 ================= */
+  function init() {
+    /* 游客模式不碰 SDK：SDK 加载失败也照样能看界面 */
+    if (isGuest()) { GUEST = true; enterApp(); return; }
+    /* SDK 没加载出来时不堵死在启动页 —— 登录页照常给，游客入口还能点。
+       否则 CDN 被墙的时候，连「不用验证码先看看」这条路都走不了。 */
+    if (!window.WorkBuddyCloud || !window.WorkBuddyCloud.createWorkBuddyCloud) {
+      $('boot').hidden = true;
+      showLogin();
+      setLoginErr('云服务 SDK 没加载出来，手机号登录暂时用不了。可以先用下面的游客模式看界面，回头刷新页面再试。');
+      return;
+    }
+    cloud = window.WorkBuddyCloud.createWorkBuddyCloud({
+      endpoint: CONFIG.endpoint,
+      oauthRelayBaseUrl: CONFIG.oauthRelayBaseUrl,
+      publishableKey: CONFIG.publishableKey
+    });
+    restore();
+  }
+
+  function startGuest() {
+    GUEST = true;
+    try { localStorage.setItem(GKEY + '_on', '1'); } catch (e) {}
+    GD = gLoad(); gSave();
+    enterApp();
+  }
+
+  function exitGuest() {
+    gWipe();
+    GUEST = false; GD = null;
+    location.reload();
+  }
+
+  function resetGuest() {
+    try { localStorage.removeItem(GKEY); } catch (e) {}
+    GD = gLoad(); gSave();
+    render(true);
+    toast('演示数据已经重置。');
+  }
+
+  function restore() {
+    cloud.auth.getSession().then(function (r) {
+      if (r && r.data) { enterApp(); return; }
+      if (r && r.error && r.error.kind && r.error.kind !== 'unauthenticated') {
+        $('login-err').textContent = mapError(r.error);
+      }
+      showLogin();
+    }, function () { showLogin(); });
+  }
+
+  function showLogin() {
+    $('boot').hidden = true;
+    $('login').hidden = false;
+    $('main').hidden = true;
+  }
+
+  function enterApp() {
+    $('boot').hidden = true;
+    $('login').hidden = true;
+    $('main').hidden = false;
+    renderTop();
+    $('view').appendChild(h('div', { class: 'empty', text: GUEST ? '正在铺演示数据…' : '正在读取你的素材…' }));
+    var stage = GUEST ? Promise.resolve() : warmUp();
+    stage.then(function () { return loadAll(); }).then(function () {
+      render();
+    }, function (e) {
+      clear($('view'));
+      $('view').appendChild(h('div', { class: 'empty' }, [
+        h('b', { text: '读不出数据' }), mapError(e),
+        h('div', { class: 'row-btn' }, h('button', { class: 'btn', type: 'button', text: '重试', onclick: function () { enterApp(); } }))
+      ]));
+    });
+  }
+
+  /* models.list() 直接返回数组（字段已被 SDK 归一化）。先挑明确 enabled 的，退而求其次挑没标 disabled 的。 */
+  function pickModel(models) {
+    var i, m;
+    for (i = 0; i < models.length; i++) {
+      m = models[i];
+      if (m && m.id && m.enabled === true && m.disabled !== true) return m.id;
+    }
+    for (i = 0; i < models.length; i++) {
+      m = models[i];
+      if (m && m.id && m.disabled !== true && m.enabled !== false) return m.id;
+    }
+    return null;
+  }
+
+  function warmUp() {
+    return cloud.llm.models.list().then(function (res) {
+      MODEL = pickModel(Array.isArray(res) ? res : ((res && res.data) || []));
+    }, function () { /* 模型列表拿不到时，判定时会再报错 */ });
+  }
+
+  /* ================= 登录（手机号验证码） ================= */
+  var pendingOtp = null, CD = 0, CD_T = 0;
+
+  function setLoginErr(msg) { $('login-err').textContent = msg || ''; }
+
+  function startCountdown() {
+    CD = 60;
+    $('resend-btn').disabled = true;
+    var tick = function () {
+      $('resend-btn').textContent = '重发 ' + CD + 's';
+      if (CD <= 0) {
+        clearInterval(CD_T);
+        $('resend-btn').disabled = false;
+        $('resend-btn').textContent = '重发';
+        return;
+      }
+      CD--;
+    };
+    tick();
+    CD_T = setInterval(tick, 1000);
+  }
+
+  function sendCode() {
+    var phone = $('phone').value.replace(/\s/g, '');
+    if (!/^1\d{10}$/.test(phone)) { setLoginErr('请输入正确的 11 位手机号'); return; }
+    setLoginErr('');
+    var btn = $('send-btn');
+    btn.disabled = true;
+    btn.textContent = '发送中…';
+    cloud.auth.sendOtp({ phone: phone }).then(function (sent) {
+      btn.disabled = false;
+      btn.textContent = '获取验证码';
+      if (sent.error) { setLoginErr(mapError(sent.error)); return; }
+      pendingOtp = { phone: phone, verificationId: sent.data.verificationId, isExistingUser: sent.data.isExistingUser };
+      $('step1').hidden = true;
+      $('step2').hidden = false;
+      $('code-tip').textContent = '验证码已发到 ' + phone.slice(0, 3) + '****' + phone.slice(7) + '。没收到就点重发。';
+      $('code').focus();
+      startCountdown();
+    }, function (e) {
+      btn.disabled = false;
+      btn.textContent = '获取验证码';
+      setLoginErr(mapError(e));
+    });
+  }
+
+  function submitCode() {
+    if (!pendingOtp) { setLoginErr('先获取验证码。'); return; }
+    var code = $('code').value.replace(/\s/g, '');
+    if (!code) { setLoginErr('请输入验证码。'); return; }
+    setLoginErr('');
+    var btn = $('login-btn');
+    btn.disabled = true;
+    btn.textContent = '登录中…';
+    cloud.auth.verifyOtp({
+      phone: pendingOtp.phone,
+      verificationId: pendingOtp.verificationId,
+      isExistingUser: pendingOtp.isExistingUser,
+      token: code
+    }).then(function (done) {
+      btn.disabled = false;
+      btn.textContent = '登录 / 注册';
+      if (done.error) { setLoginErr(mapError(done.error)); return; }
+      pendingOtp = null;
+      SESSION = done.data;
+      enterApp();
+    }, function (e) {
+      btn.disabled = false;
+      btn.textContent = '登录 / 注册';
+      setLoginErr(mapError(e));
+    });
+  }
+
+  /* ================= 数据 ================= */
+  function ensureSeed() {
+    return DB.countMaterials().then(function (c) {
+      if (c.error) throw c.error;
+      if ((c.count || 0) > 0) return false;
+      var src = window.SEED_MATERIALS || [];
+      if (!src.length) return false;
+      var rows = src.map(function (m) {
+        return {
+          en_title: m.en, zh_title: m.zh, domain: m.domain, broadcast_date: m.date || null,
+          script: m.script, translation: m.translation, terms: m.terms, phrases: m.phrases,
+          tough: m.tough, structure: m.structure, topic_line: m.topic, difficulty: m.difficulty,
+          source_url: m.source, review_round: m.round || 0, next_review: m.next || null,
+          verdict: '未判定'
+        };
+      });
+      return DB.insertMaterials(rows).then(function (ins) {
+        if (ins.error) throw ins.error;
+        return true;
+      });
+    });
+  }
+
+  function loadAll() {
+    var stage = GUEST ? Promise.resolve(false) : ensureSeed();
+    return stage.then(function () {
+      return DB.listMaterials();
+    }).then(function (m) {
+      if (m.error) throw m.error;
+      MATERIALS = m.data || [];
+      return DB.listAttempts();
+    }).then(function (a) {
+      if (a.error) throw a.error;
+      ATTEMPTS = a.data || [];
+    });
+  }
+
+  function matById(id) {
+    for (var i = 0; i < MATERIALS.length; i++) { if (String(MATERIALS[i].id) === String(id)) return MATERIALS[i]; }
+    return null;
+  }
+  /* 从来没复述过第一遍的篇目：不管排期是哪天，今天都该出现在列表里。
+     判据用 last_at 而不是 review_round —— 被打回「新学」的篇目轮次是 0 但已经练过，那就按排期等明天。 */
+  function isNew(m) { return !(m.review_round >= 1) && !m.last_at; }
+
+  function dueList() {
+    var t = today(), out = [];
+    for (var i = 0; i < MATERIALS.length; i++) {
+      var m = MATERIALS[i];
+      if (m.review_round >= 6) continue;
+      /* 今天已经动过、并且已经排到以后的，不算「今天该复习」。
+         这类篇目在「今天」页里落到沉底折叠区，顶栏、tab 徽章、页内徽章三个数才一致。
+         （没学过的先按 isNew 放行，今天被打回的按 verdict 放行，都在 sunkIn 里排除了。） */
+      if (sunkIn(m)) continue;
+      if (isNew(m)) { out.push(m); continue; }
+      if (!m.next_review || String(m.next_review).slice(0, 10) <= t) { out.push(m); continue; }
+      /* 今天被打回的留在原位，不藏起来 */
+      if (m.verdict === '未达标') out.push(m);
+    }
+    out.sort(function (a, b) { return String(a.next_review || '').localeCompare(String(b.next_review || '')); });
+    return out;
+  }
+  function softCount() {
+    var n = 0;
+    for (var i = 0; i < MATERIALS.length; i++) { if (MATERIALS[i].review_round >= 6) n++; }
+    return n;
+  }
+
+  /* ================= 顶栏与 tab ================= */
+  function renderTop() {
+    var n = dueList().length;
+    $('top-title').textContent = '每日英语学习台';
+    var who = $('top-who');
+    clear(who);
+    who.appendChild(h('b', { text: n ? ('今天该复习 ' + n + ' 篇') : '今天没有到期的' }));
+    who.appendChild(document.createTextNode('已巩固 ' + softCount() + ' / ' + MATERIALS.length + ' 篇'));
+    renderGuestBar();
+  }
+
+  function renderGuestBar() {
+    var bar = $('guest-bar');
+    if (!bar) return;
+    clear(bar);
+    if (!GUEST) { bar.hidden = true; return; }
+    bar.hidden = false;
+    bar.appendChild(h('span', { class: 'gb-t', text: '游客模式 · 演示数据' }));
+    bar.appendChild(h('span', { class: 'gb-n', text: '进度只存在这台设备上；判定要登录才能用' }));
+    bar.appendChild(h('button', { class: 'gb-x', type: 'button', text: '重置演示数据', onclick: resetGuest }));
+    bar.appendChild(h('button', { class: 'gb-x', type: 'button', text: '退出游客', onclick: exitGuest }));
+  }
+
+  var TABS = [['today', '今天该复习'], ['lib', '篇目'], ['plan', '排期'], ['log', '我的积累']];
+  function renderTabs() {
+    var box = $('tabs');
+    if (!box) return;
+    clear(box);
+    TABS.forEach(function (t) {
+      var n = 0;
+      if (t[0] === 'today') n = dueList().length;
+      else if (t[0] === 'log') n = ATTEMPTS.length;
+      var btn = h('button', {
+        class: VIEW === t[0] ? 'on' : '', type: 'button',
+        onclick: function () { VIEW = t[0]; CUR = null; JUDGE = null; render(); }
+      }, [
+        h('span', { text: t[1] }),
+        n ? h('span', { class: 'n', text: String(n) }) : null
+      ]);
+      box.appendChild(btn);
+    });
+  }
+
+  /* ================= 侧栏目录 ================= */
+  /* 折叠状态只有一份：侧栏目录与「篇目」分组都挂 data-gk，改一处两边一起变。 */
+  function groupKey(m) {
+    if (NAV_MODE === 'topic') {
+      var ts = csvTags(m.topic_line);
+      return 'T|' + (ts.length ? ts[0] : '（没打主题线）');
+    }
+    return 'D|' + dateKey(m);
+  }
+  function toggleGroup(key) {
+    SHUT[key] = !SHUT[key];
+    var shut = !!SHUT[key];
+    qa('[data-gk]').forEach(function (el) {
+      if (el.getAttribute('data-gk') !== key) return;
+      if (el.classList.contains('sn-grp')) {
+        if (shut) el.classList.remove('open'); else el.classList.add('open');
+      }
+      var bd = el.querySelector('.sn-items, .grp-bd');
+      if (bd) { if (shut) bd.setAttribute('hidden', ''); else bd.removeAttribute('hidden'); }
+      var c = el.querySelector('.caret');
+      if (c) c.textContent = shut ? '▸' : '▾';
+    });
+  }
+  function openDrawer() { document.body.classList.add('nav-open'); }
+  function closeDrawer() { document.body.classList.remove('nav-open'); }
+
+  function sideSum() {
+    var days = {}, n = 0, due = dueList().length;
+    MATERIALS.forEach(function (m) { var k = dateKey(m); if (k && k.indexOf('（') !== 0) days[k] = 1; n++; });
+    var ds = Object.keys(days).length;
+    return '共 ' + n + ' 篇素材 · 覆盖 ' + ds + ' 天 · 今天该复习 ' + due + ' 篇 · 已巩固 '
+      + softCount() + ' / ' + n + ' 篇';
+  }
+
+  function renderSide() {
+    var groups = NAV_MODE === 'topic' ? groupsByTopic(MATERIALS) : groupsByDate(MATERIALS);
+    [$('sidenav'), $('nav-drawer')].forEach(function (box) {
+      if (!box) return;
+      clear(box);
+      /* 顶部控制块：目录头 + 统计 + 切换合成一个框，与下面的主题组框并列 */
+      var top = h('div', { class: 'sn-top' });
+      top.appendChild(h('div', { class: 'sn-hd' }, [
+        h('span', { class: 'nt', text: '目录' }),
+        h('button', { class: 'nx', type: 'button', text: '收起 ✕', onclick: closeDrawer })
+      ]));
+      top.appendChild(h('div', { class: 'sn-sum', text: sideSum() }));
+      top.appendChild(h('div', { class: 'sn-sw' }, [
+        h('button', { class: NAV_MODE === 'topic' ? 'on' : '', type: 'button', text: '按主题', onclick: function () { setNav('topic'); } }),
+        h('button', { class: NAV_MODE === 'date' ? 'on' : '', type: 'button', text: '按日期', onclick: function () { setNav('date'); } })
+      ]));
+      box.appendChild(top);
+      if (!MATERIALS.length) {
+        box.appendChild(h('div', { class: 'sn-sec', text: '还没有素材' }));
+        return;
+      }
+      var cur = CUR ? String(CUR.id) : '';
+      groups.forEach(function (g) {
+        var shut = !!SHUT[g.key];
+        var items = h('div', { class: 'sn-items' });
+        if (shut) items.setAttribute('hidden', '');
+        g.list.slice().sort(function (a, b) {
+          return String(b.broadcast_date || '').localeCompare(String(a.broadcast_date || ''));
+        }).forEach(function (m) {
+          items.appendChild(h('div', {
+            class: 'sn-item' + (String(m.id) === cur ? ' cur' : ''),
+            onclick: function () { closeDrawer(); gotoMaterial(m.id); }
+          }, [
+            h('span', { class: 'si-t', text: m.en_title || m.zh_title || '（没标题）' }),
+            m.kind === '主推' ? h('span', { class: 'si-k', text: '主推' }) : null
+          ]));
+        });
+        box.appendChild(h('div', { class: 'sn-grp' + (shut ? '' : ' open'), 'data-gk': g.key }, [
+          h('div', { class: 'sn-grp-hd', onclick: function () { toggleGroup(g.key); } }, [
+            h('span', { class: 'g-bar' }),
+            /* 侧栏窄，主标题那套「大日期 + 小副标」摆不开，这里合成一行完整的 */
+            h('span', { class: 'gn', text: g.sub ? (g.label + ' · ' + g.sub) : g.label }),
+            h('span', { class: 'gcn', text: g.list.length + ' 篇' }),
+            h('span', { class: 'caret', text: shut ? '▸' : '▾' })
+          ]),
+          items
+        ]));
+      });
+    });
+  }
+
+  /* 从目录点一篇：切到「篇目」、展开它所在的组、滚过去并闪一下 */
+  function gotoMaterial(id) {
+    var m = matById(id);
+    if (!m) return;
+    var key = groupKey(m);
+    delete SHUT[key];
+    VIEW = 'lib'; CUR = null; JUDGE = null;
+    render();
+    var el = document.querySelector('#view .card[data-mid="' + String(id) + '"]');
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'instant', block: 'start' });
+    el.classList.add('hit');
+    setTimeout(function () { el.classList.remove('hit'); }, 1600);
+  }
+
+  /* ================= 视图 ================= */
+  function render(keepScroll) {
+    var y = window.pageYOffset || 0;
+    renderTop();
+    renderSide();
+    renderTabs();
+    var v = $('view');
+    clear(v);
+    if (CUR) renderRetell(v);
+    else if (VIEW === 'today') renderToday(v);
+    else if (VIEW === 'lib') renderLib(v);
+    else if (VIEW === 'plan') renderPlan(v);
+    else renderLog(v);
+    if (keepScroll) window.scrollTo(0, y); else window.scrollTo(0, 0);
+  }
+
+  function matRow(m, opts) {
+    opts = opts || {};
+    var t = today();
+    var due = m.review_round < 6 && (isNew(m) || !m.next_review || String(m.next_review).slice(0, 10) <= t);
+    var meta = [];
+    meta.push(h('i', { class: m.review_round >= 6 ? 'done' : (due ? 'due' : ''), text: isNew(m) ? '新学' : (ROUND_NAMES[m.review_round] || '新学') }));
+    if (m.verdict && m.verdict !== '未判定') meta.push(h('i', { text: '上次 ' + m.verdict + (m.mastery === null || m.mastery === undefined ? '' : ' · ' + m.mastery + ' 分档') }));
+    if (m.review_round >= 6) meta.push(h('i', { class: 'done', text: '已巩固' }));
+    else if (isNew(m)) meta.push(h('i', { class: 'due', text: '还没讲过第一遍' }));
+    else if (m.next_review) meta.push(h('i', { class: due ? 'due' : '', text: '下次 ' + dayLabel(String(m.next_review).slice(0, 10)) }));
+
+    return h('div', { class: 'row' + (due ? ' hot' : '') }, [
+      h('div', { class: 'row-main' }, [
+        h('div', { class: 'en', text: m.en_title }),
+        h('div', { class: 'zh', text: m.zh_title || '' }),
+        h('div', { class: 'meta' }, meta)
+      ]),
+      h('button', {
+        class: 'btn sm primary go', type: 'button', text: opts.label || '复述',
+        onclick: function () { openRetell(m.id); }
+      })
+    ]);
+  }
+
+  /* ================= 学习台：目录与素材卡 ================= */
+  var TOPIC_ORDER = ['AI 硬件与穿戴', 'AI 商业化与融资', 'AI Agent 与生态', '消费品牌与出海', '内容平台与营销', '平台规则与合规'];
+  var NAV_MODE = 'topic';
+  try { NAV_MODE = localStorage.getItem('rt_nav') || 'topic'; } catch (e) { NAV_MODE = 'topic'; }
+  var CTAB = {};   /* 每张卡记住了哪个内页 */
+  var SHUT = {};   /* 侧栏目录 / 「篇目」分组里被折叠起来的组 */
+  var HIDEZH = {}; /* 卡片里「遮中文」开着的那几篇 */
+
+  /* 表里的多值字段（主题线、训练技能点）统一用半角逗号分隔 */
+  function csvTags(v) {
+    if (!v) return [];
+    if (Object.prototype.toString.call(v) === '[object Array]') return v.slice();
+    return String(v).split(',').map(function (s) { return s.trim(); }).filter(function (s) { return !!s; });
+  }
+  function dateKey(m) { return String(m.broadcast_date || '').slice(0, 10) || '（没记日期）'; }
+
+  /* 今天动过的 → 沉底（变灰、折叠、带时间戳）。今天被打回的留在原位。 */
+  function sunkIn(m) {
+    if (!m.last_at) return false;
+    var d = new Date(m.last_at);
+    if (isNaN(d.getTime())) return false;
+    if (ymd(d) !== today()) return false;
+    if (m.verdict === '未达标') return false;
+    return true;
+  }
+
+  function splitLines(raw) {
+    var out = [];
+    String(raw || '').split('\n').forEach(function (l) { var s = l.replace(/\r/g, '').trim(); if (s) out.push(s); });
+    return out;
+  }
+  function cells(line) { return line.split('|').map(function (x) { return x.trim(); }); }
+
+  function glossTable(raw) {
+    var rows = splitLines(raw);
+    if (!rows.length) return h('div', { class: 'muted', style: 'font-size:12.5px', text: '（没有术语表）' });
+    var tb = h('tbody');
+    rows.forEach(function (line) {
+      var c = cells(line);
+      tb.appendChild(h('tr', {}, [
+        h('td', { class: 'g-word', text: c[0] || '' }),
+        h('td', { class: 'g-ipa', text: c[1] || '' }),
+        h('td', { class: 'g-pos', text: c[2] || '' }),
+        h('td', { class: 'g-def', text: c[3] || '' }),
+        h('td', { class: 'g-ex', text: c[5] || '' }),
+        h('td', { class: 'g-freq', text: c[4] || '' })
+      ]));
+    });
+    return h('div', { class: 'glos-wrap' }, h('table', { class: 'glos' }, tb));
+  }
+
+  function patList(raw) {
+    var rows = splitLines(raw);
+    if (!rows.length) return h('div', { class: 'muted', style: 'font-size:12.5px', text: '（没有商务句型）' });
+    var ul = h('ul', { class: 'plist' });
+    rows.forEach(function (line) {
+      var at = line.lastIndexOf('|');
+      var en = at < 0 ? line : line.slice(0, at).trim();
+      var cn = at < 0 ? '' : line.slice(at + 1).trim();
+      ul.appendChild(h('li', {}, [h('span', { class: 'p-en', text: en }), cn ? h('span', { class: 'p-cn', text: cn }) : null]));
+    });
+    return ul;
+  }
+
+  function diffList(raw) {
+    var rows = splitLines(raw);
+    if (!rows.length) return h('div', { class: 'muted', style: 'font-size:12.5px', text: '（没有理解难点）' });
+    var ul = h('ul', { class: 'dlist' });
+    rows.forEach(function (line) {
+      var at = line.indexOf(' — ');
+      var li = h('li');
+      if (at > 0) {
+        li.appendChild(h('span', { class: 'd-key', text: line.slice(0, at).trim() }));
+        li.appendChild(document.createTextNode(' — ' + line.slice(at + 3).trim()));
+      } else {
+        li.appendChild(document.createTextNode(line));
+      }
+      ul.appendChild(li);
+    });
+    return ul;
+  }
+
+  function structList(raw) {
+    var rows = splitLines(raw);
+    if (!rows.length) return h('div', { class: 'muted', style: 'font-size:12.5px', text: '（没有口播结构）' });
+    var ul = h('ul', { class: 'slist' });
+    rows.forEach(function (line) {
+      var c = cells(line);
+      ul.appendChild(h('li', {}, [
+        h('span', { class: 's-step', text: c[0] || '' }),
+        h('span', { class: 's-en', text: c[1] || '' }),
+        c[2] ? h('span', { class: 's-note', text: c[2] }) : null
+      ]));
+    });
+    return ul;
+  }
+
+  /* 可说的句子：从「商务句型」里抽英文那一半，去掉中文提示，整句背 */
+  function sayList(raw) {
+    var rows = splitLines(raw);
+    if (!rows.length) return h('div', { class: 'muted', style: 'font-size:12.5px', text: '（这篇没有可背的句子）' });
+    var ul = h('ul', { class: 'saylist' });
+    rows.forEach(function (line) {
+      var at = line.lastIndexOf('|');
+      var en = (at < 0 ? line : line.slice(0, at)).trim().replace(/^["“]|["”]$/g, '');
+      if (en) ul.appendChild(h('li', { class: 'say-en', text: en }));
+    });
+    return h('div', {}, [
+      h('div', { class: 'say-hint', text: '这几句是这篇里能直接拿去用的，整句背下来就够。' }),
+      ul
+    ]);
+  }
+
+  /* 中文页：可以遮住自测，点一下显示 */
+  function zhBlock(m) {
+    var id = String(m.id);
+    var hide = !!HIDEZH[id];
+    var wrap = h('div');
+    if (hide) wrap.appendChild(h('div', { class: 'zh-tip', text: '中文遮住了。想核对，点下面这段就显示。' }));
+    var body = h('div', { class: 'script-zh' + (hide ? ' hide' : ''), text: m.translation || '（没有中文翻译）' });
+    if (hide) {
+      body.addEventListener('click', function () {
+        HIDEZH[id] = false;
+        body.className = 'script-zh';
+        if (wrap.firstChild && wrap.firstChild.className === 'zh-tip') wrap.removeChild(wrap.firstChild);
+      });
+    }
+    wrap.appendChild(body);
+    return wrap;
+  }
+
+  /* 素材卡内页：播报稿 / 中文 / 术语表 / 商务句型 / 可说的句子 / 理解难点 / 口播结构 */
+  function cardPane(m, forceTab) {
+    var id = String(m.id);
+    var cur = forceTab || CTAB[id] || 'script';
+    CTAB[id] = cur;
+    var defs = [
+      ['script', '播报稿'], ['zh', '中文'], ['terms', '术语表'], ['phrases', '商务句型'],
+      ['say', '可说的句子'], ['tough', '理解难点'], ['struct', '口播结构']
+    ];
+    var panes = {};
+    var btns = [];
+    var bar = h('div', { class: 'ctabs' });
+    defs.forEach(function (d) {
+      var b = h('button', {
+        class: cur === d[0] ? 'on' : '', type: 'button', text: d[1],
+        onclick: function () {
+          CTAB[id] = d[0];
+          btns.forEach(function (x) { x.className = ''; });
+          b.className = 'on';
+          for (var k in panes) { if (panes.hasOwnProperty(k)) panes[k].className = 'pane' + (k === d[0] ? ' on' : ''); }
+        }
+      });
+      btns.push(b); bar.appendChild(b);
+    });
+
+    var src = m.source_url ? h('a', { href: m.source_url, target: '_blank', rel: 'noreferrer', style: 'display:inline-block;margin-top:10px;font-size:12.2px;color:var(--accent-deep)', text: '看原文来源 ↗' }) : null;
+    panes.script = h('div', { class: 'pane' + (cur === 'script' ? ' on' : '') }, [
+      h('div', { class: 'script', text: m.script || '（这篇没有存稿件）' }), src
+    ]);
+    panes.zh = h('div', { class: 'pane' + (cur === 'zh' ? ' on' : '') }, zhBlock(m));
+    panes.terms = h('div', { class: 'pane' + (cur === 'terms' ? ' on' : '') }, glossTable(m.terms));
+    panes.phrases = h('div', { class: 'pane' + (cur === 'phrases' ? ' on' : '') }, patList(m.phrases));
+    panes.say = h('div', { class: 'pane' + (cur === 'say' ? ' on' : '') }, sayList(m.phrases));
+    panes.tough = h('div', { class: 'pane' + (cur === 'tough' ? ' on' : '') }, diffList(m.tough));
+    panes.struct = h('div', { class: 'pane' + (cur === 'struct' ? ' on' : '') }, structList(m.structure));
+
+    var box = h('div', {}, bar);
+    defs.forEach(function (d) { box.appendChild(panes[d[0]]); });
+    return box;
+  }
+
+  function matCard(m) {
+    var isMain = m.kind === '主推';
+    var soft = m.review_round >= 6;
+    var due = !soft && (isNew(m) || !m.next_review || String(m.next_review).slice(0, 10) <= today());
+    var card = h('div', { class: 'card' + (isMain ? ' is-main' : '') });
+    card.setAttribute('data-mid', String(m.id));
+
+    var tags = [h('i', { class: isMain ? 'pick' : 'alt', text: isMain ? '主推' : (m.kind || '备选') })];
+    if (m.domain) tags.push(h('i', { class: 'cat', text: m.domain }));
+    tags.push(h('i', { class: soft ? 'ok' : (due ? 'due' : ''), text: isNew(m) ? '新学' : (ROUND_NAMES[m.review_round] || '新学') }));
+    if (m.practice_status && m.practice_status !== '未开始') tags.push(h('i', { text: m.practice_status }));
+    if (m.verdict && m.verdict !== '未判定') tags.push(h('i', { text: '上次 ' + m.verdict }));
+    if (m.difficulty) tags.push(h('i', { class: 'lv', text: m.difficulty }));
+    tags.push(h('i', { text: dateKey(m) }));
+
+    /* 技能点 / 主题线：搬播报台的元信息行，别让这两个字段只活在表里 */
+    var sk = csvTags(m.skills), tp = csvTags(m.topic_line);
+    var meta = null;
+    if (sk.length || tp.length) {
+      meta = h('div', { class: 'meta-row' });
+      if (sk.length) meta.appendChild(h('span', {}, [h('span', { class: 'mk-k', text: '技能点 ' }), h('span', { class: 'mk', text: sk.join(' · ') })]));
+      if (tp.length) meta.appendChild(h('span', {}, [h('span', { class: 'mk-k', text: '主题线 ' }), h('span', { class: 'mk', text: tp.join(' · ') })]));
+    }
+
+    var pane = null;
+    function showPane(tab) {
+      if (pane) { card.removeChild(pane); pane = null; }
+      pane = cardPane(m, tab);
+      card.appendChild(pane);
+      openBtn.textContent = '收起';
+    }
+    function hidePane() {
+      if (pane) { card.removeChild(pane); pane = null; }
+      openBtn.textContent = '阅读全文';
+    }
+    var openBtn = h('button', {
+      class: 'btn sm', type: 'button', text: '阅读全文',
+      onclick: function () { if (pane) { hidePane(); } else { showPane('script'); } }
+    });
+    var zhBtn = h('button', {
+      class: 'btn sm', type: 'button', text: '遮中文',
+      onclick: function () {
+        var id = String(m.id);
+        var on = !HIDEZH[id];
+        HIDEZH[id] = on;
+        zhBtn.textContent = on ? '显示中文' : '遮中文';
+        showPane('zh');
+      }
+    });
+
+    var acts = [openBtn, zhBtn];
+    if (m.practice_status !== '已跟读') {
+      acts.push(h('button', { class: 'btn sm', type: 'button', text: '跟读打卡', onclick: function () { checkIn(m, '已跟读'); } }));
+    }
+    acts.push(h('button', { class: 'btn sm primary', type: 'button', text: soft ? '再讲一遍' : '复述这篇', onclick: function () { openRetell(m.id); } }));
+    acts.push(h('button', { class: 'btn sm', type: 'button', text: '改轮次', onclick: function () { openFix(m); } }));
+
+    card.appendChild(h('div', { class: 'card-hd' }, [
+      h('div', { class: 'tags' }, tags),
+      meta,
+      h('div', { class: 'en', text: m.en_title }),
+      h('div', { class: 'zh', text: m.zh_title || '' }),
+      h('div', { class: 'hd-btn' }, acts)
+    ]));
+
+    /* 卡片页脚：六个点＝六个轮次（新学 + 5 轮），亮到哪就是练到哪 */
+    var dots = h('div', { class: 'ebbing' });
+    for (var r = 0; r < 6; r++) {
+      dots.appendChild(h('span', { class: 'dot' + (r < m.review_round ? ' done' : (r === m.review_round && !soft ? ' now' : '')) }));
+    }
+    dots.appendChild(h('span', { class: 'lbl', text: soft ? '已巩固' : (ROUND_NAMES[m.review_round] || '新学') }));
+    card.appendChild(h('div', { class: 'card-foot' }, [
+      dots,
+      h('span', { text: m.next_review ? ('下次复习 ' + dayLabel(String(m.next_review).slice(0, 10))) : (soft ? '不用再排了' : '还没排下次') })
+    ]));
+    return card;
+  }
+
+  /* 跟读打卡：只记今天动过。轮次与排期由复述判定推进 —— 打卡点击不该改排期。 */
+  function checkIn(m, kind) {
+    var now = new Date().toISOString();
+    DB.updateMaterial(m.id, {
+      practice_status: kind, last_at: now, updated_at: now
+    }).then(function (up) {
+      if (up.error) throw up.error;
+      if (!up.data || !up.data.length) throw new Error('没有权限改这条。');
+      return loadAll();
+    }).then(function () {
+      render(true);
+      toast('记下了：' + kind + '。轮次由复述判定推进。');
+    }, function (e) { toast('没记上：' + mapError(e)); });
+  }
+
+  function setNav(mode) {
+    NAV_MODE = mode;
+    try { localStorage.setItem('rt_nav', mode); } catch (e) {}
+    render(true);
+  }
+
+  function groupsByTopic(list) {
+    var map = {}, seq = [];
+    list.forEach(function (m) {
+      var ts = csvTags(m.topic_line);
+      if (!ts.length) ts = ['（没打主题线）'];
+      ts.forEach(function (t) {
+        if (!map[t]) { map[t] = []; seq.push(t); }
+        map[t].push(m);
+      });
+    });
+    var rank = function (k) {
+      var i = TOPIC_ORDER.indexOf(k);
+      if (i >= 0) return i;
+      return k === '（没打主题线）' ? 999 : 90;
+    };
+    seq.sort(function (a, b) { return rank(a) - rank(b) || a.localeCompare(b); });
+    return seq.map(function (k) {
+      /* 副标题给「最近什么播的」——分组头光有主题名太干，也帮助判断这条线断没断 */
+      var ds = map[k].map(dateKey).filter(function (d) { return d !== '（没记日期）'; }).sort();
+      return {
+        key: 'T|' + k, label: k, list: map[k],
+        sub: ds.length ? '最近 ' + dayLabel(ds[ds.length - 1]) : ''
+      };
+    });
+  }
+
+  function groupsByDate(list) {
+    var map = {}, seq = [];
+    list.forEach(function (m) {
+      var k = dateKey(m);
+      if (!map[k]) { map[k] = []; seq.push(k); }
+      map[k].push(m);
+    });
+    seq.sort(function (a, b) { return String(b).localeCompare(String(a)); });
+    /* 日期分两截：主标题给「今天 / 昨天 / 10 / 13」这种一眼能认的，副标题给完整的 2026-10-13。
+       挤在一行「昨天 · 2026-10-13」时两截一样大，反而看不出这是同一天的一批。 */
+    return seq.map(function (k) {
+      var nodate = k === '（没记日期）';
+      return {
+        key: 'D|' + k,
+        label: nodate ? k : dayLabel(k),
+        sub: nodate ? '' : k,
+        list: map[k]
+      };
+    });
+  }
+
+  /* 板块框：头 = 竖条 + 标题 + 说明 + 计数，身 = 组底上的一层内容。
+     页面里每个板块都走这两个函数，形状才不会一页一个样。 */
+  function secHead(title, note, badge) {
+    return h('div', { class: 'sec-hd' }, [
+      h('span', { class: 'g-bar' }),
+      h('h2', { text: title }),
+      note ? h('span', { class: 'note', text: note }) : null,
+      badge ? h('span', { class: 'badge', text: badge }) : null
+    ]);
+  }
+  function secBox(title, note, badge, body) {
+    return h('div', { class: 'sec' }, [
+      secHead(title, note, badge),
+      h('div', { class: 'sec-bd' }, body)
+    ]);
+  }
+
+  function renderToday(v) {
+    var due = dueList(), pending = [], sunk = [], i;
+    for (i = 0; i < due.length; i++) { if (!sunkIn(due[i])) pending.push(due[i]); }
+    /* 沉底取全量：今天动过之后已经不算「到期」的，也要落到折叠区里，不能凭空消失 */
+    for (i = 0; i < MATERIALS.length; i++) { if (sunkIn(MATERIALS[i])) sunk.push(MATERIALS[i]); }
+
+    var body = [];
+    if (!MATERIALS.length) {
+      body.push(h('div', { class: 'empty' }, [
+        h('b', { text: '还没有素材' }),
+        '素材由每天早上 8:30 的定时任务写进来；也可以让我手动补一篇。'
+      ]));
+    } else if (!pending.length) {
+      body.push(h('div', { class: 'empty' }, [
+        h('b', { text: '今天该复习的都动过了' }),
+        '想加练就去「篇目」随便挑一篇讲一遍，判定照常算。'
+      ]));
+    } else {
+      body.push(h('div', { class: 'list' }, pending.map(function (m) { return matCard(m); })));
+    }
+    v.appendChild(secBox('今天该复习', '轮次由复述判定推进，跟读打卡只记今天动过',
+      pending.length ? pending.length + ' 篇' : '', body));
+
+    if (sunk.length) {
+      var bd = h('div', { class: 'sec-bd sunk-bd' });
+      bd.setAttribute('hidden', '');
+      sunk.forEach(function (m) { bd.appendChild(matCard(m)); });
+      var caret = h('span', { class: 'caret', text: '▸' });
+      var skHd = h('div', {
+        class: 'sec-hd sunk-hd',
+        onclick: function () {
+          var shut = bd.hasAttribute('hidden');
+          if (shut) { bd.removeAttribute('hidden'); } else { bd.setAttribute('hidden', ''); }
+          caret.textContent = shut ? '▾' : '▸';
+        }
+      }, [
+        h('span', { class: 'g-bar' }),
+        h('h2', { text: '今天已经动过' }),
+        h('span', { class: 'note', text: '等下次复习' }),
+        h('span', { class: 'badge', text: sunk.length + ' 篇' }),
+        caret
+      ]);
+      v.appendChild(h('div', { class: 'sec' }, [skHd, bd]));
+    }
+
+    var done = softCount(), total = MATERIALS.length || 1, touched = 0;
+    for (var k = 0; k < MATERIALS.length; k++) {
+      if (MATERIALS[k].practice_status && MATERIALS[k].practice_status !== '未开始') touched++;
+    }
+    v.appendChild(secBox('进度', '一篇走完 5 轮就算巩固', '', [
+      h('div', { class: 'empty' }, [
+        h('b', { text: '已巩固 ' + done + ' / ' + MATERIALS.length + ' 篇' }),
+        '跟读或录过 ' + touched + ' 篇，复述判定 ' + ATTEMPTS.length + ' 次。每次判定的得分、理由和要点都在「我的积累」里。',
+        h('div', { style: 'margin-top:10px;height:4px;background:#efece6;border-radius:99px;overflow:hidden' },
+          h('i', { style: 'display:block;height:100%;width:' + Math.round(done / total * 100) + '%;background:var(--accent)' }))
+      ])
+    ]));
+  }
+
+  function renderLib(v) {
+    v.appendChild(secHead('篇目', '一个主题归一处；点「阅读全文」看稿件', MATERIALS.length + ' 篇'));
+    v.appendChild(h('div', { class: 'seg' }, [
+      h('button', { class: NAV_MODE === 'topic' ? 'on' : '', type: 'button', text: '按主题', onclick: function () { setNav('topic'); } }),
+      h('button', { class: NAV_MODE === 'date' ? 'on' : '', type: 'button', text: '按日期', onclick: function () { setNav('date'); } })
+    ]));
+
+    if (!MATERIALS.length) {
+      v.appendChild(h('div', { class: 'empty' }, [h('b', { text: '还没有素材' }), '素材由每天早上的定时任务写进来。']));
+      return;
+    }
+
+    var groups = NAV_MODE === 'topic' ? groupsByTopic(MATERIALS) : groupsByDate(MATERIALS);
+    groups.forEach(function (g) {
+      var shut = !!SHUT[g.key];
+      var bd = h('div', { class: 'grp-bd' });
+      if (shut) bd.setAttribute('hidden', '');
+      g.list.slice().sort(function (a, b) {
+        return String(b.broadcast_date || '').localeCompare(String(a.broadcast_date || ''));
+      }).forEach(function (m) { bd.appendChild(matCard(m)); });
+      var caret = h('span', { class: 'caret', text: shut ? '▸' : '▾' });
+      v.appendChild(h('div', { class: 'grp', 'data-gk': g.key }, [
+        h('div', { class: 'grp-hd', onclick: function () { toggleGroup(g.key); } }, [
+          h('span', { class: 'g-bar' }),
+          h('span', { class: 'g-txt' }, [
+            h('span', { class: 'g-name', text: g.label }),
+            g.sub ? h('span', { class: 'g-sub', text: g.sub }) : null
+          ]),
+          h('span', { class: 'g-n', text: g.list.length + ' 篇' }),
+          caret
+        ]),
+        bd
+      ]));
+    });
+  }
+
+  function renderPlan(v) {
+    var PN = '复习排期', PD = '间隔 1 / 2 / 4 / 7 / 15 天；记错了在这里改';
+    var PB = '已巩固 ' + softCount() + ' / ' + MATERIALS.length;
+    if (!MATERIALS.length) {
+      v.appendChild(secBox(PN, PD, PB, [
+        h('div', { class: 'empty' }, [h('b', { text: '还没有素材' }), '素材由每天早上的定时任务写进来。'])
+      ]));
+      return;
+    }
+    var rows = MATERIALS.slice().sort(function (a, b) {
+      var ar = a.review_round >= 6 ? 1 : 0, br = b.review_round >= 6 ? 1 : 0;
+      if (ar !== br) return ar - br;
+      return String(a.next_review || '9999').localeCompare(String(b.next_review || '9999'));
+    });
+    var t = today(), box = h('div', { class: 'plan' });
+    rows.forEach(function (m) {
+      var soft = m.review_round >= 6;
+      var due = !soft && (isNew(m) || !m.next_review || String(m.next_review).slice(0, 10) <= t);
+      var meta = [
+        h('i', { class: soft ? 'ok' : (due ? 'due' : ''), text: isNew(m) ? '新学' : (ROUND_NAMES[m.review_round] || '新学') })
+      ];
+      if (m.practice_status && m.practice_status !== '未开始') meta.push(h('i', { text: m.practice_status }));
+      if (m.verdict && m.verdict !== '未判定') meta.push(h('i', { text: '判定 ' + m.verdict }));
+      meta.push(h('i', { text: '上次 ' + (m.last_at ? stamp(m.last_at).slice(0, 5) : '—') }));
+      meta.push(h('i', { text: soft ? '不再排期' : (m.next_review ? '下次 ' + dayLabel(String(m.next_review).slice(0, 10)) : '今天') }));
+      box.appendChild(h('div', { class: 'plan-row' + (soft ? ' soft' : '') }, [
+        h('div', { class: 'pm' }, [
+          h('div', { class: 't', text: m.en_title }),
+          h('div', { class: 'm' }, meta)
+        ]),
+        h('button', { class: 'btn sm', type: 'button', text: '改轮次', onclick: function () { openFix(m); } })
+      ]));
+    });
+    v.appendChild(secBox(PN, PD, PB, [box]));
+  }
+
+  function kpiBox(val, label, sub) {
+    return h('div', { class: 'kpi' }, [
+      h('div', { class: 'kv', text: val }),
+      h('div', { class: 'kl', text: label }),
+      h('div', { class: 'ks', text: sub })
+    ]);
+  }
+
+  /* 技能点进度：把素材卡上的 skills 归拢，看哪个点练得多、巩固了多少 */
+  function skillStat() {
+    var map = {}, seq = [];
+    MATERIALS.forEach(function (m) {
+      csvTags(m.skills).forEach(function (k) {
+        if (!map[k]) { map[k] = { name: k, n: 0, done: 0 }; seq.push(map[k]); }
+        map[k].n++;
+        if (m.review_round >= 6) map[k].done++;
+      });
+    });
+    seq.sort(function (a, b) {
+      return (b.done / b.n) - (a.done / a.n) || b.n - a.n || a.name.localeCompare(b.name);
+    });
+    return seq;
+  }
+
+  function renderLog(v) {
+    var total = MATERIALS.length, touched = 0, todayN = 0;
+    MATERIALS.forEach(function (m) {
+      if (m.practice_status && m.practice_status !== '未开始') touched++;
+      if (sunkIn(m)) todayN++;
+    });
+
+    v.appendChild(secBox('我的积累', '一篇走完 5 轮就算巩固；这几格只是数字，不作评价', '', [
+      h('div', { class: 'kpis' }, [
+        kpiBox(softCount() + ' / ' + total, '已巩固的篇目', '走完新学加 5 轮'),
+        kpiBox(touched + ' / ' + total, '跟读或录过的', '打卡只记今天动过'),
+        kpiBox(String(ATTEMPTS.length), '复述判定次数', '每判一次留一条记录'),
+        kpiBox(String(todayN), '今天动过的篇目', '动过的会沉到「今天」页底部')
+      ])
+    ]));
+
+    var sk = skillStat();
+    if (sk.length) {
+      var mp = h('div', { class: 'map' });
+      sk.forEach(function (s) {
+        var pct = Math.round(s.done / s.n * 100);
+        mp.appendChild(h('div', { class: 'skill' + (s.done === s.n ? ' full' : (s.done ? '' : ' zero')) }, [
+          h('span', { class: 'sn', text: s.name }),
+          h('span', { class: 'bar' }, h('i', { class: 'fill', style: 'width:' + pct + '%' })),
+          h('span', { class: 'sv', text: s.done + '/' + s.n })
+        ]));
+      });
+      v.appendChild(secBox('技能点进度', '按素材卡上的技能点归拢', '', [mp]));
+    }
+
+    if (!ATTEMPTS.length) {
+      v.appendChild(secBox('复述记录', '', '', [
+        h('div', { class: 'empty' }, [
+          h('b', { text: '还没有记录' }),
+          GUEST ? '游客模式下不能判定，这条要看登录之后的自己。' : '每复述一次、判定一次，这里就多一条。'
+        ])
+      ]));
+      return;
+    }
+    var list = h('div', { class: 'log' });
+    ATTEMPTS.forEach(function (a) {
+      var m = matById(a.material_id);
+      var vd = a.verdict === '达标' ? 'ok' : (a.verdict === '部分达标' ? 'mid' : 'bad');
+      var row = h('div', { class: 'log-row' }, [
+        h('div', { class: 'l1' }, [
+          h('span', { class: 't', text: m ? m.en_title : '（素材已删）' }),
+          h('span', { class: 'verdict ' + vd, text: a.verdict || '—' }),
+          h('span', { class: 's', text: (a.total === null || a.total === undefined ? '—' : a.total) + ' / 8' })
+        ]),
+        h('div', { class: 'l2', text: stamp(a.created_at) + '　' + ROUND_NAMES[a.round_before || 0] + ' → ' + ROUND_NAMES[a.round_after === null || a.round_after === undefined ? (a.round_before || 0) : a.round_after] + (a.peeked ? '　（看过原文）' : '') }),
+        h('div', { class: 'l2', text: '结构 ' + (a.s_structure === null ? '—' : a.s_structure) + ' ｜ 准确 ' + (a.s_accuracy === null ? '—' : a.s_accuracy) + ' ｜ 语言 ' + (a.s_language === null ? '—' : a.s_language) + ' ｜ 自主 ' + (a.s_autonomy === null ? '—' : a.s_autonomy) })
+      ]);
+      if (a.notes) {
+        var ul = h('ul');
+        String(a.notes).split('\n').forEach(function (line) {
+          if (line.trim()) ul.appendChild(h('li', { text: line.replace(/^[-·•]\s*/, '') }));
+        });
+        row.appendChild(h('div', { class: 'l3' }, ul));
+      }
+      if (a.transcript) row.appendChild(h('div', { class: 'tr', text: a.transcript }));
+      list.appendChild(row);
+    });
+    v.appendChild(secBox('复述记录', '最近的在前', ATTEMPTS.length + ' 条', [list]));
+  }
+
+  /* ================= 复述页 ================= */
+  function openRetell(id) {
+    CUR = matById(id);
+    JUDGE = null;
+    REC = null;
+    PEEKED = false;
+    if (PEEK_TIMER) { clearInterval(PEEK_TIMER); PEEK_TIMER = 0; }
+    if (CUR) render();
+  }
+
+  function renderRetell(v) {
+    var m = CUR;
+    v.appendChild(h('div', { class: 'back' }, [
+      h('button', { type: 'button', text: '← 返回', onclick: function () { CUR = null; JUDGE = null; render(); } }),
+      h('button', {
+        class: 'btn sm', type: 'button', text: '改轮次', style: 'margin-left:auto',
+        onclick: function () { openFix(m); }
+      })
+    ]));
+
+    v.appendChild(h('div', { class: 'title-card' }, [
+      h('div', { class: 'en', text: m.en_title }),
+      h('div', { class: 'zh', text: m.zh_title || '' }),
+      h('div', { class: 'tags' }, [
+        h('i', { class: 'round', text: ROUND_NAMES[m.review_round] || '新学' }),
+        m.difficulty ? h('i', { text: m.difficulty }) : null,
+        m.domain ? h('i', { text: m.domain }) : null,
+        m.next_review ? h('i', { text: '下次 ' + dayLabel(String(m.next_review).slice(0, 10)) }) : null
+      ]),
+      h('div', { class: 'hint' }, [h('b', { text: '这一轮怎么讲　' }), ROUND_HINT[m.review_round] || ROUND_HINT[0]])
+    ]));
+
+    /* 跟读那一步：看全文念两遍，打个卡。跟读不算「偷看」，偷看只记遮住时那 10 秒。
+       正文按需生成 —— 没点开之前，原文不进 DOM。 */
+    var rdBody = h('div', { class: 'fold-body', hidden: true });
+    var rdFilled = false;
+    v.appendChild(h('div', { class: 'fold' }, [
+      h('div', {
+        class: 'fold-hd',
+        onclick: function () {
+          if (!rdFilled) {
+            rdFilled = true;
+            rdBody.appendChild(h('div', { class: 'script', text: m.script || '（这篇没有存稿件）' }));
+            if (m.translation) rdBody.appendChild(h('div', { class: 'script-zh', text: m.translation }));
+            rdBody.appendChild(h('div', { class: 'row-btn' }, h('button', {
+              class: 'btn sm', type: 'button',
+              text: m.practice_status === '已跟读' ? '已跟读，再记一次' : '跟读完了，打个卡',
+              onclick: function () { checkIn(m, '已跟读'); }
+            })));
+          }
+          rdBody.hidden = !rdBody.hidden;
+        }
+      }, [
+        h('span', { text: '先跟读一遍（看全文）' }),
+        h('span', { class: 'caret', text: '▾' })
+      ]),
+      rdBody
+    ]));
+
+    /* 遮住的正文 */
+    var card = h('div', { class: 'mask' });
+    var lid = h('div', { class: 'mask-lid' }, [
+      h('div', { class: 't', text: '正文已遮住' }),
+      h('div', { class: 'n', text: '先自己讲一遍，讲完再对照原文。偷看会记下来。' }),
+      h('button', { class: 'btn', type: 'button', text: '看一眼原文（10 秒）', onclick: function () { startPeek(lid, body); } })
+    ]);
+    var body = h('div', { hidden: true });
+    card.appendChild(lid);
+    card.appendChild(body);
+    v.appendChild(card);
+
+    /* 目标词 */
+    if (m.terms || m.phrases) {
+      var fb = h('div', { class: 'fold-body', hidden: true });
+      if (m.terms) fb.appendChild(h('div', { text: '术语表\n' + m.terms }));
+      if (m.phrases) fb.appendChild(h('div', { style: 'margin-top:9px', text: '商务句型\n' + m.phrases }));
+      var fh = h('div', { class: 'fold-hd', onclick: function () { fb.hidden = !fb.hidden; } }, [
+        h('span', { text: '这一轮要用上的词和句型' }),
+        h('span', { class: 'caret', text: '▾' })
+      ]);
+      v.appendChild(h('div', { class: 'fold' }, [fh, fb]));
+    }
+
+    /* 输入 */
+    var ta = h('textarea', { id: 'transcript', placeholder: '把复述的转写贴进来，或者点下面的「按下开始说」对着手机讲。错别字不用改。' });
+    var count = h('span', { class: 'count', text: '0 字' });
+    ta.addEventListener('input', function () { count.textContent = ta.value.trim().length + ' 字'; });
+
+    var tools = h('div', { class: 'tools' });
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SR) {
+      tools.appendChild(h('button', { class: 'btn rec', id: 'rec-btn', type: 'button', text: '按下开始说', onclick: function () { toggleRec(this, ta); } }));
+    }
+    tools.appendChild(count);
+    v.appendChild(h('div', { class: 'say' }, [
+      h('label', { text: '你的复述' }),
+      ta, tools,
+      SR ? null : h('div', { class: 'tip', text: '这个浏览器不支持页面内语音识别（微信里打开常见），用手机输入法的麦克风键直接说，效果一样。' })
+    ]));
+
+    var judgeBtn = h('button', { class: 'btn primary', id: 'judge-btn', type: 'button', text: '交给 AI 判', style: 'margin-top:12px;width:100%' });
+    judgeBtn.addEventListener('click', function () { doJudge(ta.value, m); });
+    v.appendChild(h('div', { class: 'row-btn' }, judgeBtn));
+
+    if (JUDGE) v.appendChild(renderResult(m));
+
+    var hist = ATTEMPTS.filter(function (a) { return String(a.material_id) === String(m.id); });
+    if (hist.length) {
+      var lg = h('div', { class: 'log' });
+      hist.slice(0, 5).forEach(function (a) {
+        lg.appendChild(h('div', { class: 'log-row' }, [
+          h('div', { class: 'l1' }, [
+            h('span', { class: 't', text: stamp(a.created_at) }),
+            h('span', { class: 'verdict ' + (a.verdict === '达标' ? 'ok' : (a.verdict === '部分达标' ? 'mid' : 'bad')), text: a.verdict || '—' }),
+            h('span', { class: 's', text: (a.total === null || a.total === undefined ? '—' : a.total) + ' / 8' })
+          ])
+        ]));
+      });
+      v.appendChild(secBox('这篇练过 ' + hist.length + ' 次', '最近的在前', '', [lg]));
+    }
+  }
+
+  /* 遮住 / 偷看：给 10 秒，到点自动收起，并记下「看过原文」 */
+  function startPeek(lid, body) {
+    PEEKED = true;
+    lid.hidden = true;
+    body.hidden = false;
+    clear(body);
+    var left = 10;
+    var fill = h('i', { style: 'width:100%' });
+    var leftTxt = h('b', { text: '10' });
+    body.appendChild(h('div', { class: 'peek-bar' }, [
+      h('span', { text: '还能看' }), leftTxt, h('span', { text: '秒' }),
+      h('span', { class: 'bar' }, fill)
+    ]));
+    body.appendChild(h('div', { class: 'script script-en', text: CUR.script || '（这篇没有存稿件）' }));
+    if (CUR.translation) body.appendChild(h('div', { class: 'script-zh', text: CUR.translation }));
+    if (PEEK_TIMER) clearInterval(PEEK_TIMER);
+    PEEK_TIMER = setInterval(function () {
+      left--;
+      leftTxt.textContent = String(Math.max(left, 0));
+      fill.style.width = Math.max(left, 0) * 10 + '%';
+      if (left <= 0) {
+        clearInterval(PEEK_TIMER);
+        PEEK_TIMER = 0;
+        lid.hidden = false;
+        body.hidden = true;
+        clear(body);
+        toast('收起来了，接着讲。');
+      }
+    }, 1000);
+  }
+
+  /* 语音识别 */
+  function toggleRec(btn, ta) {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return;
+    if (btn.getAttribute('data-live') === '1') {
+      if (btn._rec) { try { btn._rec.stop(); } catch (e) {} }
+      return;
+    }
+    var rec = new SR();
+    rec.lang = 'en-US';
+    rec.continuous = true;
+    rec.interimResults = true;
+    var base = ta.value;
+    btn._rec = rec;
+    btn.setAttribute('data-live', '1');
+    btn.className = 'btn rec live';
+    btn.textContent = '● 停止';
+    var finalTxt = '';
+    rec.onresult = function (ev) {
+      var interim = '';
+      for (var i = ev.resultIndex; i < ev.results.length; i++) {
+        var r = ev.results[i];
+        if (r.isFinal) finalTxt += r[0].transcript + ' ';
+        else interim += r[0].transcript;
+      }
+      ta.value = base + finalTxt + interim;
+    };
+    rec.onerror = function () { stopRec(); };
+    rec.onend = function () { stopRec(); };
+    function stopRec() {
+      btn.setAttribute('data-live', '0');
+      btn.className = 'btn rec';
+      btn.textContent = '按下开始说';
+      ta.value = (base + finalTxt).replace(/\s+$/, '');
+    }
+    try { rec.start(); } catch (e) { stopRec(); }
+    toast('开始收音，讲完点一下「停止」。');
+  }
+
+  /* ================= 判定 ================= */
+  function doJudge(text, m) {
+    if (GUEST) { toast('游客模式下不能判：判定要调大模型，得先登录。'); return; }
+    var t = (text || '').trim();
+    if (t.length < 40) { toast('太短了，先完整讲一遍再判。'); return; }
+    var btn = $('judge-btn');
+    btn.disabled = true;
+    btn.textContent = '正在判…';
+    judgeCall(m, t).then(function (j) {
+      j._transcript = t;
+      JUDGE = j;
+      return archive(m, t, j);
+    }).then(function (rec) {
+      REC = rec;
+      return loadAll();
+    }).then(function () {
+      var still = matById(m.id);
+      if (still) CUR = still;
+      render();
+      toast('判完了，已经归档。');
+    }, function (e) {
+      btn.disabled = false;
+      btn.textContent = '交给 AI 判';
+      toast('判定失败：' + mapError(e));
+    });
+  }
+
+  /* 模型只支持流式返回：把 SSE 分片拼完整段文本 */
+  async function streamOnce(opts) {
+    var stream = cloud.llm.chat.completions.create(opts);
+    if (stream && typeof stream.then === 'function') stream = await stream;
+    if (!stream || typeof stream[Symbol.asyncIterator] !== 'function') throw new Error('模型返回的格式不认识。');
+    var out = '';
+    for await (var chunk of stream) {
+      var d = chunk && chunk.choices && chunk.choices[0] && chunk.choices[0].delta;
+      if (d && d.content) out += d.content;
+    }
+    return out;
+  }
+
+  async function judgeCall(m, transcript) {
+    if (!MODEL) throw new Error('拿不到可用的模型，稍后再试。');
+    var user = [
+      '篇目：' + m.en_title,
+      '本轮：' + (ROUND_NAMES[m.review_round] || '新学'),
+      '本轮要求：' + (ROUND_HINT[m.review_round] || ROUND_HINT[0]),
+      '',
+      '播报稿原文：',
+      m.script || '（无）',
+      '',
+      '术语表（本篇目标术语）：',
+      m.terms || '（无）',
+      '',
+      '商务句型：',
+      m.phrases || '（无）',
+      '',
+      '口播结构提示：',
+      m.structure || '（无）',
+      '',
+      '我的复述转写（原样，含可能的口误和识别错字）：',
+      transcript
+    ].join('\n');
+
+    var opts = {
+      model: MODEL,
+      messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: user }],
+      stream: true,
+      response_format: { type: 'json_object' },
+      temperature: 0.2
+    };
+
+    var txt;
+    try {
+      txt = await streamOnce(opts);
+    } catch (e) {
+      var code = (e && e.error && e.error.code) || '';
+      if (code.indexOf('request_') === 0) {
+        delete opts.response_format;   /* 有的模型不认这个参数，去掉再试一次 */
+        txt = await streamOnce(opts);
+      } else {
+        throw e;
+      }
+    }
+
+    var j = parseJudge(txt);
+    if (!j && opts.response_format) {
+      /* 没读出 JSON，也可能是这个参数让模型把结构包坏了，去掉再判一次 */
+      delete opts.response_format;
+      j = parseJudge(await streamOnce(opts));
+    }
+    if (!j) throw new Error('判定结果的格式没读懂，再判一次试试。');
+    return normalizeJudge(j);
+  }
+
+  /* 模型有时会把 JSON 包在代码块里、或前后带一句说明，这里把最外层对象抠出来。读不懂返回 null。 */
+  function parseJudge(txt) {
+    var s = String(txt || '').replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
+    var at = s.indexOf('{'), end = s.lastIndexOf('}');
+    if (at < 0 || end <= at) return null;
+    var j;
+    try { j = JSON.parse(s.slice(at, end + 1)); } catch (e) { return null; }
+    return (j && typeof j === 'object') ? j : null;
+  }
+
+  function clamp2(v) { v = Number(v); if (isNaN(v)) return 0; return Math.max(0, Math.min(2, Math.round(v))); }
+
+  function normalizeJudge(j) {
+    var o = {
+      s_structure: clamp2(j.s_structure), s_accuracy: clamp2(j.s_accuracy),
+      s_language: clamp2(j.s_language), s_autonomy: clamp2(j.s_autonomy),
+      why_structure: String(j.why_structure || '').slice(0, 60),
+      why_accuracy: String(j.why_accuracy || '').slice(0, 60),
+      why_language: String(j.why_language || '').slice(0, 60),
+      why_autonomy: String(j.why_autonomy || '').slice(0, 60)
+    };
+    o.total = o.s_structure + o.s_accuracy + o.s_language + o.s_autonomy;
+    o.mastery = o.total <= 1 ? 0 : (o.total <= 3 ? 1 : (o.total <= 5 ? 2 : (o.total === 6 ? 3 : (o.total === 7 ? 4 : 5))));
+    o.verdict = o.mastery >= 3 ? '达标' : (o.mastery >= 1 ? '部分达标' : '未达标');
+    var notes = Array.isArray(j.notes) ? j.notes : (j.notes ? [String(j.notes)] : []);
+    o.notes = notes.map(function (x) { return String(x).trim(); }).filter(function (x) { return !!x; }).slice(0, 4);
+    return o;
+  }
+
+  function planRound(m, verdict) {
+    var before = m.review_round || 0, after, next, note;
+    if (verdict === '达标') {
+      after = Math.min(before + 1, 6);
+      if (after >= 6) { next = null; note = '走完 5 轮，已巩固，不再排期。'; }
+      else { next = addDays(today(), INTERVALS[after - 1]); note = '推进到' + ROUND_NAMES[after] + '，下次复习 ' + dayLabel(next) + '。'; }
+    } else if (verdict === '部分达标') {
+      after = before;
+      next = addDays(today(), 1);
+      note = '轮次原地不动，明天再讲一遍。';
+    } else {
+      after = 0;
+      next = addDays(today(), 1);
+      note = '退回新学，明天重来。';
+    }
+    return { before: before, after: after, next: next, note: note };
+  }
+
+  function archive(m, transcript, j) {
+    var plan = planRound(m, j.verdict);
+    var nowIso = new Date().toISOString();
+    /* 撤销要还原的快照必须在写库之前就取好。
+       写完之后再读 m，值已经被新数据覆盖，撤销就成了「还原到判完的状态」。*/
+    var prev = {
+      review_round: m.review_round, next_review: m.next_review,
+      mastery: m.mastery, verdict: m.verdict, last_at: m.last_at
+    };
+    var rec = {
+      material_id: m.id, transcript: transcript,
+      s_structure: j.s_structure, s_accuracy: j.s_accuracy, s_language: j.s_language, s_autonomy: j.s_autonomy,
+      total: j.total, mastery: j.mastery, verdict: j.verdict,
+      notes: j.notes.join('\n'), round_before: plan.before, round_after: plan.after,
+      next_review: plan.next, peeked: PEEKED
+    };
+    return DB.insertAttempt(rec).then(function (ins) {
+      if (ins.error) throw ins.error;
+      var saved = (ins.data && ins.data[0]) || null;
+      return DB.updateMaterial(m.id, {
+        review_round: plan.after,
+        last_at: nowIso,
+        next_review: plan.next,
+        mastery: j.mastery,
+        verdict: j.verdict,
+        practice_status: '已录制',
+        updated_at: nowIso
+      }).then(function (up) {
+        if (up.error) throw up.error;
+        if (!up.data || !up.data.length) throw new Error('这条素材没更新到，可能不是当前账号的。');
+        return { saved: saved, plan: plan, prev: prev };
+      });
+    });
+  }
+
+  function renderResult(m) {
+    var j = JUDGE, box = h('div', { class: 'result' });
+    var vd = j.verdict === '达标' ? 'ok' : (j.verdict === '部分达标' ? 'mid' : 'bad');
+    var plan = REC && REC.plan;
+
+    box.appendChild(h('div', { class: 'result-hd' }, [
+      h('div', { class: 'top-line' }, [
+        h('span', { class: 'verdict ' + vd, text: j.verdict }),
+        h('span', { class: 'score' }, [String(j.total), h('small', { text: ' / 8' })]),
+        h('span', { class: 'score', style: 'font-size:14px;font-weight:650;color:var(--ink-2)' }, ['掌握度 ', String(j.mastery), h('small', { text: ' / 5' })])
+      ]),
+      h('div', { class: 'sub' }, plan ? [h('b', { text: '已归档　' }), plan.note] : '正在归档…')
+    ]));
+
+    var dims = [['结构', j.s_structure, j.why_structure], ['准确', j.s_accuracy, j.why_accuracy], ['语言', j.s_language, j.why_language], ['自主', j.s_autonomy, j.why_autonomy]];
+    var dbox = h('div', { class: 'dims' });
+    dims.forEach(function (d) {
+      dbox.appendChild(h('div', { class: 'dim' }, [
+        h('span', { class: 'k', text: d[0] }),
+        h('span', { class: 'v', text: ['○○', '●○', '●●'][d[1]] || '○○' }),
+        h('span', { class: 'why', text: d[2] || '' })
+      ]));
+    });
+    box.appendChild(dbox);
+
+    if (j.notes.length) {
+      var ul = h('ul');
+      j.notes.forEach(function (n) { ul.appendChild(h('li', { text: n })); });
+      box.appendChild(h('div', { class: 'notes' }, [h('div', { class: 'nt', text: '要点' }), ul]));
+    }
+
+    var ft = h('div', { class: 'result-ft' });
+    ft.appendChild(h('button', { class: 'btn sm', type: 'button', text: '再判一次', onclick: function () { doJudge(JUDGE._transcript, matById(m.id) || m); } }));
+    if (REC && REC.saved) {
+      ft.appendChild(h('button', { class: 'btn sm', type: 'button', text: '撤销这次判定', onclick: function () { undoArchive(REC); } }));
+    }
+    ft.appendChild(h('span', { class: 'msg', text: '判得不对就撤销，轮次和下次复习会回到判定前' }));
+    box.appendChild(ft);
+    return box;
+  }
+
+  function undoArchive(rec) {
+    if (!rec || !rec.saved || !rec.prev) return;
+    var prev = rec.prev;
+    DB.deleteAttempt(rec.saved.id).then(function (d) {
+      if (d.error) throw d.error;
+      return DB.updateMaterial(rec.saved.material_id, {
+        review_round: prev.review_round,
+        next_review: prev.next_review,
+        mastery: prev.mastery,
+        verdict: prev.verdict,
+        last_at: prev.last_at
+      });
+    }).then(function (u) {
+      if (u && u.error) throw u.error;
+      JUDGE = null; REC = null;
+      return loadAll();
+    }).then(function () {
+      /* 撤销后 CUR 必须重新指向刷新过的那条。
+         否则留在复述页接着再判一次时，archive() 拿到的 m 还是撤销前的旧轮次，
+         快照就取错了，轮次会一路往上跳。 */
+      if (CUR && String(CUR.id) === String(rec.saved.material_id)) CUR = matById(rec.saved.material_id) || CUR;
+      render();
+      toast('已撤销，回到判定前的状态。');
+    }, function (e) { toast('撤销失败：' + mapError(e)); });
+  }
+
+  /* ================= 改轮次 ================= */
+  function openFix(m) {
+    var picked = { r: m.review_round || 0 };
+    var chips = h('div', { class: 'chips' });
+    var btns = [];
+    ROUND_NAMES.forEach(function (name, i) {
+      var b = h('button', {
+        class: i === m.review_round ? 'on' : '', type: 'button', text: name,
+        onclick: function () {
+          picked.r = i;
+          btns.forEach(function (x, k) { x.className = k === i ? 'on' : ''; });
+        }
+      });
+      btns.push(b);
+      chips.appendChild(b);
+    });
+    var sheet = h('div', { class: 'sheet', onclick: function (e) { if (e.target === sheet) close(); } }, h('div', { class: 'sheet-in' }, [
+      h('h3', { text: '改这篇的轮次' }),
+      h('div', { class: 'n', text: '手滑多点了几次、想跳过某一轮、想退回去重学，都在这里改。选「新学」等于清零重来。' }),
+      chips,
+      h('div', { class: 'foot' }, [
+        h('button', { class: 'btn primary grow', type: 'button', text: '保存', onclick: function () { saveFix(m, picked.r, close); } }),
+        h('button', { class: 'btn', type: 'button', text: '取消', onclick: function () { close(); } })
+      ])
+    ]));
+    function close() { if (sheet.parentNode) sheet.parentNode.removeChild(sheet); }
+    document.body.appendChild(sheet);
+  }
+
+  function saveFix(m, r, done) {
+    var before = m.review_round || 0;
+    if (r === before) { done(); return; }
+    var patch;
+    if (r === 0) {
+      patch = { review_round: 0, next_review: null, mastery: null, verdict: '未判定', last_at: null };
+    } else if (r >= 6) {
+      patch = { review_round: 6, next_review: null };
+    } else {
+      patch = { review_round: r, next_review: addDays(today(), INTERVALS[r - 1]) };
+    }
+    patch.updated_at = new Date().toISOString();
+    DB.updateMaterial(m.id, patch).then(function (up) {
+      if (up.error) throw up.error;
+      if (!up.data || !up.data.length) throw new Error('没有权限改这条。');
+      return loadAll();
+    }).then(function () {
+      done();
+      if (CUR && String(CUR.id) === String(m.id)) CUR = matById(m.id);
+      render();
+      toast('已改成「' + ROUND_NAMES[r] + '」' + (patch.next_review ? '，下次复习 ' + dayLabel(patch.next_review) : ''));
+    }, function (e) { done(); toast('没改成：' + mapError(e)); });
+  }
+
+  /* ================= 绑定 ================= */
+  $('send-btn').addEventListener('click', sendCode);
+  $('resend-btn').addEventListener('click', sendCode);
+  $('login-btn').addEventListener('click', submitCode);
+  $('code').addEventListener('keydown', function (e) { if (e.key === 'Enter') submitCode(); });
+  $('phone').addEventListener('keydown', function (e) { if (e.key === 'Enter') sendCode(); });
+  $('phone').addEventListener('input', function () { setLoginErr(''); });
+
+  /* 游客入口：不碰 SDK，所以放在 init() 之前先绑上，SDK 挂了也能进 */
+  var gb = $('guest-btn');
+  if (gb) gb.addEventListener('click', function () { startGuest(); });
+
+  /* 侧栏抽屉：窄屏点「目录」开，点遮罩或「收起」关 */
+  var fab = $('nav-fab'), mask = $('nav-mask');
+  if (fab) fab.addEventListener('click', openDrawer);
+  if (mask) mask.addEventListener('click', closeDrawer);
+
+  init();
+})();
+</script>
+</body>
+</html>

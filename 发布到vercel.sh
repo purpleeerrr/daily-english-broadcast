@@ -1,14 +1,22 @@
 #!/bin/sh
-# 把「复述台」的前端同步到 _vercel_deploy/ 并发到 Vercel（展示 + 可直接登录那一份）。
+# 把「复述台」前端同步成 Vercel 站点（产物就放仓库根），提交并 push；Vercel 端已连 GitHub，push 即自动部署。
 #
-# 部署前必须做完的三件事，都写在这里，别手工漏掉：
+# 用法：
+#   sh 发布到vercel.sh           # 同步 + 提交 + push（push 完 Vercel 自动上线）
+#   sh 发布到vercel.sh --local   # 只同步文件，不碰 git
 #
-# 1) 目录隔离：`vercel link` 会在运行目录里生成 .env.local（内含 VERCEL_OIDC_TOKEN）。
-#    复述台/ 是 WorkBuddy 云服务的部署目录，下次重新发布会把整个目录传上去，
-#    凭据就成了公网可读的。所以 Vercel 的链接状态与凭据一律留在 _vercel_deploy/。
-#    详见 .gitignore 顶部的说明。
+# ────────────────────────────────────────────────────────────
+# 为什么产物放在仓库根（2026-10-14 踩坑）
 #
-# 2) 为什么前端不能直接跨域调云服务（2026-10-14 逐条实测）：
+# 用户把 GitHub 仓库连到 Vercel 后，Vercel 拿「仓库根目录」当站点根；
+# 而仓库根原本没有 index.html，于是整站 404（"This page doesn't exist"）。
+# 所以这里直接把站点产物生成到仓库根 —— 不依赖任何 Vercel 面板设置，
+# push 一次就出正确站点。
+#
+# ────────────────────────────────────────────────────────────
+# 为什么需要 api/proxy.js（2026-10-14 逐条实测）
+#
+# 2) 前端不能直接跨域调云服务：
 #    - 预检 OPTIONS 只放行 Origin: null 与 http://localhost|127.0.0.1:*；真实公网域名一律 403；
 #    - 服务端在应用层还会再看一次 Origin：带 https://xxx.vercel.app → 403 access_denied
 #      「the request origin is not allowed for this client」；
@@ -18,26 +26,27 @@
 # 3) 解法：Vercel Function 做服务端代理。
 #    vercel.json 把同源的 /.cloud/:path* 重写成 /api/proxy?p=:path*（实测原始查询串会保留），
 #    函数在服务端再 fetch 云服务 —— 服务端 fetch 不带 Origin，于是放行。
-#    前端副本的 endpoint 改成 location.origin，SDK 打到自己的域名，浏览器根本不发跨域请求。
+#    副本前端的 endpoint 改成 location.origin，SDK 打自己的域名，浏览器根本不发跨域请求。
 #    ⚠️ 不要用 api/cloud/[...path].js 这种通配文件名：实测部署后是 404（简单函数 api/proxy.js 正常）。
 #    —— 复述台/index.html 保持原样不动，WorkBuddy 那份不受影响。
 #
-# 用法：sh 发布到vercel.sh
+# 4) 目录分工：复述台/ 是 WorkBuddy 云服务的部署目录，**只能在里面放那两份前端**。
+#    Vercel 要的 index.html / api/ / vercel.json 一律生成到仓库根，
+#    靠 .vercelignore 把复述台/、data/ 等排除掉，不上传到 Vercel。
+# ────────────────────────────────────────────────────────────
 set -e
 
 cd "$(dirname "$0")"
 HOST=https://english-retell.app.workbuddy.host
-OUT=_vercel_deploy
 
-# 只清生成的产物，保留 .vercel/（那是项目链接状态，删了就得重新 link）
-rm -f "$OUT/index.html" "$OUT/guest-seed.js" "$OUT/vercel.json" "$OUT/.vercelignore"
-rm -rf "$OUT/api"
-mkdir -p "$OUT/api"
-cp 复述台/index.html 复述台/guest-seed.js "$OUT/"
-printf '.env*\n.vercel/\n' > "$OUT/.vercelignore"
+# 只清生成物
+rm -f index.html guest-seed.js vercel.json .vercelignore
+rm -rf api
+mkdir -p api
+cp 复述台/index.html 复述台/guest-seed.js ./
 
-# ---------- 副本前端：endpoint 指到同源 ----------
-python3 - "$PWD/$OUT/index.html" <<'PY'
+# ---------- 站点首页：endpoint 指到同源 ----------
+python3 - "$PWD/index.html" <<'PY'
 import sys
 p = sys.argv[1]
 s = open(p, encoding='utf-8').read()
@@ -48,11 +57,11 @@ new = ("endpoint: location.origin,"
 if old not in s:
     sys.exit('找不到 endpoint 那行，先看看 复述台/index.html 是不是改了')
 open(p, 'w', encoding='utf-8').write(s.replace(old, new, 1))
-print('已把 Vercel 副本的 endpoint 改成同源')
+print('✓ 站点首页已生成（endpoint → location.origin）')
 PY
 
 # ---------- 服务端代理函数 ----------
-cat > "$OUT/api/proxy.js" <<'JS'
+cat > api/proxy.js <<'JS'
 /* WorkBuddy 云服务的服务端代理。
  *
  * 为什么必须在服务端转一手（2026-10-14 实测）：
@@ -104,7 +113,7 @@ module.exports = async (req, res) => {
 JS
 
 # ---------- vercel.json ----------
-cat > "$OUT/vercel.json" <<'JSON'
+cat > vercel.json <<'JSON'
 {
   "rewrites": [
     { "source": "/.cloud/:path*", "destination": "/api/proxy?p=:path*" }
@@ -115,6 +124,34 @@ cat > "$OUT/vercel.json" <<'JSON'
 }
 JSON
 
-cd "$OUT"
-# 要的是一个别人不用登录就能打开的地址 → 直接发生产环境
-vercel deploy --prod --yes
+# ---------- 只让站点产物上线 ----------
+# 部署根＝仓库根，仓库里的一切默认都会被公开，所以这里逐项排除。
+cat > .vercelignore <<'IGN'
+# 仓库里除站点产物以外的内容，都不上传到 Vercel
+复述台
+data
+_归档
+.vercel
+*.md
+复述归档.py
+播报查规则.js
+发布到vercel.sh
+每日英文播报台_离线快照.html
+IGN
+
+echo "✓ 已生成站点产物到仓库根：index.html / guest-seed.js / api/proxy.js / vercel.json / .vercelignore"
+
+if [ "$1" = "--local" ]; then
+  echo "（--local：未提交）"
+  exit 0
+fi
+
+# ---------- 提交并 push，Vercel 端自动部署 ----------
+git add -A
+if git diff --cached --quiet; then
+  echo "没有变化，不用发布"
+  exit 0
+fi
+git commit -q -m "复述台 Vercel 站点：同步前端与代理函数（$(date '+%Y-%m-%d %H:%M')）"
+git push origin main
+echo "✓ 已 push，等 Vercel 自动部署（约 30 秒）：https://english-retell.vercel.app"

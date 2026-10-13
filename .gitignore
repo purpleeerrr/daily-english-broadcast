@@ -7,10 +7,11 @@
 #
 # 注意：复述台/ 是带云服务后端的应用，主部署走 WorkBuddy 云服务，目录名不能改
 # （发布按目录认应用，改名会丢域名）。
-# 2026-10-14 起同一份前端也发一份 Vercel 做展示：**发布目录是 _vercel_deploy/，
-# 不是复述台/**。之所以不直接在复述台/ 里跑 vercel，是因为 `vercel link` 会在
-# 那个目录里生成 .env.local（内含 VERCEL_OIDC_TOKEN）；复述台/ 是 WorkBuddy 的
-# 部署目录，下次发布会把整个目录传上去，凭据就成公网可读的了。
+# 2026-10-14 起同一份前端也发一份 Vercel 做展示：**产物就放在仓库根**
+# （index.html / guest-seed.js / api/proxy.js / vercel.json，由 发布到vercel.sh 生成），
+# Vercel 端已连 GitHub，push 即自动部署。之所以不直接在复述台/ 里跑 vercel：
+# `vercel link` 会在那个目录里生成 .env.local（内含 VERCEL_OIDC_TOKEN），
+# 而复述台/ 是 WorkBuddy 的部署目录，下次发布会把整个目录传上去，凭据就成公网可读了。
 # ════════════════════════════════════════════════════════════
 
 .DS_Store
@@ -19,7 +20,7 @@ __pycache__/
 *.py[cod]
 *.log
 
-# Vercel 发布用的镜像目录：里面只是复述台那两份文件的副本 + 链接状态与凭据
-_vercel_deploy/
+# Vercel 的项目链接状态（含 projectId/orgId；token 不在这里）——别提交
+.vercel/
 .env
 .env.*
