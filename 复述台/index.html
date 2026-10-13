@@ -165,36 +165,48 @@
   body.nav-open .nav-mask{display:block}
   body.nav-open .nav-drawer{transform:none}
 
-  .sn-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
-  .sn-hd .nt{font-size:13.5px;font-weight:700;letter-spacing:.4px}
+  /* 侧栏也走「框」那套：顶部控制块 / 每个主题组各是一个框，组里每条素材是一张小卡。
+     之前是一列平铺的文字（组名 + 缩进条目），组与组之间只靠留白分开。 */
+  .sn-top{background:var(--card);border:1px solid var(--border-2);border-radius:9px;padding:11px 11px 10px;margin-bottom:11px}
+  .sn-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+  .sn-hd .nt{font-size:13.5px;font-weight:800;letter-spacing:.3px}
   .sn-hd .nx{font-size:12px;color:var(--ink-3);background:none;border:none;padding:2px 6px}
   .sidenav .sn-hd .nx{display:none}
-  .sn-sum{font-size:11.5px;color:var(--ink-3);line-height:1.75;padding:0 2px 11px;border-bottom:1px solid var(--line);margin-bottom:11px}
-  .sn-sw{display:flex;gap:6px;margin-bottom:4px}
+  .sn-sum{font-size:11.5px;color:var(--ink-3);line-height:1.75;padding:0 0 9px;border-bottom:1px solid var(--line);margin-bottom:9px}
+  .sn-sw{display:flex;gap:6px}
   .sn-sw button{
     flex:1;font-size:12px;font-weight:650;color:var(--ink-2);background:var(--card);
     border:1px solid var(--border);border-radius:9px;padding:5px 8px;line-height:1.4;
   }
   .sn-sw button.on{background:var(--accent);border-color:var(--accent);color:#fff}
   .sn-sec{font-size:11.5px;font-weight:700;color:var(--ink-3);letter-spacing:.8px;margin:13px 2px 6px}
-  .sn-grp-hd{
-    display:flex;align-items:center;gap:7px;padding:5px 8px;font-size:12.8px;color:var(--ink-2);
-    border-radius:7px;cursor:pointer;line-height:1.45;
+  .sn-grp{
+    border:1px solid var(--border-2);border-radius:9px;background:var(--grp-bg);
+    overflow:hidden;margin-bottom:9px;
   }
+  .sn-grp-hd{
+    display:flex;align-items:center;gap:6px;padding:7px 8px 7px 6px;font-size:12.8px;color:var(--ink-2);
+    background:var(--card);border-bottom:1px solid var(--border-2);cursor:pointer;line-height:1.45;
+  }
+  .sn-grp:not(.open) .sn-grp-hd{border-bottom-color:transparent}
   .sn-grp-hd:hover{background:var(--soft)}
-  .sn-grp-hd .gn{flex:1 1 auto;min-width:0;font-weight:650;color:var(--ink);word-break:break-word}
+  .sn-grp-hd .g-bar{flex:0 0 auto;width:3px;align-self:stretch;min-height:15px;border-radius:2px;background:var(--accent)}
+  .sn-grp-hd .gn{flex:1 1 auto;min-width:0;font-weight:750;color:var(--ink);word-break:break-word}
   .sn-grp-hd .gcn{flex:0 0 auto;font-size:11px;color:var(--ink-3)}
   .sn-grp-hd .caret{flex:0 0 auto;font-size:10px;color:var(--ink-3)}
-  .sn-items{display:none;padding:1px 0 6px}
-  .sn-grp.open .sn-items{display:block}
+  /* 必须写 minmax(0,1fr)：grid 的列不会自动收缩到容器宽，只写 auto 会被最长的那条标题顶宽 */
+  .sn-items{display:none;padding:7px;gap:5px}
+  .sn-grp.open .sn-items{display:grid;grid-template-columns:minmax(0,1fr)}
+  .sn-grp .sn-items[hidden]{display:none!important}
   .sn-item{
-    display:flex;gap:7px;align-items:baseline;padding:5px 8px 5px 18px;font-size:12.3px;
-    color:var(--ink-2);border-radius:6px;cursor:pointer;line-height:1.5;
+    display:flex;gap:6px;align-items:baseline;padding:5px 7px;font-size:12.2px;
+    color:var(--ink-2);background:var(--card);border:1px solid var(--border-2);
+    border-radius:7px;cursor:pointer;line-height:1.5;
   }
-  .sn-item:hover{background:var(--soft);color:var(--accent-deep)}
+  .sn-item:hover{border-color:#c9bcaa;color:var(--accent-deep)}
   .sn-item .si-t{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .sn-item .si-k{flex:0 0 auto;font-size:10.5px;color:var(--accent-deep);background:var(--soft);border-radius:4px;padding:0 5px}
-  .sn-item.cur{background:var(--soft);color:var(--accent-deep);font-weight:650}
+  .sn-item.cur{border-color:var(--accent);background:var(--soft);color:var(--accent-deep);font-weight:650}
   .sn-item.cur .si-k{background:#fff}
 
   @media (min-width:1100px){
@@ -1117,15 +1129,18 @@
     [$('sidenav'), $('nav-drawer')].forEach(function (box) {
       if (!box) return;
       clear(box);
-      box.appendChild(h('div', { class: 'sn-hd' }, [
+      /* 顶部控制块：目录头 + 统计 + 切换合成一个框，与下面的主题组框并列 */
+      var top = h('div', { class: 'sn-top' });
+      top.appendChild(h('div', { class: 'sn-hd' }, [
         h('span', { class: 'nt', text: '目录' }),
         h('button', { class: 'nx', type: 'button', text: '收起 ✕', onclick: closeDrawer })
       ]));
-      box.appendChild(h('div', { class: 'sn-sum', text: sideSum() }));
-      box.appendChild(h('div', { class: 'sn-sw' }, [
+      top.appendChild(h('div', { class: 'sn-sum', text: sideSum() }));
+      top.appendChild(h('div', { class: 'sn-sw' }, [
         h('button', { class: NAV_MODE === 'topic' ? 'on' : '', type: 'button', text: '按主题', onclick: function () { setNav('topic'); } }),
         h('button', { class: NAV_MODE === 'date' ? 'on' : '', type: 'button', text: '按日期', onclick: function () { setNav('date'); } })
       ]));
+      box.appendChild(top);
       if (!MATERIALS.length) {
         box.appendChild(h('div', { class: 'sn-sec', text: '还没有素材' }));
         return;
@@ -1148,6 +1163,7 @@
         });
         box.appendChild(h('div', { class: 'sn-grp' + (shut ? '' : ' open'), 'data-gk': g.key }, [
           h('div', { class: 'sn-grp-hd', onclick: function () { toggleGroup(g.key); } }, [
+            h('span', { class: 'g-bar' }),
             /* 侧栏窄，主标题那套「大日期 + 小副标」摆不开，这里合成一行完整的 */
             h('span', { class: 'gn', text: g.sub ? (g.label + ' · ' + g.sub) : g.label }),
             h('span', { class: 'gcn', text: g.list.length + ' 篇' }),
