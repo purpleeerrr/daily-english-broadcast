@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html data-page-node-id="vGXfIk8WZmMcgiQxqY5BSy" lang="zh-CN">
+<head data-page-node-id="R9SLt5qTynKTGHM1mu1vrb">
+<script data-page-node-id="vra7FX4phBtrnFmDMiiqaf" src="/page/page_comm/inject.js"></script>
+<meta data-page-node-id="uM8ej2vZVsWK7E5IXZbwso" charset="UTF-8">
+<meta data-page-node-id="Ol7G69RuEYznHhnppqugKO" content="width=device-width, initial-scale=1.0" name="viewport">
+<title data-page-node-id="i59a5DgWqHKD81xtt1R8mB" data-pnid-children="cEvJEYuGoj06yHUAzrOQdA">每日英文播报台 · 离线快照</title>
+<style data-page-node-id="IkoOxYkFSnxKjsoFWOyFzw" data-pnid-children="RV0wwaelWtOR5gSe2HqQYI">
+  :root{
+    --bg:#f6f5f2; --card:#ffffff; --ink:#1b1f1e; --ink2:#5d6663; --ink3:#8b9390;
+    --line:#e4e2dd; --accent:#14524a; --accent-soft:#e9f1ee; --warm:#b4530a;
+    --warm-soft:#fdf2e7; --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:28px 20px 80px;}
+  .hdr{padding:6px 2px 18px;border-bottom:1px solid var(--line);margin-bottom:22px;}
+  .hdr h1{margin:0;font-size:25px;letter-spacing:-0.2px;font-weight:700;}
+  .hdr .sub{margin-top:7px;color:var(--ink2);font-size:13.5px;}
+  .howto{
+    margin-top:16px;background:var(--accent-soft);border:1px solid #d3e4de;
+    border-radius:11px;padding:12px 15px;font-size:13.5px;color:#20473f;line-height:1.85;
+  }
+  .howto b{font-weight:650;}
+  .sec{margin-top:30px;}
+  .sec-hd{display:flex;align-items:baseline;gap:10px;margin-bottom:13px;flex-wrap:wrap;}
+  .sec-hd h2{margin:0;font-size:16px;font-weight:700;letter-spacing:0.2px;}
+  .sec-hd .note{font-size:12.5px;color:var(--ink3);}
+  .sec-hd .count{font-size:12px;color:var(--accent);background:var(--accent-soft);border-radius:20px;padding:2px 10px;font-weight:600;}
+  /* ---- 进度面板 ---- */
+  .kpis{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:16px;}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:11px;padding:13px 15px;}
+  .kpi .kv{font-size:23px;font-weight:700;color:var(--accent);line-height:1.2;}
+  .kpi .kl{font-size:12px;color:var(--ink3);margin-top:3px;}
+  .kpi .ks{font-size:11.5px;color:var(--ink3);margin-top:2px;}
+  .map{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;}
+  .map-cat{margin-bottom:14px;}
+  .map-cat:last-child{margin-bottom:0;}
+  .map-cat-hd{font-size:12px;font-weight:700;color:var(--ink2);letter-spacing:0.6px;margin-bottom:8px;}
+  .skill{display:flex;align-items:center;gap:9px;padding:4px 0;}
+  .skill .sn{font-size:13px;color:#2c3432;flex:0 0 auto;min-width:132px;}
+  .skill .bar{flex:1 1 auto;height:7px;background:#eef0ee;border-radius:5px;overflow:hidden;min-width:40px;}
+  .skill .fill{height:100%;width:0;background:var(--accent);border-radius:5px;transition:width .3s;}
+  .skill .sv{font-size:11.5px;color:var(--ink3);flex:0 0 auto;min-width:34px;text-align:right;}
+  .skill.full .sv{color:var(--accent);font-weight:650;}
+  .skill.zero .sn{color:var(--ink3);}
+  /* ---- 复习 ---- */
+  .review-list{display:grid;grid-template-columns:1fr;gap:9px;}
+  .review-item{
+    background:var(--warm-soft);border:1px solid #f0dcc6;border-radius:11px;padding:11px 15px;
+    display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13.5px;flex-wrap:wrap;
+  }
+  .review-item .rt{font-weight:600;color:#7a3907;}
+  .review-item .rmeta{color:#9a6a3c;font-size:12.5px;}
+  /* ---- 卡片 ---- */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px 20px;margin-bottom:16px;position:relative;overflow:hidden;}
+  .card.is-main{border-left:4px solid var(--warm);}
+  .card.is-alt{border-left:4px solid var(--accent);}
+  .card-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:11px;}
+  .badge{font-size:11.5px;font-weight:650;border-radius:5px;padding:2.5px 8px;letter-spacing:0.3px;}
+  .badge-type{background:var(--warm);color:#fff;}
+  .badge-type.alt{background:var(--accent);}
+  .badge-cat{background:#eff1f0;color:#4c5451;border:1px solid #e0e3e1;}
+  .badge-lv{background:#fff;color:var(--ink2);border:1px solid var(--line);}
+  .card-date{margin-left:auto;font-size:12px;color:var(--ink3);}
+  .meta-row{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink3);margin:0 0 13px;padding:0 0 11px;border-bottom:1px dashed #eceeec;}
+  .meta-row .mk{color:var(--ink2);font-weight:600;}
+  .en-title{margin:0 0 5px;font-size:20px;line-height:1.4;font-weight:700;letter-spacing:-0.15px;}
+  .cn-title{margin:0 0 15px;color:var(--ink2);font-size:13.5px;}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px;}
+  .btn{font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid var(--line);background:#fbfbfa;color:var(--ink2);border-radius:7px;padding:5.5px 12px;transition:all .14s;line-height:1.3;}
+  .btn:hover{border-color:#cfd4d2;color:var(--ink);background:#fff;}
+  .btn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .btn:active{transform:translateY(1px);}
+  /* ---- 结构骨架 ---- */
+  .struct{list-style:none;margin:0;padding:0;counter-reset:st;}
+  .struct li{
+    position:relative;padding:11px 13px 11px 15px;margin-bottom:8px;background:#fafaf8;
+    border:1px solid #eef0ec;border-left:3px solid var(--accent);border-radius:8px;
+  }
+  .struct li:last-child{margin-bottom:0;}
+  .s-step{font-size:11.5px;font-weight:700;color:var(--accent);letter-spacing:0.5px;margin-bottom:5px;}
+  .s-en{font-family:Georgia,"Times New Roman",serif;font-size:15.5px;color:#16201e;line-height:1.6;display:block;}
+  .s-note{font-size:12.5px;color:var(--ink3);margin-top:4px;display:block;}
+  /* ---- 播报稿 ---- */
+  .script-body{
+    font-family:Georgia,"Times New Roman","Songti SC",serif;font-size:18.5px;line-height:1.92;
+    color:#191d1c;letter-spacing:0.1px;white-space:pre-wrap;padding:16px 18px;
+    background:#fbfbf9;border-radius:10px;border:1px solid #eeefec;
+  }
+  .cn-block{margin-top:14px;border-left:2px solid var(--line);padding-left:14px;}
+  .cn-label{font-size:11.5px;font-weight:650;color:var(--ink3);letter-spacing:1px;margin-bottom:6px;}
+  .cn-body{font-size:14px;line-height:1.85;color:#49514e;white-space:pre-wrap;}
+  .hidden-cn .cn-body{filter:blur(5px);user-select:none;cursor:pointer;}
+  .hidden-cn .cn-body:hover{filter:blur(0);}
+  .blk{margin-top:20px;}
+  .blk-label{font-size:12.5px;font-weight:700;color:var(--accent);letter-spacing:0.6px;margin-bottom:9px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .blk-label .hint{font-weight:400;color:var(--ink3);font-size:11.5px;letter-spacing:0;}
+  .gloss{width:100%;border-collapse:collapse;font-size:13.5px;}
+  .gloss th{text-align:left;font-size:11.5px;font-weight:600;color:var(--ink3);padding:0 10px 6px 0;border-bottom:1px solid var(--line);letter-spacing:0.4px;}
+  .gloss td{padding:9px 10px 9px 0;border-bottom:1px solid #f0f1ef;vertical-align:top;}
+  .gloss tr:last-child td{border-bottom:none;}
+  .g-word{font-weight:650;font-size:14.5px;white-space:nowrap;}
+  .g-ipa{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12.5px;color:var(--accent);white-space:nowrap;background:var(--accent-soft);border-radius:4px;padding:1px 6px;}
+  .g-pos{font-size:11.5px;color:var(--ink3);font-style:italic;white-space:nowrap;}
+  .g-cn{color:#2c3432;}
+  .g-ex{display:block;color:var(--ink3);font-size:12.5px;margin-top:3px;font-style:italic;}
+  .g-freq{font-size:11.5px;color:var(--warm);font-weight:650;white-space:nowrap;}
+  .plist{list-style:none;margin:0;padding:0;}
+  .plist li{padding:10px 0 10px 15px;border-bottom:1px solid #f0f1ef;position:relative;font-size:14px;}
+  .plist li:last-child{border-bottom:none;}
+  .plist li:before{content:"";position:absolute;left:0;top:19px;width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.5;}
+  .p-en{font-weight:600;color:#16201e;display:block;margin-bottom:2px;}
+  .p-cn{color:var(--ink2);font-size:13px;}
+  .dlist{list-style:none;margin:0;padding:0;font-size:13.5px;}
+  .dlist li{padding:8px 0 8px 15px;border-bottom:1px solid #f0f1ef;color:#3d4543;position:relative;line-height:1.75;}
+  .dlist li:last-child{border-bottom:none;}
+  .dlist li:before{content:"";position:absolute;left:0;top:16px;width:5px;height:5px;border-radius:50%;background:var(--warm);opacity:.5;}
+  .d-key{font-weight:650;color:#7a3907;}
+  .card-foot{margin-top:20px;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--ink3);}
+  .card-foot a{color:var(--accent);text-decoration:none;border-bottom:1px solid #bcd3cc;}
+  .card-foot a:hover{border-bottom-color:var(--accent);}
+  .ebbing{display:flex;align-items:center;gap:5px;}
+  .ebbing .dot{width:9px;height:9px;border-radius:50%;background:#e2e4e2;border:1px solid #d3d7d4;}
+  .ebbing .dot.done{background:var(--accent);border-color:var(--accent);}
+  .ebbing .dot.now{background:var(--warm);border-color:var(--warm);box-shadow:0 0 0 3px rgba(180,83,10,.16);}
+  .ebbing .lbl{margin-left:4px;font-size:11.5px;}
+  /* ---- 主题线 ---- */
+  .topics{display:grid;grid-template-columns:1fr;gap:9px;}
+  .topic{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 15px;}
+  .topic-hd{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+  .topic-nm{font-size:13.5px;font-weight:650;color:#202929;}
+  .topic-cnt{font-size:11.5px;color:var(--accent);background:var(--accent-soft);border-radius:20px;padding:1px 9px;font-weight:600;}
+  .topic-bar{flex:1 1 90px;height:6px;background:#eef0ee;border-radius:4px;overflow:hidden;min-width:50px;}
+  .topic-fill{height:100%;background:var(--warm);border-radius:4px;width:0;}
+  .topic-last{font-size:12.5px;color:var(--ink3);margin-top:7px;line-height:1.6;}
+  /* ---- 规则 ---- */
+  .rules{display:grid;grid-template-columns:1fr;gap:8px;}
+  .rule{background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 14px;font-size:13px;}
+  .rule-hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;}
+  .rule-nm{font-weight:650;color:#202929;font-size:13.5px;}
+  .rule-tag{font-size:11px;color:var(--ink2);background:#f2f4f2;border-radius:4px;padding:1px 7px;}
+  .rule-w{font-size:11px;color:var(--warm);font-weight:650;}
+  .rule-body{color:#4b5350;font-size:12.5px;line-height:1.7;}
+  .rule-src{color:var(--ink3);font-size:11.5px;margin-top:5px;font-style:italic;}
+  /* ---- 其他 ---- */
+  .arch-list{display:grid;grid-template-columns:1fr;gap:7px;}
+  .arch-item{background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 14px;display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:13.5px;}
+  .arch-item .at{color:#202929;font-weight:600;}
+  .arch-item .ad{color:var(--ink3);font-size:12px;white-space:nowrap;}
+  .state{text-align:center;padding:40px 20px;color:var(--ink3);font-size:13.5px;background:#fff;border:1px dashed var(--line);border-radius:var(--radius);}
+  .state b{color:var(--ink2);display:block;margin-bottom:6px;font-size:14.5px;}
+  .alt-grid{display:grid;grid-template-columns:1fr;gap:16px;align-items:start;}
+  .tpl-holder{display:none;}
+  .toggle-hd{cursor:pointer;user-select:none;}
+  .toggle-hd .caret{font-size:11px;color:var(--ink3);}
+  /* ---- 卡片内折叠块 ---- */
+  .blk-hd{cursor:pointer;user-select:none;}
+  .blk-hd .caret{font-size:11px;color:var(--ink3);margin-right:2px;}
+  .blk.collapsed .blk-body{display:none;}
+  /* ---- 完成复述按钮 ---- */
+  .btn-done{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .btn-done:hover{background:#0f443d;border-color:#0f443d;color:#fff;}
+  .btn-done:disabled{cursor:default;opacity:.75;}
+  .btn-done.done-ok{background:var(--accent-soft);border-color:#cfdeda;color:var(--accent);}
+  /* ---- 页面板块导航（sticky 快速定位） ---- */
+  .secnav{position:sticky;top:0;z-index:50;margin:0 -20px 20px;padding:9px 20px 10px;background:var(--bg);border-bottom:1px solid var(--line);}
+  .secnav-in{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;}
+  .secnav-in::-webkit-scrollbar{display:none;}
+  .secnav-a{flex:0 0 auto;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:18px;padding:5px 13px;cursor:pointer;white-space:nowrap;line-height:1.4;transition:all .14s;}
+  .secnav-a:hover{border-color:#cfd4d2;color:var(--ink);}
+  .secnav-a.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  /* ---- 卡片内分 tab ---- */
+  .ctabs{display:flex;border-bottom:1px solid var(--line);margin:0 0 16px;}
+  .ctab{font-family:inherit;font-size:13.5px;font-weight:600;color:var(--ink3);background:none;border:none;border-bottom:2px solid transparent;padding:8px 2px 9px;margin-right:20px;cursor:pointer;line-height:1.3;transition:color .14s;}
+  .ctab:hover{color:var(--ink2);}
+  .ctab.on{color:var(--accent);border-bottom-color:var(--accent);}
+  .ctab .ctab-n{font-size:11.5px;font-weight:400;color:var(--ink3);margin-left:5px;}
+  .ctab.on .ctab-n{color:var(--accent);}
+  .ctab-pane{display:none;}
+  .ctab-pane.on{display:block;}
+  .ctabs{flex-wrap:nowrap;}
+  .card{container-type:inline-size;}
+  @container (max-width:540px){ .ctab-n{display:none;} .ctab{margin-right:16px;} }
+  @media (min-width:800px) and (max-width:1099px){ .alt-grid .ctab-n{display:none;} }
+  /* ---- 页面级分页 ---- */
+  .wrap.paged .sec{display:none !important;}
+  .wrap.paged .sec.pg-on{display:block !important;}
+  .wrap.paged .secnav{margin-bottom:22px;}
+  /* ---- 侧栏（日期） ---- */
+  .sidenav .sn-sum{font-size:11.5px;color:var(--ink3);line-height:1.7;padding:0 2px 11px;border-bottom:1px solid var(--line);margin-bottom:11px;}
+  .nav-date.main-item .dd{color:var(--warm);font-weight:650;}
+  .nav-date.cur{background:var(--accent-soft);}
+  /* ---- 主题线可点击 ---- */
+  .topic{cursor:pointer;transition:border-color .14s,box-shadow .14s;}
+  .topic:hover{border-color:#cfd4d2;box-shadow:0 1px 8px rgba(27,31,30,.06);}
+  .topic-caret{margin-left:auto;flex:0 0 auto;font-size:11px;color:var(--ink3);}
+  .topic-items{display:none;margin-top:11px;border-top:1px dashed #eceeec;padding-top:8px;}
+  .topic.open .topic-items{display:block;}
+  .t-item{display:flex;align-items:baseline;gap:8px;padding:5px 7px;font-size:12.5px;color:var(--ink2);cursor:pointer;border-radius:6px;}
+  .t-item:hover{color:var(--accent);background:var(--accent-soft);}
+  .t-item .t-idx{flex:0 0 auto;font-size:11px;color:var(--ink3);}
+  .t-item .t-ti{flex:1 1 auto;min-width:0;}
+  .topic-hint{font-size:11.5px;color:var(--ink3);margin-top:7px;}
+  .topic.open .topic-hint{display:none;}
+  /* ---- 目录导航 ---- */
+  html{scroll-behavior:smooth;}
+  .card{scroll-margin-top:74px;}
+  .ag{scroll-margin-top:74px;}
+  .sec{scroll-margin-top:78px;}
+  .bb-layout{display:block;}
+  .sidenav{display:none;}
+  .nav-fab{position:fixed;right:18px;bottom:22px;z-index:60;font-family:inherit;font-size:13px;font-weight:650;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--accent);border-radius:22px;padding:9px 18px;box-shadow:0 2px 10px rgba(27,31,30,.14);line-height:1.3;}
+  .nav-fab:active{transform:translateY(1px);}
+  .nav-mask{position:fixed;inset:0;background:rgba(27,31,30,.32);z-index:70;display:none;}
+  .nav-drawer{position:fixed;top:0;right:0;bottom:0;width:min(320px,86vw);background:var(--bg);border-left:1px solid var(--line);z-index:80;overflow-y:auto;padding:18px 16px 40px;transform:translateX(102%);transition:transform .18s ease;}
+  body.nav-open .nav-mask{display:block;}
+  body.nav-open .nav-drawer{transform:none;}
+  .nav-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;padding:0 2px;}
+  .nav-hd .nt{font-size:13.5px;font-weight:700;letter-spacing:.4px;}
+  .nav-hd .nx{font-size:12px;color:var(--ink3);cursor:pointer;background:none;border:none;font-family:inherit;padding:2px 6px;}
+  .sidenav .nx{display:none;}
+  .nav-sec{margin-bottom:16px;}
+  .nav-sec-hd{font-size:11.5px;font-weight:700;color:var(--ink3);letter-spacing:.8px;margin:0 2px 6px;}
+  .nav-a{display:block;text-decoration:none;color:var(--ink2);font-size:13px;line-height:1.5;padding:5px 8px;border-radius:7px;}
+  .nav-a:hover{background:var(--accent-soft);color:var(--ink);}
+  .nav-a.main-item{color:var(--warm);font-weight:600;}
+  .nav-date{display:flex;align-items:center;gap:7px;padding:5px 8px;font-size:13px;color:var(--ink2);border-radius:7px;cursor:pointer;}
+  .nav-date:hover{background:var(--accent-soft);}
+  .nav-date .rel{flex:0 0 auto;font-size:11px;font-weight:650;color:var(--accent);background:var(--accent-soft);border-radius:4px;padding:1px 6px;}
+  .nav-date .dd{flex:1 1 auto;}
+  .nav-date .dn{flex:0 0 auto;font-size:11px;color:var(--ink3);}
+  /* ---- 往期归档（按日期分组展开） ---- */
+  .ag{background:#fff;border:1px solid var(--line);border-radius:11px;margin-bottom:9px;overflow:hidden;}
+  .ag-hd{display:flex;align-items:center;gap:9px;padding:11px 15px;cursor:pointer;user-select:none;font-size:13.5px;}
+  .ag-hd:hover{background:#fafaf8;}
+  .ag-hd .ag-date{font-weight:650;color:#202929;}
+  .ag-hd .ag-rel{flex:0 0 auto;font-size:11px;font-weight:650;color:var(--accent);background:var(--accent-soft);border-radius:4px;padding:1px 6px;}
+  .ag-hd .ag-n{font-size:11.5px;color:var(--ink3);}
+  .ag-hd .ag-caret{margin-left:auto;font-size:11px;color:var(--ink3);}
+  .ag-body{display:none;padding:14px 15px 16px;border-top:1px dashed #eceeec;}
+  .ag.open .ag-body{display:block;}
+  .ag-body .card{margin-bottom:14px;}
+  .ag-body .card:last-child{margin-bottom:0;}
+
+  @media (min-width:700px){
+    .kpis{grid-template-columns:repeat(4,1fr);}
+    .topics{grid-template-columns:1fr 1fr;}
+    .rules{grid-template-columns:1fr 1fr;}
+  }
+  @media (min-width:800px){
+    .alt-grid{grid-template-columns:1fr 1fr;}
+    .alt-grid .card{margin-bottom:0;}
+  }
+  @media (min-width:1100px){
+    .bb-layout{display:flex;align-items:flex-start;gap:26px;max-width:1240px;margin:0 auto;padding:0 20px;}
+    .bb-layout .wrap{flex:1 1 auto;min-width:0;margin:0;}
+    .sidenav{display:block;flex:0 0 232px;position:sticky;top:20px;max-height:calc(100vh - 40px);overflow-y:auto;padding:4px 2px 30px;}
+    .nav-fab,.nav-mask,.nav-drawer{display:none;}
+    body.nav-open .nav-mask,body.nav-open .nav-drawer{display:none;}
+  }
+  @media (max-width:640px){
+    .kpis{grid-template-columns:1fr 1fr;}
+    .topics{grid-template-columns:1fr;}
+    .rules{grid-template-columns:1fr;}
+    .alt-grid{grid-template-columns:1fr;}
+    .review-list{grid-template-columns:1fr;}
+    .arch-list{grid-template-columns:1fr;}
+    .wrap{padding:20px 14px 60px;}
+    .secnav{margin:0 -14px 16px;padding:8px 14px 9px;}
+    .card{padding:18px 16px;}
+    .script-body{font-size:17px;padding:13px 14px;}
+    .gloss{font-size:12.5px;}
+    .gloss th:nth-child(3),.gloss td:nth-child(3){display:none;}
+    .skill .sn{min-width:104px;font-size:12.5px;}
+    .arch-item{flex-direction:column;align-items:flex-start;gap:4px;}
+  }
+</style>
+</head>
+<body data-page-node-id="r9e1ojGEVyZ6fch59S1tLc">
+<div data-page-node-id="lJSgwT5cVo0NrqTm73nT2l" class="bb-layout">
+<aside data-page-node-id="jTneGEPu8ocp22z7W5cyfX" aria-label="目录" class="sidenav" id="sidenav"></aside>
+<div data-page-node-id="Z3kFnzOte7ZIZkdqvttpJO" class="wrap">
+
+  <div data-page-node-id="DYxWYWgK00lNLAJci5qnb6" class="hdr">
+    <h1 data-page-node-id="3VA7ZOY4h4c7mkhZ03PWNC"><!--pnid:PF7uFZUhHkx3WuJstd5DHa-->每日英文播报台 <span style="font-size:12px;font-weight:600;color:#8b9390;margin-left:8px">离线快照 · 2026-10-13</span></h1>
+    <div data-page-node-id="6LcFxoZmnlgeffADtbTbVE" class="sub" id="hdr-sub"><!--pnid:wNd2jIAkGzFWd31RQvEfQV-->正在载入…</div>
+    <div data-page-node-id="1Bo8qukZQZAIYq7TOUMxJR" class="howto">
+      <b data-page-node-id="hodSjs50HDTgJEq85hgqJ2"><!--pnid:sJKuECRqoeD12HRvOhXQPt-->练法</b><!--pnid:60gv8dXn0xgt6TC0ZgLXb3-->　① 先看「口播结构」，记住 4 步而不是背稿　② 通读英文稿，猜意思　③ 点「朗读全文」跟读　④ 点「遮中文」盲测，再按结构用自己的话讲一遍，录 1–3 分钟<br data-page-node-id="JJKajmkU6OIRogH6DSTqBm">
+      <b data-page-node-id="k9TiGqj6aOJxX4QlfDdkDO"><!--pnid:fH4OAp2T0QWzakg2pUgEko-->复习</b><!--pnid:Cg9TGcDWgwU1mFK1NB2crr-->　艾宾浩斯节奏：学完次日 → 第 2 天 → 第 4 天 → 第 7 天 → 第 15 天，卡片底部显示进度
+    </div>
+  </div>
+
+  <nav data-page-node-id="Kt7bWqmRz4YvHnE2sLpDcX" aria-label="页面板块" class="secnav" id="secnav" style="display:none">
+    <div data-page-node-id="Mf3xQhTd6BnVwZaP9yRjUs" class="secnav-in" id="secnav-in"></div>
+  </nav>
+
+  <div data-page-node-id="ebojombaeXB8HkZbQrtwAw" class="sec" id="today-sec" style="display:none">
+    <div data-page-node-id="3vzPagDOxXkLyqSaZcoFgO" class="sec-hd">
+      <h2 data-page-node-id="ZXRzD3vreE7nimelF4DS4h" id="today-title"><!--pnid:qAgYTq8iaM74sSf3ED7Bfd-->最新一期</h2>
+      <span data-page-node-id="4NuuCLM0paEYV3fz4wRy93" class="note" id="today-note"></span>
+    </div>
+    <div data-page-node-id="I0XXeGHq9RYZf3bT5PnDhf" id="main-slot"></div>
+    <div data-page-node-id="ruj095VcGDZrVMM1B5T6r6" class="alt-grid" id="alt-slot"></div>
+  </div>
+
+  <div data-page-node-id="oJoPEuFJ197Q9PXcFEHp3F" class="sec" id="review-sec" style="display:none">
+    <div data-page-node-id="Z7ocMpj6OuclHMYH6qsYik" class="sec-hd">
+      <h2 data-page-node-id="yvNGmUFpFJUtqJa8igFJDd"><!--pnid:MEZl3mbvtPQASmF7JrwA1a-->今天该复习的</h2>
+      <span data-page-node-id="Hp3ty46Fs7KpXeWW2j7wBH" class="count" id="review-count"><!--pnid:hMyB9NWKGBNFOliETerYRQ-->0</span>
+      <span data-page-node-id="tAoaIlZg8BwLaJn8u46i80" class="note"><!--pnid:EXOlKGOAmqvDc9ks0GJzru-->到期未巩固的素材，先复习再学新的</span>
+    </div>
+    <div data-page-node-id="DMlIfeQui6mGBRajOPLY0r" class="review-list" id="review-list"></div>
+  </div>
+
+  <div data-page-node-id="8WApySf4KuBWmXChn7cuh5" class="sec" id="arch-sec" style="display:none">
+    <div data-page-node-id="x1BdDQPbHJWleFopMZZHHz" class="sec-hd">
+      <h2 data-page-node-id="sIrSfb4oKmy34BYnqfGKii"><!--pnid:FOHmdmVOu9j0Vx8ETxxIHP-->往期归档</h2>
+      <span data-page-node-id="ddxsYPzlFH7lIkUAj4UqjK" class="note"><!--pnid:ZX4UPBGFl0LAr6cSqJQEXw-->按日期倒序</span>
+    </div>
+    <div data-page-node-id="NTIGtZ7Ch3ZQFdK6BJfJAT" class="arch-list" id="arch-list"></div>
+  </div>
+
+  <div data-page-node-id="2DrTew1TFPIDkPrLZMPH94" class="sec" id="topic-sec" style="display:none">
+    <div data-page-node-id="6NFJsqhwYgt8aoCPYzLWiH" class="sec-hd">
+      <h2 data-page-node-id="WARL2aUyVrlO0wuDyYmSmO"><!--pnid:rmZyrBbPdMItWJQsaEFeaq-->主题线</h2>
+      <span data-page-node-id="2SqZ1QJSqXUHrF7s4nKhfD" class="note"><!--pnid:pQNkEe6uqvckH1MOqeB6va-->同一条线上的素材会累积成一条故事，越往后越能讲出脉络</span>
+    </div>
+    <div data-page-node-id="XHQaQm93cdskomUfjqeXF7" class="topics" id="topic-list"></div>
+  </div>
+
+  <div data-page-node-id="GgJ6ncAlo7ChPQexnppppk" class="sec" id="progress-sec" style="display:none">
+    <div data-page-node-id="cjzL4tUy7LPlzGEfvOgRZ8" class="sec-hd toggle-hd" id="progress-hd">
+      <h2 data-page-node-id="puwiowfdUYTZLXNA7M5Btq"><!--pnid:NH94Fr5HxjZIbb2LzCuCj6-->我的积累 <span data-page-node-id="pSuM4vC57zMqXa5iWf5KCu" class="caret" id="progress-caret"><!--pnid:AWMGs7es8csiXysnWifYiP-->▸</span></h2>
+      <span data-page-node-id="r54KkWeP2tsEdWYuaUoIFZ" class="count" id="progress-summary"></span>
+      <span data-page-node-id="xczUn3XHMMkIbu8DmfGT1m" class="note"><!--pnid:Q7OK5uGXiUJpnqNIKsO2Rf-->技能点取自 BBC《English at Work》语言功能序列 + Business English Pod 场景模块</span>
+    </div>
+    <div data-page-node-id="BfWCfYzpsfoiGYAaT6GSaz" id="progress-body" style="display:none">
+      <div data-page-node-id="vrV83BAnpLSBdCjx3Mv6GS" class="kpis" id="kpis"></div>
+      <div data-page-node-id="WZKE7HzkcQKlQxgFUbcKUM" class="map" id="skill-map"></div>
+    </div>
+  </div>
+
+  <div data-page-node-id="vLeFUNIuMOGUh3T2u7tvy4" class="sec" id="rule-sec" style="display:none">
+    <div data-page-node-id="r4sPBgxcyuOg99ZFsdCyXD" class="sec-hd toggle-hd" id="rule-hd">
+      <h2 data-page-node-id="v1cGGHTcpTcY9skGgs5v26"><!--pnid:IqjsjAgFVHNZJ4DMWcn7gE-->选题规则 <span data-page-node-id="7Aw1B9LPOJrSqofljIeY29" class="caret" id="rule-caret"><!--pnid:eZNAL3HbJdPDH0mACN3T4k-->▸</span></h2>
+      <span data-page-node-id="j43IYSVdLNrr4vyNSdjlhE" class="note"><!--pnid:gL92qemkM82SVYq2eizzyK-->每日选题按这些规则筛。你对内容提的意见都会沉淀成这里的规则</span>
+    </div>
+    <div data-page-node-id="FXudieMQzBKA4tWxJopPCs" class="rules" id="rule-list" style="display:none"></div>
+  </div>
+
+  <div data-page-node-id="Zm8dgAg58OHGzx8QjYJo1Z" id="state-slot"></div>
+
+</div>
+</div>
+
+<button data-page-node-id="loqSUZkXspFEO8WYfauCzr" class="nav-fab" id="nav-fab" type="button"><!--pnid:5NrSUd0m400Tkbz5WIIte9-->日期</button>
+<div data-page-node-id="C9ZrscG606KXdiZWmB4ZEb" class="nav-mask" id="nav-mask"></div>
+<nav data-page-node-id="etcfgtI5MviLbLdAt68L05" aria-label="目录" class="nav-drawer" id="nav-drawer"></nav>
+
+<div data-page-node-id="35swPTG5BeWOq7TM4icy4w" aria-hidden="true" class="tpl-holder">
+  <div data-page-node-id="pQiKZwK2QCMHweDUS5Infp" class="card" id="card-tpl">
+    <div data-page-node-id="63Dt55QLQWwCPl7HZINDj8" class="card-head">
+      <span data-page-node-id="uBo1TCtULLZk9ynp23hEke" class="badge badge-type" data-field="类型" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></span>
+      <span data-page-node-id="61DvA5fUUJavyaJMRxUHMz" class="badge badge-cat" data-field="领域" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></span>
+      <span data-page-node-id="9zhVxiUHBhLODCKIz26uoi" class="badge badge-lv" data-field="难度等级" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></span>
+      <span data-page-node-id="dkQU7TLUv6W2dVnIYmdBH5" class="card-date" data-field="播报日期" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></span>
+    </div>
+    <div data-page-node-id="CKUUk6LrVeEMPpkVu8x617" class="meta-row">
+      <span data-page-node-id="VykXJEWzo3UPhZtneq9lEm"><!--pnid:iy7lBpIxwt2T5s2vNa51gx-->技能点 <span data-page-node-id="f2tuysjXZliYxdTYdsoEYM" class="mk" data-field="训练技能点" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></span></span>
+      <span data-page-node-id="01veGT4qIYA6CQelSdum0W"><!--pnid:ZscBjpZmjjmYCJkiNkXSyM-->主题线 <span data-page-node-id="HwoPVQQRsD1TIRlGAcRZWz" class="mk" data-field="主题线" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></span></span>
+    </div>
+    <h2 data-page-node-id="ojfrW7geJGbewGn3Ek2V8f" class="en-title" data-field="英文标题" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></h2>
+    <p data-page-node-id="sKJTkG7aDfdZ9h7WYKZ1t2" class="cn-title" data-field="中文标题" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></p>
+
+    <div data-page-node-id="Cq8mWzRt5BxLnHvD3sKePy" class="ctabs">
+      <button data-page-node-id="Vd2nQkTz7XmBwLsH9pFyRc" class="ctab on" data-ctab="script" type="button"><!--pnid:Uf4hGyUm2KpQwErT7nBsXd-->播报稿 <span data-page-node-id="Wm5xJtRq3BnCdLpH7vKsYe" class="ctab-n"><!--pnid:Yq6bNvCk3LmWpRtH8sJfDz-->结构 · 英文 · 中文</span></button>
+      <button data-page-node-id="Hb9rLqWs4TnZxCmV2dPkFy" class="ctab" data-ctab="vocab" type="button"><!--pnid:Zr7cMxVp4BnKqWtH9sLfDy-->词汇句型 <span data-page-node-id="Xp3sKdRm8LqWnBvH5tJcZa" class="ctab-n"><!--pnid:Bs8dNqWm5LkRpTvH2cJfXz-->术语 · 可说的句子 · 难点</span></button>
+    </div>
+
+    <div data-page-node-id="Nz6pQrWv2LxBmHdT8sKcFy" class="ctab-pane on" data-pane="script">
+    <div data-page-node-id="hyBDztS7XQGT9Aw1ldqpI0" class="toolbar">
+      <button data-page-node-id="WC2T9g0b9tey3FNBu49xVF" class="btn js-play" type="button"><!--pnid:oMazneWx8j5tovSY2xXmzh-->▶ 朗读全文</button>
+      <button data-page-node-id="VUae9NCJfyi9U8vEm8xUMv" class="btn js-blur" type="button"><!--pnid:aqLJ3JMzxHVhA8HqIYu6yh-->遮中文</button>
+    </div>
+
+    <div data-page-node-id="N2QRHGUkywko6AnHbOfgrP" class="blk" style="margin-top:0">
+      <div data-page-node-id="CU5COeqoVvSwjaDXCcM2Mv" class="blk-label"><!--pnid:TKWUiIPZdhEwdH3u7hbFKw-->口播结构 <span data-page-node-id="ZtOClZdjR3H41L2YkOOTaD" class="hint"><!--pnid:mHPAXUxN6DUZiYNm5K8rzs-->按这 4 步讲，不用背稿</span></div>
+      <ol data-page-node-id="ViCnOusHqKp5XC4GW9kRRa" class="struct" data-field="口播结构" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></ol>
+    </div>
+
+    <div data-page-node-id="fbaSSXVYjbV3u5WxbqdjQe" class="blk">
+      <div data-page-node-id="IZivWyrwQzrHhJ3pTZcoWC" class="blk-label"><!--pnid:zyi9ro02ehRCWKGyamxRSJ-->英文播报稿 <span data-page-node-id="SwniFqcjvMqc9JcJWgkMqX" class="hint"><!--pnid:gyajNZIJAFwK9SPclSi7e8-->转述口吻，读出来就是你在讲</span></div>
+      <div data-page-node-id="4JG9EkbCT0A7AtLGEMz0Ym" class="script-body" data-field="播报稿" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></div>
+    </div>
+
+    <div data-page-node-id="MmzgCHvWq2hAHNCpgpEp37" class="cn-block">
+      <div data-page-node-id="d2sxK64PtsNCc7DxQ4OM5O" class="cn-label"><!--pnid:eoA9qVBHkQwCFvmoH4sl8R-->中文翻译</div>
+      <div data-page-node-id="GDFj3yz06HIhgP12THcrgC" class="cn-body" data-field="中文翻译" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></div>
+    </div>
+    </div>
+
+    <div data-page-node-id="Gy9tVbXm4LqWnRdH7sKfPz" class="ctab-pane" data-pane="vocab">
+    <div data-page-node-id="rvycbmV2kbi4uHNv2hka6c" class="blk js-gloss-blk" style="margin-top:0">
+      <div data-page-node-id="tlhKdBP4qeT8SAXCrDJbDG" class="blk-label blk-hd"><span data-page-node-id="Fp0ffJks3XikAPFjwU8eX0" class="caret"><!--pnid:aqXkKy8Vox3pXVW2HX7ocS-->▾</span><!--pnid:fTpfgOnGFilijSTNaE9pmL-->术语表 <span data-page-node-id="Rsizcv0u4YvtZmPlZc17hW" class="hint"><!--pnid:zdSsnRwnMc2AgkaQ8goBNE-->含音标 · ×N 为该词在本篇出现次数</span></div>
+      <div data-page-node-id="dMr8IL00VDm7Tx1vTKO13Z" class="blk-body">
+        <table data-page-node-id="o1vA6vntZO4LgelsOUBqo7" class="gloss">
+          <thead data-page-node-id="0ctU1h1XWEzaDGyYYt5k1A"><tr data-page-node-id="d1lnv1lFpPiRW50E1He4B7"><th data-page-node-id="9SfNQEuePH8bPO17hmDoRz"><!--pnid:ufWny1awVxPOH2yccfmm71-->词</th><th data-page-node-id="Le1wGkTORHlO1XZWGiUGLY"><!--pnid:qujrCJ8KjO4Tl5UW92ITsY-->音标</th><th data-page-node-id="Zql38DeRXjZAYFzVrv3eFE"><!--pnid:mG7gTsFmCYlsRSv6t4O1YN-->词性</th><th data-page-node-id="n3AY6GNenssQXFlumOxCKI"><!--pnid:ckKhp7O4PVteNnkJhAwJQM-->释义</th><th data-page-node-id="rVcLrQDkowPdcDy8PSqxsH"><!--pnid:wfw2GX0nqBYA5ky3jwPLyu-->频次</th></tr></thead>
+          <tbody data-page-node-id="iRFcG7azQgrMim32cpjkZw" data-field="术语表" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div data-page-node-id="4PquPklQpY3mJCcQlp6jB9" class="blk">
+      <div data-page-node-id="pUiHTXJ6kOAvuF0HUNdOFk" class="blk-label blk-hd"><span data-page-node-id="AxAzfjUEjbakxNd2lCqPxg" class="caret"><!--pnid:rupuzr6pyzRnR94xEMflvx-->▾</span><!--pnid:5d7xSWqaDi3zDArCDZ4xX5-->可直接说的句子 <span data-page-node-id="79PzuKzSi5GExi8iR3GubL" class="hint"><!--pnid:vfYdPEajQo0D4BcqlALrxX-->搬进邮件、汇报、面试都行</span></div>
+      <div data-page-node-id="NGARaT8c4XXSLmFhpO8j2n" class="blk-body">
+        <ul data-page-node-id="0W1U69tOfsZkCHfsfAGDVN" class="plist" data-field="商务句型" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></ul>
+      </div>
+    </div>
+
+    <div data-page-node-id="3aEENq3k2TD0CuKDgA7a5K" class="blk">
+      <div data-page-node-id="HwMQqQXfidK7FstQC00qWs" class="blk-label blk-hd"><span data-page-node-id="TWhpv92qj00l30dpExWFa7" class="caret"><!--pnid:2dEr90bfjW0qL8txmF72Cr-->▾</span><!--pnid:zMIyqnpw0sfYubvft7MKOv-->理解难点 <span data-page-node-id="bUH7OzXQYuCZb5i8g8CN1V" class="hint"><!--pnid:j0gVbQAXNZjOz4Gu8H9UG3-->容易读错意思的地方</span></div>
+      <div data-page-node-id="MZlig7C4vJQ8d1mQCKzd7Q" class="blk-body">
+        <ul data-page-node-id="uDJwRVqgihU1xzfpJUyqEt" class="dlist" data-field="理解难点" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></ul>
+      </div>
+    </div>
+    </div>
+
+    <div data-page-node-id="FtBsCnL8WXtuDtB0JmMjxK" class="card-foot">
+      <button data-page-node-id="VODUtgRae0i0LxMenZZ30D" class="btn btn-done js-done" type="button"><!--pnid:TMegwtqAelopqs3EJtDXu7-->✓ 完成本次复述</button>
+      <span data-page-node-id="QPfJfM9r0wX1FMjqB8p5d1" class="src"><!--pnid:MdGZF08f1lIhWMkVeaL5Y8-->来源：<a data-page-node-id="LwmNYVwO1S4MxGuq220H2G" class="js-src" data-field="来源链接" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu" href="#" rel="noopener" target="_blank"><!--pnid:kDMte9khvfywBRPclh3fwl-->原文</a></span>
+      <span data-page-node-id="ohLGQNxLEXmfZKEiWJnll0" class="ebbing">
+        <span data-page-node-id="JA64ndrJ75byattsMi1S8y" data-field="复习轮次" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></span>
+        <span data-page-node-id="f2xp0KTMME4rznbtt0Yl2N" class="dot" data-i="0"></span><span data-page-node-id="9crGTZFdfVqPXgVBdhW1VK" class="dot" data-i="1"></span><span data-page-node-id="dqZQo3F6YlHDch2GKWLgr0" class="dot" data-i="2"></span>
+        <span data-page-node-id="226xHOSVFp4xexKPFOi5Ll" class="dot" data-i="3"></span><span data-page-node-id="R7HjLqbGtuvrY0E8kwmE7s" class="dot" data-i="4"></span>
+        <span data-page-node-id="JNYsfvzNJpNGahZkHQziOM" class="lbl" data-field="下次复习" data-sp-bindable="database" data-sp-database-id="vzGB2OwC0GqkLXWSjg7cuu"></span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* 离线快照：数据在生成时注入，只读。打卡请用资料库线上页面。 */
+window.__SMART_PAGE__ = { database: {
+  query: function (opts) {
+    var LEARN = [{"_id": "snap1", "英文标题": "Alibaba's Qwen Launches Its First AI Glasses and Clip-on Earbuds", "中文标题": "阿里千问发布首款 AI 眼镜与夹耳式 AI 耳机", "类型": "主推", "领域": "智能硬件与出海品牌", "播报日期": "2026-10-13T00:00:00Z", "播报稿": "So I want to talk about something I noticed this week. Alibaba has actually put AI glasses on sale — not a concept video, real products you can buy today. Under its Qwen brand, the company launched two models, the N1 and the N1 Pro, plus a clip-on AI earbud.\n\nThe glasses start at around 2,200 yuan, which is roughly 300 US dollars, and the earbuds come in at about 1,100 yuan. What makes them interesting is that you don't need to open an app. You just talk to them, and they answer questions, translate conversations and read out messages.\n\nHere's my take. People have been talking about AI wearables for years, but this is the first time a major Chinese player has put one on the shelf at a price ordinary consumers can pay. So the interesting question is no longer whether people will wear AI — it's how brands design experiences for a device that's always on your face or in your ear. And that's the part I find genuinely exciting.", "中文翻译": "我想聊一件这周注意到的事。阿里真的把 AI 眼镜上架开卖了——不是概念片，是今天就能买到的产品。在千问品牌下，他们推出 N1 和 N1 Pro 两款型号，外加一副夹耳式 AI 耳机。\n\n眼镜起售价约 2200 元，折合大概 300 美元；耳机约 1100 元。有意思的地方在于，你不需要打开任何 App——直接和它说话，它就能回答问题、翻译对话、把消息念出来。\n\n我的看法是：AI 可穿戴被讨论了很多年，但这是第一次有中国大厂以普通消费者能接受的价格，把它摆上货架。所以有意思的问题已经不是\"人们会不会戴 AI\"，而是\"品牌要怎么为一件始终在你脸上或耳朵里的设备设计体验\"。而这恰恰是我真正感兴趣的部分。", "术语表": "launch | /lɔːntʃ/ | v. | 发布、推出（产品） | ×1 | The company launched two models.\nclip-on | /ˈklɪp ɒn/ | adj. | 夹式的 | ×1 | It also ships a clip-on AI earbud.\nearbud | /ˈɪəbʌd/ | n. | 单只耳塞式耳机 | ×2 | The earbuds come in at about 1,100 yuan.\nput sth on sale | /pʊt ɒn seɪl/ | 短语 | 上架开卖 | ×1 | Alibaba has put AI glasses on sale.\nhere's my take | /hɪəz maɪ teɪk/ | 短语 | 我的看法是（转入观点的信号） | ×1 | Here's my take on this.\nalways on | /ˈɔːlweɪz ɒn/ | adj. | 常开的、一直在线的 | ×1 | A device that's always on your face.\nread out | /riːd aʊt/ | 短语 | 朗读出来 | ×1 | It can read out messages.", "商务句型": "\"So I want to talk about something I noticed this week.\" | 开场句：用\"我注意到\"起手，比 It is reported that 更像人话\n\"What makes them interesting is that you don't need to open an app.\" | 讲亮点：What makes X interesting is that… 把重点前置\n\"Here's my take.\" | 转入观点：一句话切换到自己，口语里非常自然\n\"The interesting question is no longer whether ..., it's how ...\" | 观点收尾：面试谈趋势时的万能句式\n\"And that's the part I find genuinely exciting.\" | 把自己接进去：把话题落回你的兴趣和方向", "理解难点": "put sth on sale vs be on sale — put/be on sale 指\"开始卖、上架卖\"；英式英语里 be on sale 也常指\"打折\"。想说\"正在促销\"更安全的是 on offer / discounted。\naround 2,200 yuan / roughly 300 dollars — 口语表达约数用 around、roughly、about，比 approximately 自然得多，后者偏书面。\nHere's my take — take 这里是名词，意思是\"看法、解读\"，不是动词\"拿\"。同类说法还有 my read on this。\n转述口吻的时态 — 讲刚发生的事用现在完成时（has put on sale）或一般过去时（launched）；讲影响和自己的判断用一般现在时。两种时态切换是\"转述+点评\"的标准节奏。", "复习轮次": "新学", "下次复习": "2026-10-14T00:00:00Z", "练习状态": "未开始", "来源链接": {"link": "https://aihot.news/items/bnwd1psqg66c268n4i1mal2pi", "text": "AI HOT · 千问APP（阿里）"}, "训练技能点": ["用事实讲故事", "给出观点并留余地"], "主题线": ["AI 硬件与穿戴", "消费品牌与出海"], "难度等级": "B2 · 进阶", "口播结构": "① 抛题 | So I want to talk about something I noticed this week. | 用\"我注意到\"起手，给听众一个听下去的理由\n② 摆事实 | Alibaba has put AI glasses on sale — two models plus a clip-on earbud, around 2,200 yuan. | 只讲三个事实：谁、什么、多少钱，多了记不住\n③ 给解读 | Here's my take — the interesting question is no longer whether people will wear AI. | Here's my take 是转入观点的信号词，说完这句就上自己的判断\n④ 收尾 | It's how brands design for something always on your face. That's the part I find exciting. | 用\"The interesting question is…\"留钩子，再把自己接进去"}, {"_id": "snap2", "英文标题": "OpenAI Revenue Hits $50B as It Seeks $30B in New Capital", "中文标题": "OpenAI 年化收入约 500 亿美元，正洽谈 300 亿美元新融资", "类型": "备选", "领域": "AI产品与消费应用", "播报日期": "2026-10-13T00:00:00Z", "播报稿": "Let me share a number that surprised me. OpenAI's annualized revenue is now around 50 billion US dollars — roughly the size of a Fortune 500 company, and it's still growing 77 percent a quarter.\n\nThere's a small catch. An earlier report said nearly 70 billion, and the difference comes down to accounting. When OpenAI sells through a cloud partner, it only books its own share as revenue. Both methods are legal under US rules — it's just a question of who owns the customer relationship.\n\nNow the company is in talks to raise at least 30 billion dollars in fresh capital, at a pre-money valuation of 1.4 trillion. And the report moved the market: chip stocks dropped several percent the same day.\n\nIf I were asked about this in an interview, I'd say the real story isn't the number — it's how much of that revenue comes from enterprise customers. That's where the durable business is.", "中文翻译": "先说一个让我意外的数字。OpenAI 的年化收入现在大约 500 亿美元——差不多是一家《财富》500 强公司的体量，而且还在以每季度 77% 的速度增长。\n\n不过这里有个小转折。早先有报道说接近 700 亿，差异归根结底出在会计口径上：当 OpenAI 通过云厂商渠道销售时，它只把自己分成的那部分记为收入。两种做法在美国规则下都合规，区别只在于谁掌握客户关系。\n\n现在这家公司正在洽谈至少 300 亿美元的新增资本，投前估值 1.4 万亿美元。这份报道也确实震动了市场：当天芯片股下跌了数个百分点。\n\n如果有人面试时问我怎么看，我会说——真正的故事不是这个数字，而是这些收入里有多少来自企业客户。那才是能持续的生意。", "术语表": "annualized revenue | /ˈænjuəlaɪzd ˈrevənjuː/ | n. | 年化收入 | ×1 | OpenAI's annualized revenue is around $50 billion.\naccounting | /əˈkaʊntɪŋ/ | n. | 会计口径、记账方式 | ×1 | The difference comes down to accounting.\nbook sth as revenue | /bʊk əz ˈrevənjuː/ | 短语 | 把…记为收入 | ×1 | It only books its own share as revenue.\nin talks to | /ɪn tɔːks tuː/ | 短语 | 正在洽谈（做某事） | ×1 | The company is in talks to raise $30 billion.\npre-money valuation | /ˌpriː ˈmʌni ˌvæljuˈeɪʃn/ | n. | 投前估值 | ×1 | At a pre-money valuation of $1.4 trillion.\nenterprise customer | /ˈentəpraɪz ˈkʌstəmə/ | n. | 企业客户 | ×1 | Revenue from enterprise customers.\ndurable | /ˈdjʊərəbl/ | adj. | 可持续的、能长久的 | ×1 | That's where the durable business is.", "商务句型": "\"Let me share a number that surprised me.\" | 开场句：用数字起手，一句话抓住注意力\n\"There's a small catch.\" | 转折句：引出复杂之处，catch 是\"隐藏的坑\"\n\"The difference comes down to accounting.\" | 归因句：come down to 表示\"归根结底在于\"\n\"If I were asked about this in an interview, I'd say ...\" | 面试推演：把回答提前演练出来，练口语最有效\n\"The real story isn't the number — it's where that revenue comes from.\" | 观点句：The real story isn't A — it's B", "理解难点": "annualized revenue（年化收入）不是真实全年收入 — 它把当前收入水平折算成全年口径，不等于已经收到了这么多钱。中文报道里也常写\"年化营收\"，同样容易被误读。\nThere's a catch — catch 在这里是名词，指\"隐藏的问题、附加条件\"，不是\"抓住\"。口语里非常高频。\npre-money vs post-money valuation — 投前估值不含本轮新钱；投后估值 = 投前估值 + 本轮融资额。\ncome down to — 表示\"归结为、说到底是\"，商务英语里用来把复杂问题收成一句话。", "复习轮次": "新学", "下次复习": "2026-10-14T00:00:00Z", "练习状态": "未开始", "来源链接": {"link": "https://aihot.news/items/auy2exatk0u5kr1c1ydmaajws", "text": "AI HOT · The Decoder"}, "训练技能点": ["描述趋势与数据", "给出观点并留余地"], "主题线": ["AI 商业化与融资"], "难度等级": "B2 · 进阶", "口播结构": "① 抛题 | Let me share a number that surprised me. | 用数字起手，比\"今天讲一条新闻\"抓人\n② 摆事实 | Annualized revenue around $50B, growing 77 percent a quarter; the $70B figure was a different accounting method. | 数字 + 增速 + 口径差异，三点讲完就够\n③ 给解读 | The difference comes down to who owns the customer relationship. | 用 come down to 把复杂账目收成一句话\n④ 收尾 | The real story isn't the number — it's how much comes from enterprise customers. | 用\"真正的故事不是 A 而是 B\"留下自己的判断"}, {"_id": "snap3", "英文标题": "Sierra Drafts a Protocol So AI Agents Can Shop and Pay", "中文标题": "Sierra 发布 AI 智能体协议草案：让智能体能购物与支付", "类型": "备选", "领域": "电商与跨境SaaS/企服", "播报日期": "2026-10-13T00:00:00Z", "播报稿": "Here's a development I think people in e-commerce should watch. This week Sierra published a draft of the Personal Agent Protocol, known as Poppy, and thirty-five new design partners joined — including PayPal, Visa, Mastercard, Shopify and Walmart.\n\nThe problem is easy to picture. When you ask an AI agent to buy something or sort out a return, it usually signs in as you and clicks through pages designed for humans. Companies have no standard way to recognise an agent, or to set limits on what it can do. That's what Poppy is trying to fix.\n\nIt sets out five building blocks. Companies publish one file on their website, so agents know how to interact with them. Agents identify themselves, so the company always knows a bot is acting for a customer. Anything that needs an account goes through OAuth, with access limited to what the customer actually approved.\n\nWhat I take from this is simple. The same companies that built the payment and commerce rails are now agreeing on the rules for agents. For anyone working in cross-border e-commerce, that's a signal worth watching.", "中文翻译": "有一个动向我觉得做电商的人都该留意。这周 Sierra 发布了《个人智能体协议》草案（简称 Poppy），同时有 35 家新的设计伙伴加入——包括 PayPal、Visa、Mastercard、Shopify 和 Walmart。\n\n它要解决的问题很容易想象。当你让 AI 智能体去买东西或处理退货时，它通常要以你的身份登录，然后在为人设计的页面上一步步点击。企业没有标准方式去识别一个智能体，也没法给它划定权限边界。Poppy 想解决的正是这件事。\n\n它列出了五个基本模块：企业在自己网站上发布一个文件，智能体据此知道如何与之交互；智能体要表明身份，企业因此始终清楚是机器人在替顾客办事；需要账户的操作走 OAuth，权限只限于顾客真正批准的范围。\n\n我的收获很简单：那些当年搭起支付和电商基础设施的公司，现在正在一起定智能体的规则。对做跨境电商的人来说，这是一个值得留意的信号。", "术语表": "protocol | /ˈprəʊtəkɒl/ | n. | 协议（行业/技术标准） | ×1 | A draft of the Personal Agent Protocol.\ndraft | /drɑːft/ | n. | 草案 | ×1 | Sierra published a draft of the protocol.\ndesign partner | /dɪˈzaɪn ˈpɑːtnə/ | n. | 设计伙伴（参与早期产品设计的合作方） | ×1 | Thirty-five new design partners joined.\nsign in as | /saɪn ɪn æz/ | 短语 | 以…的身份登录 | ×1 | It usually signs in as you.\nbuilding blocks | /ˈbɪldɪŋ blɒks/ | n. | 基本模块、组成部分 | ×1 | It sets out five building blocks.\nset out | /set aʊt/ | 短语 | 列出、阐明（方案或条款） | ×1 | It sets out five building blocks.\nsignal | /ˈsɪɡnəl/ | n. | 信号、值得注意的迹象 | ×1 | That's a signal worth watching.", "商务句型": "\"Here's a development I think people in e-commerce should watch.\" | 开场句：先说自己为什么关心，给听众一个听下去的理由\n\"The problem is easy to picture.\" | 引出问题：picture 作动词，表示\"在脑子里想象出来\"\n\"It sets out five building blocks.\" | 讲框架：set out 表示\"列出、阐明\"，讲方案时很好用\n\"Anything that needs an account goes through OAuth, with access limited to what the customer approved.\" | 讲规则：with + 过去分词，一句话把\"权限范围\"讲清楚\n\"For anyone working in cross-border e-commerce, that's a signal worth watching.\" | 点名听众：把话题落到具体人群，比空泛总结有力", "理解难点": "known as Poppy — known as 表\"被称为\"，后接名称；known for 表\"以…闻名\"，两者别混。\nsign in as vs sign in to — sign in as + 身份（以谁的身份登录）；sign in to + 平台（登录到某个系统）。\nset out — 这里不是\"出发\"，而是\"列出、阐述\"（方案、条款、步骤），商务文本高频。\na signal worth watching — worth 后面跟动名词，不能说 worth to watch。", "复习轮次": "新学", "下次复习": "2026-10-14T00:00:00Z", "练习状态": "未开始", "来源链接": {"link": "https://aihot.news/items/uh0gkukluk1edn2fz8p8v3ama", "text": "AI HOT · Sierra Blog"}, "训练技能点": ["结构化回答", "用事实讲故事"], "主题线": ["AI Agent 与生态", "平台规则与合规"], "难度等级": "B2 · 进阶", "口播结构": "① 抛题 | Here's a development I think people in e-commerce should watch. | 先讲\"为什么你该听\"，比直接念事实更抓人\n② 摆事实 | Sierra published a draft protocol called Poppy, with 35 design partners including PayPal, Visa and Shopify. | 名字 + 数量 + 三个最有名的合作方，够了\n③ 场景化解释 | When you ask an agent to return something, it signs in as you — and companies have no standard way to work with it. | 用一个具体场景把抽象协议讲明白，这是最容易被记住的部分\n④ 收尾 | The companies that built the payment rails are now setting the rules for agents. That's a signal worth watching. | 把事件放大成趋势，再给一句判断收尾"}, {"_id": "snap4", "英文标题": "xAI Bundles Grok, Cursor and X Premium Into One Subscription", "中文标题": "xAI 把 Grok、Cursor 和 X Premium 打包成一个订阅", "类型": "主推", "领域": "AI产品与消费应用", "播报日期": "2026-10-13T00:00:00Z", "播报稿": "So here's something that caught my eye this week. xAI has bundled everything it sells into one plan called The X Subscription. Grok, its chatbot, Cursor, the coding tool, and X Premium all come together for a single price, rolling out globally over the next few days.\n\nWhat's interesting isn't the bundle itself, it's the logic behind it. Instead of selling four products to four different audiences, xAI is going after one customer who wants to use AI across both work and social life. If you were already paying for a chatbot, a coding assistant and a premium social account, one price is an easy sell.\n\nHere's my take. We're watching AI companies move from selling features to selling bundles. That's what happens when a market matures. You stop competing on a single clever model and start competing on how much value you can stack into one relationship. For anyone working in product marketing, that shift is worth studying closely.", "中文翻译": "有件事这周挺引起我注意。xAI 把自己在卖的东西全都打包进了一个叫 The X Subscription 的方案里：聊天机器人 Grok、编程工具 Cursor，还有 X Premium，一个价格全包，未来几天面向全球开放。\n\n有意思的不是这个打包本身，而是它背后的逻辑。与其把四个产品卖给四拨不同的人，xAI 选择去争取同一个客户——一个希望在工作场景和社交场景里都用上 AI 的人。如果你本来就在为聊天机器人、编程助手和社交平台会员分别付费，那打包成一个价格就很好卖。\n\n我的看法是：我们正在看着 AI 公司从\"卖功能\"转向\"卖组合\"。这是一个市场走向成熟时必然发生的事——竞争点不再是某一个聪明的模型，而是你能在同一个关系里叠加多少价值。对做产品营销的人来说，这个转变很值得仔细琢磨。", "术语表": "bundle | /ˈbʌndl/ | v. / n. | 打包（销售）；组合包 | ×2 | xAI has bundled everything into one plan.\nsubscription | /səbˈskrɪpʃn/ | n. | 订阅（服务） | ×2 | One subscription covers three products.\nroll out | /rəʊl aʊt/ | 短语 | 逐步推出、上线 | ×1 | It's rolling out globally over the next few days.\ngo after | /ɡəʊ ˈɑːftə/ | 短语 | 主动争取（客户、市场） | ×1 | xAI is going after one customer.\nan easy sell | /ən ˈiːzi sel/ | 短语 | 好卖的东西、容易被接受 | ×1 | One price is an easy sell.\nmature | /məˈtjʊə/ | v. | （市场）走向成熟 | ×1 | That's what happens when a market matures.\nstack | /stæk/ | v. | 叠加、累积 | ×1 | How much value you can stack into one relationship.", "商务句型": "\"So here's something that caught my eye this week.\" | 开场句：caught my eye 比 I noticed 更有画面感\n\"What's interesting isn't the bundle itself, it's the logic behind it.\" | 转入判断：用\"有意思的不是 A，而是 B\"把事实推到观点\n\"Instead of selling four products to four audiences, xAI is going after one customer.\" | 讲策略对比：Instead of A, X is doing B\n\"One price is an easy sell.\" | 讲卖点：an easy sell 表示\"好卖、容易说服对方\"\n\"That's what happens when a market matures.\" | 收尾升维：把单点事件讲成行业规律", "理解难点": "bundle 的词性 — 同一篇里既可作动词（has bundled），也可作名词（the bundle），英文里这种名词动词同形的情况很常见，读的时候靠位置判断。\nan easy sell — 不是\"便宜的卖\"，而是\"好卖的东西、容易说服对方\"。sell 在这里是名词。\ncatch my eye — 固定搭配用单数 my eye，表示\"引起我的注意\"；说 catch my eyes 是错的。\ngo after vs go for — go after 强调\"主动去争取（客户、市场、目标）\"，比 go for 更带进攻性，商务语境里更常用。", "复习轮次": "新学", "下次复习": "2026-10-14T00:00:00Z", "练习状态": "未开始", "来源链接": {"link": "https://aihot.news/items/uy4hvoyz7fwtyycpu0p62dudn", "text": "AI HOT · xAI News"}, "训练技能点": ["结构化回答", "给出观点并留余地"], "主题线": ["内容平台与营销", "AI 商业化与融资"], "难度等级": "B2 · 进阶", "口播结构": "① 抛题 | So here's something that caught my eye this week. | caught my eye 比 I noticed 更有画面感，是口语高频表达\n② 摆事实 | xAI has bundled Grok, Cursor and X Premium into one plan called The X Subscription. | 一句话讲清\"谁把什么打包了\"，品牌名只留三个\n③ 给解读 | What's interesting isn't the bundle itself, it's the logic behind it. | 用\"有意思的不是 A 而是 B\"，把话题从事实推进到判断\n④ 收尾 | AI companies are moving from selling features to selling bundles. That's what happens when a market matures. | 用一句话把单点事件升维成行业规律"}, {"_id": "snap5", "英文标题": "A Petaflop on Your Desk: NVIDIA's RTX Spark Laptops Ship Friday", "中文标题": "把千万亿次算力放进笔记本：NVIDIA RTX Spark 本周五上市", "类型": "备选", "领域": "智能硬件与出海品牌", "播报日期": "2026-10-13T00:00:00Z", "播报稿": "Here's one for anyone who follows hardware. NVIDIA says its RTX Spark ecosystem is ready, and the first laptops built on it go on sale this Friday, October 16th. The headline numbers are striking: up to 128 gigabytes of unified memory and one petaflop of AI compute, in a machine you can carry.\n\nWhy does that matter? Not long ago, a petaflop meant a server rack and a power bill to match. Putting that into a laptop changes who can run AI models locally, and that list keeps growing. It starts with designers and researchers, but it ends with people who simply want their tools to work offline and keep their data on the device.\n\nHere's my take. We usually talk about AI progress in terms of models, but the real unlock is often hardware. When compute becomes cheap and portable enough, entirely new products become possible, and they bring new marketing problems with them. Right now most buyers can't tell a petaflop from a gigabyte, and that is exactly where product marketing earns its keep.", "中文翻译": "关注硬件的人可以留意这条。NVIDIA 宣布 RTX Spark 生态已经就绪，首批搭载它的笔记本将在 10 月 16 日本周五开卖。最抓眼的数字是：最高 128GB 统一内存，以及 1 petaflop 的 AI 算力——装在一台能带走的机器里。\n\n这为什么重要？不久以前，一个 petaflop 意味着一整个服务器机柜，以及与之匹配的电费账单。把它放进笔记本，改变的是\"谁能在本地跑 AI 模型\"，而这份名单还在变长：从设计师和研究者开始，最终会延伸到那些只是希望工具能离线可用、数据留在本机的人。\n\n我的看法是：我们习惯用\"模型\"来衡量 AI 的进步，但真正的突破常常发生在硬件上。当算力变得足够便宜、足够便携，全新的产品才成为可能，也会带来全新的营销难题。眼下大多数买家根本分不清 petaflop 和 gigabyte——这恰恰是产品营销能证明自己价值的地方。", "术语表": "ecosystem | /ˈiːkəʊsɪstəm/ | n. | 生态（系统） | ×1 | NVIDIA says its RTX Spark ecosystem is ready.\ngo on sale | /ɡəʊ ɒn seɪl/ | 短语 | 上架开卖 | ×1 | The laptops go on sale this Friday.\nunified memory | /ˈjuːnɪfaɪd ˈmeməri/ | n. | 统一内存 | ×1 | Up to 128 gigabytes of unified memory.\npetaflop | /ˈpetəflɒp/ | n. | 每秒千万亿次浮点运算 | ×2 | A petaflop used to mean a server rack.\nrun sth locally | /rʌn ˈləʊkli/ | 短语 | 在本地（设备上）运行 | ×1 | Changes who can run AI models locally.\nunlock | /ʌnˈlɒk/ | n. | 关键突破、解锁点 | ×1 | The real unlock is often hardware.\nearn its keep | /ɜːn ɪts kiːp/ | 短语 | 证明自己值得、值这份投入 | ×1 | That's where product marketing earns its keep.", "商务句型": "\"Here's one for anyone who follows hardware.\" | 开场句：点名听众，一句话建立相关性\n\"The headline numbers are striking: up to 128GB ... and one petaflop ...\" | 讲参数：headline numbers 指\"最拿得出手的数字\"\n\"Why does that matter?\" | 自问自答：把事实推进到意义，口播里非常好用\n\"We usually talk about X in terms of A, but the real unlock is often B.\" | 观点句：换个角度看问题\n\"That's exactly where product marketing earns its keep.\" | 收尾句：把话题落到自己的专业价值上", "理解难点": "headline numbers — headline 作形容词时意思是\"最引人注目的\"，headline numbers 就是\"最拿得出手的那几个数字\"。\nearn its keep — 字面是\"挣自己的口粮\"，引申为\"证明自己值得存在、值这份投入\"，英式商务口语常用。\nunified memory vs 独立显存 — 统一内存指 CPU 和 GPU 共用一块内存，苹果 M 系列芯片带火了这个说法，和传统独立显存不是一回事。\npetaflop 是算力单位 — FLOP 指\"浮点运算次数\"，peta 是 10 的 15 次方。它是算力，不是存储容量，别和 gigabyte 混着理解。", "复习轮次": "新学", "下次复习": "2026-10-14T00:00:00Z", "练习状态": "未开始", "来源链接": {"link": "https://aihot.news/items/ug7g6psicfobnnft0ebgpyl10", "text": "AI HOT · NVIDIA Blog"}, "训练技能点": ["描述趋势与数据", "用事实讲故事"], "主题线": ["AI 硬件与穿戴"], "难度等级": "B2 · 进阶", "口播结构": "① 抛题 | Here's one for anyone who follows hardware. | 点名听众，一句话让人知道\"这条和你有关\"\n② 摆事实 | The first RTX Spark laptops go on sale this Friday, with up to 128GB of unified memory and one petaflop of AI compute. | 日期加两个数字，这条新闻最硬的部分\n③ 给解读 | A petaflop used to mean a server rack. Putting it in a laptop changes who can run AI locally. | 用前后对比把\"突破在哪\"讲清楚\n④ 收尾 | We talk about AI in terms of models, but the real unlock is hardware. | 升维成规律，再自然落到\"这正是产品营销的价值\""}, {"_id": "snap6", "英文标题": "Character.AI Files for Chapter 11: Engagement Is Not Revenue", "中文标题": "Character.AI 申请破产保护：参与度不等于收入", "类型": "备选", "领域": "AI产品与消费应用", "播报日期": "2026-10-13T00:00:00Z", "播报稿": "Let me talk about something less cheerful, but genuinely useful to understand. Character.AI, one of the best-known AI companion apps, has filed for Chapter 11 bankruptcy in the United States. The filing is meant to let the company sell itself and its assets, with reported liabilities somewhere between 50 and 100 million dollars. Disney is reportedly leading a bid for parts of the business at around 20 million.\n\nThe obvious question is how a product with hundreds of millions of users ends up here. The short answer is that engagement is not revenue. Character.AI had attention in enormous quantities, but turning that attention into paying customers proved much harder than it looked from the outside.\n\nHere's what I take from it. In AI, distribution and usage are easy to celebrate and easy to overvalue. The companies that last are the ones that can actually charge for something. If I were asked about this in an interview, I'd say the same thing: user growth is a leading indicator, revenue is the proof.", "中文翻译": "说一件不太愉快、但很值得弄明白的事。Character.AI 是知名度最高的 AI 陪伴类应用之一，如今已在美国申请 Chapter 11 破产保护。这次申请的目的是推动公司连同资产一起出售，据报道其负债在 5000 万到 1 亿美元之间；另有消息称迪士尼正牵头以约 2000 万美元竞购其中部分业务。\n\n显而易见的问题是：一个拥有数亿用户的产品，怎么会走到这一步？简短的回答是——参与度不等于收入。Character.AI 握有巨量的注意力，但把注意力变成付费用户，远比从外面看上去要难。\n\n我的收获是：在 AI 行业，流量和活跃很容易被称赞，也很容易被高估。能活下来的公司，是那些真的能对某样东西收费的公司。如果面试时被问到这件事，我会说同一句话：用户增长是先行指标，收入才是证明。", "术语表": "file for bankruptcy | /faɪl fə ˈbæŋkrʌptsi/ | 短语 | 申请破产 | ×1 | Character.AI has filed for bankruptcy.\nChapter 11 | /ˈtʃæptə ɪˈlevn/ | n. | 美国破产法第 11 章（破产保护下的重组） | ×1 | It has filed for Chapter 11 protection.\nassets | /ˈæsets/ | n. | 资产 | ×1 | The filing lets the company sell itself and its assets.\nliabilities | /ˌlaɪəˈbɪlətiz/ | n. | 负债 | ×1 | Reported liabilities of 50 to 100 million dollars.\nbid for | /bɪd fɔː/ | 短语 | 竞购、出价收购 | ×1 | Disney is leading a bid for parts of the business.\nengagement | /ɪnˈɡeɪdʒmənt/ | n. | 用户参与度、活跃度 | ×1 | Engagement is not revenue.\nleading indicator | /ˈliːdɪŋ ˈɪndɪkeɪtə/ | n. | 先行指标 | ×1 | User growth is a leading indicator.", "商务句型": "\"Let me talk about something less cheerful, but genuinely useful to understand.\" | 开场句：先给话题定性，管理听众预期\n\"The obvious question is how ... ends up here.\" | 自问句：把听众心里的疑问替他说出来\n\"The short answer is that engagement is not revenue.\" | 给答案：先给短判断，再补理由\n\"Distribution and usage are easy to celebrate and easy to overvalue.\" | 观点句：并列结构让判断更有力\n\"User growth is a leading indicator, revenue is the proof.\" | 收尾句：A 是先行指标，B 才是证明，面试直接可用", "理解难点": "Chapter 11 不是\"关门清算\" — 它是美国破产法里的\"破产保护下的重组\"，公司仍在运营，并寻求出售或重整。口语里常直接说 file for Chapter 11。\nliabilities vs assets — liabilities 是负债（欠别人的钱），assets 是资产（自己拥有的东西）。这对词在财务英语里必须分清，说反了意思完全变。\nend up here — end up 表示\"最终落到某个境地\"，通常带出乎意料的意味，这里指\"怎么会走到这一步\"。\nleading vs lagging indicator — 先行指标预示未来走向，滞后指标确认已经发生的事。商业分析里高频出现的一对概念。", "复习轮次": "新学", "下次复习": "2026-10-14T00:00:00Z", "练习状态": "未开始", "来源链接": {"link": "https://aihot.news/items/tusbrzz9718b9rzgrvjuren63", "text": "AI HOT · The Verge"}, "训练技能点": ["用事实讲故事", "给出观点并留余地"], "主题线": ["AI 商业化与融资"], "难度等级": "B2 · 进阶", "口播结构": "① 抛题 | Let me talk about something less cheerful, but genuinely useful to understand. | 先给话题定性，听众不会觉得突兀\n② 摆事实 | Character.AI has filed for Chapter 11, with liabilities of 50 to 100 million and Disney reportedly leading a 20 million bid. | 三个硬事实：状态、负债、竞购方\n③ 给解读 | The obvious question is how a product with hundreds of millions of users ends up here. Engagement is not revenue. | 替听众问出疑问，再给一句短判断\n④ 收尾 | User growth is a leading indicator, revenue is the proof. | 用对仗式判断收尾，面试里可以直接照搬"}];
+    var RULES = [{"_id": "snap1", "规则名称": "转述口吻，禁止新闻搬运", "类型": "口吻规则", "规则内容": "播报稿必须用第一人称转述，禁止直接摘抄新闻通稿。每篇需具备转述框架：由「我注意到 / 我看到一条消息」起手，用「我的看法是 / 这意味着」上判断，结尾能把话题落到自己的方向。整篇读出来应像人在讲话，而不是在念稿。", "权重": "10", "状态": "生效", "来源反馈": "不能直接把新闻资讯搬过去，要以播报资讯转述的口吻，可以在日常对话、商务对话、面试中直接表述", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap2", "规则名称": "可直接说出口的句型优先", "类型": "结构规则", "规则内容": "每篇至少 3 条能直接说出口的句型，并标注使用场景；结尾句要能自然接到自己的工作或方向，方便面试复用。", "权重": "10", "状态": "生效", "来源反馈": "可以在日常的对话商务对话会直接面试当中可以表述的那种内容形式", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap3", "规则名称": "必须给 4 步口播结构", "类型": "结构规则", "规则内容": "每篇给出 4 步骨架：① 抛题 ② 摆事实 ③ 给解读 ④ 收尾。每步配 1 句可直接说的英文，便于按理解表达而非背诵。", "权重": "9", "状态": "生效", "来源反馈": "希望帮我梳理一下结构或者思路，能更快速根据自己的理解去表达，而不是死记硬背", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap4", "规则名称": "同一主题线不重复主推", "类型": "去重规则", "规则内容": "主推选题的主题线不得与最近 7 天的主推重复；备选可放宽至 3 天。若某主题线已积累 3 篇以上，改为做「专题串讲」而不是新增单篇。", "权重": "8", "状态": "生效", "来源反馈": "可以进一步挖掘过往的资讯来形成新的故事，并且不会过度重复", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap5", "规则名称": "领域权重 · AI产品与消费应用", "类型": "选题领域", "规则内容": "同等条件下优先选取 AI 产品发布、C 端应用与消费级 AI 动态，权重记 1.0。", "权重": "5", "状态": "生效", "来源反馈": "初始设定（用户勾选领域）", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap6", "规则名称": "领域权重 · 智能硬件与出海品牌", "类型": "选题领域", "规则内容": "优先选取智能硬件、消费电子、机器人、出海 DTC 品牌相关动态，权重记 1.0。", "权重": "5", "状态": "生效", "来源反馈": "初始设定（用户勾选领域）", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap7", "规则名称": "领域权重 · 电商与跨境SaaS/企服", "类型": "选题领域", "规则内容": "优先选取跨境电商、支付、企业服务与 SaaS 相关动态，权重记 1.0。", "权重": "5", "状态": "生效", "来源反馈": "初始设定（用户勾选领域）", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap8", "规则名称": "难度锁定 B2，C1 每周最多 1 篇", "类型": "口吻规则", "规则内容": "正文难度以 B2 为主（适配 CET-6 水平的口语输出），C1 每 7 天不超过 1 篇，B1 仅用于概念密集但句子简单的题材。", "权重": "7", "状态": "生效", "来源反馈": "初始设定（依据 CET-6 538、以口语输出为目标）", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap9", "规则名称": "句子责任原则（每句都能自己讲）", "类型": "口吻规则", "规则内容": "播报稿里每一句都要能在面试或日常对话中被追问时当场解释，不允许出现「这只是转述、我不认」的句子。判断句必须是你自己的判断，并能说出为什么这样看。写完自问：这句话我能当场讲清楚吗？", "权重": "10", "状态": "生效", "来源反馈": "英文从业者共识（Clay 公司 AI 写作政策：为每一句背书）；直接服务于面试可复用的目标", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap10", "规则名称": "英文禁用对举骨架（negative parallelism）", "类型": "口吻规则", "规则内容": "禁用 not just X, but Y / this isn't about A, it's about B / Y rather than X / not only… but also 这一族对举句。要转折就拆成两句，先陈述 A 再陈述 B，各配一句事实支撑。写完搜索 not just、not only、rather than 逐个改写整句。", "权重": "10", "状态": "生效", "来源反馈": "Wikipedia《Signs of AI writing》把 negative parallelism 列为语言层 AI 迹象，与中文禁用对举句式同源", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap11", "规则名称": "英文 AI 高频词黑名单", "类型": "口吻规则", "规则内容": "禁用 delve / tapestry / realm / landscape / testament / pivotal / robust / seamless / leverage / foster / harness / unlock / elevate / showcase / game-changer / meticulous。过渡词 Furthermore / Moreover / Additionally / In conclusion / It's important to note 一并禁用。替换：leverage→use、utilize→use、facilitate→help、in order to→to。", "权重": "9", "状态": "生效", "来源反馈": "Wikipedia 词表 + NASA 内容指南 words to avoid + Plain English Campaign A-Z（英文去 AI 味调研）", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap12", "规则名称": "口播朗读测试（先说后写）", "类型": "口吻规则", "规则内容": "一句只放一个信息，以能一口气念完为长度上限。初稿先出声说一遍再落字；念不顺、或自己平时不会那么说的表达，整句重写。常见触发词：long-disputed、war-torn、reside、individuals、commence。", "权重": "9", "状态": "生效", "来源反馈": "NPR Training 广播写作原则：speak it before you write it；if you wouldn't say it that way, don't write it that way", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap13", "规则名称": "句长节奏与标点（burstiness）", "类型": "结构规则", "规则内容": "禁止连续三句长度相近；长句之后必须跟一个 3-5 词的短判断句。一段最多一个 em dash，其余改句号或逗号。三个形容词并列只保留真正带信息的项。回避系动词的写法改掉：serves as / stands as 一律换 is。", "权重": "8", "状态": "生效", "来源反馈": "Wikipedia《Signs of AI writing》rule of three 与 em dash 迹象；英文写作实操清单的 Rhythm Test", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap14", "规则名称": "术语首现一句话解释", "类型": "口吻规则", "规则内容": "每个行业术语第一次出现时，紧跟一句 5 词以内的日常英语解释（如 odorants → scented molecules），不给听众留知识前提。术语表照常输出，但正文里不能只有术语没有解释。", "权重": "8", "状态": "生效", "来源反馈": "Alan Alda Center「知识的诅咒」；Ed Yong 论术语：用简单的方式解释复杂概念", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap15", "规则名称": "事实与判断分层，禁用无主语归因", "类型": "结构规则", "规则内容": "事实、现场观察、推断三类分开写：事实给来源，推断加限定（my read is / I think / 目前还看不准）。禁止 experts say、industry observers note、studies show 这类无具体主语的归因，要么点名来源，要么删掉这句。", "权重": "8", "状态": "生效", "来源反馈": "Wikipedia vague attributions 迹象 + 中文指南「只使用能交代来源的材料」", "更新日期": "2026-10-13T00:00:00Z"}, {"_id": "snap16", "规则名称": "结尾给新判断，禁用总结式收尾", "类型": "结构规则", "规则内容": "结尾禁止 In conclusion / In summary / Overall 复述全文。必给一个前文没明说的新判断，或一个仍未解决的问题，并留一句能自然接到自己工作或面试方向的话。", "权重": "7", "状态": "生效", "来源反馈": "Wikipedia 把段落总结列为 AI 迹象；中文指南「结尾产生新发现」", "更新日期": "2026-10-13T00:00:00Z"}];
+    var data = opts && opts.databaseId === 'VjgbbmCoEUnC0NFX2eNdxa' ? RULES : LEARN;
+    return Promise.resolve({ results: data, hasMore: false, nextCursor: '' });
+  }
+} };
+</script>
+<script data-page-node-id="77rUIVoC3nwb4u3OIAfkUz" data-pnid-children="4SG7yWgAyqGMGona8853bu">
+(function () {
+  var sp = window.__SMART_PAGE__ || null;
+  var db = (sp && sp.database) ? sp.database : null;
+  var DATABASE_ID = 'vzGB2OwC0GqkLXWSjg7cuu';
+  var tpl = document.getElementById('card-tpl');
+
+  function MARK(el) {
+    if (!el) return;
+    try {
+      el.setAttribute('data-sp-bindable', 'database');
+      el.setAttribute('data-sp-database-id', DATABASE_ID);
+    } catch (e) {}
+  }
+
+  function newEl(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined && text !== null) e.textContent = String(text);
+    return e;
+  }
+
+  function txt(el, v) { if (el) el.textContent = (v === null || v === undefined) ? '' : String(v); }
+
+  function dayOf(v) {
+    if (!v) return '';
+    if (typeof v === 'string') return v.slice(0, 10);
+    if (v.date) return String(v.date).slice(0, 10);
+    return '';
+  }
+
+  function todayStr() {
+    var d = new Date(), m = d.getMonth() + 1, dd = d.getDate();
+    return d.getFullYear() + '-' + (m < 10 ? '0' + m : m) + '-' + (dd < 10 ? '0' + dd : dd);
+  }
+
+  function linesOf(v) {
+    if (!v) return [];
+    var arr = String(v).split('\n'), out = [];
+    for (var i = 0; i < arr.length; i++) {
+      var s = arr[i].replace(/\r/g, '').trim();
+      if (s) out.push(s);
+    }
+    return out;
+  }
+
+  function splitPipe(line, n) {
+    var p = line.split('|'), out = [];
+    for (var i = 0; i < n; i++) out.push(p[i] !== undefined ? p[i].trim() : '');
+    if (p.length > n) out[n - 1] = p.slice(n - 1).join('|').trim();
+    return out;
+  }
+
+  function parseGloss(v) {
+    var ls = linesOf(v), out = [];
+    for (var i = 0; i < ls.length; i++) {
+      var p = ls[i].split('|');
+      if (p.length >= 5) {
+        out.push({ word: p[0].trim(), ipa: p[1].trim(), pos: p[2].trim(),
+                   cn: p[3].trim(), freq: p[4].trim(),
+                   ex: p.length > 5 ? p.slice(5).join('|').trim() : '' });
+      } else { out.push({ word: ls[i], ipa: '', pos: '', cn: '', freq: '', ex: '' }); }
+    }
+    return out;
+  }
+
+  function parsePatterns(v) {
+    var ls = linesOf(v), out = [];
+    for (var i = 0; i < ls.length; i++) {
+      var k = ls[i].lastIndexOf('|');
+      if (k > 0) out.push({ en: ls[i].slice(0, k).trim(), cn: ls[i].slice(k + 1).trim() });
+      else out.push({ en: ls[i], cn: '' });
+    }
+    return out;
+  }
+
+  function parseDiffs(v) {
+    var ls = linesOf(v), out = [];
+    for (var i = 0; i < ls.length; i++) {
+      var k = ls[i].indexOf('—');
+      if (k > 0) out.push({ key: ls[i].slice(0, k).trim(), val: ls[i].slice(k + 1).trim() });
+      else out.push({ key: '', val: ls[i] });
+    }
+    return out;
+  }
+
+  function parseStruct(v) {
+    var ls = linesOf(v), out = [];
+    for (var i = 0; i < ls.length; i++) {
+      var p = splitPipe(ls[i], 3);
+      out.push({ step: p[0], en: p[1], note: p[2] });
+    }
+    return out;
+  }
+
+  var ROUNDS = ['新学', '第1轮', '第2轮', '第3轮', '第4轮', '第5轮', '已巩固'];
+  var ROUND_IDS = ['swz9ds9hnptx1ecr', 'imsuvvwqpnv9sds0', 'botfbvhyz73xr3ah',
+                   'm46hg6j4g0h7657y', '9po083n72ij26dt2', 'wuv55zu4b52m52po', 'gqaqv9qt1bvpkuvv'];
+  var STATUS_RECORDED_ID = '974ig6xnh47p9rzi'; // 练习状态「已录制」
+  var INTERVALS = [1, 2, 4, 7, 15]; // 艾宾浩斯：次日→第2天→第4天→第7天→第15天
+  var REFRESH_FN = null;
+  function roundIndex(v) {
+    for (var i = 0; i < ROUNDS.length; i++) { if (ROUNDS[i] === (v || '')) return i; }
+    return -1;
+  }
+
+  function addDays(base, delta) {
+    var p = base.split('-');
+    var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]) + delta);
+    var m = d.getMonth() + 1, dd = d.getDate();
+    return d.getFullYear() + '-' + (m < 10 ? '0' + m : m) + '-' + (dd < 10 ? '0' + dd : dd);
+  }
+
+  function updateEbbing(node, row) {
+    var rEl = node.querySelector('[data-field="复习轮次"]');
+    var cur = roundIndex(row['复习轮次']);
+    txt(rEl, row['复习轮次'] || '新学');
+    var dots = node.querySelectorAll('.ebbing .dot');
+    for (var d = 0; d < dots.length; d++) {
+      var idx = parseInt(dots[d].getAttribute('data-i'), 10);
+      if (cur >= 6 || idx < cur) dots[d].className = 'dot done';
+      else if (idx === cur) dots[d].className = 'dot now';
+      else dots[d].className = 'dot';
+    }
+    var nd = node.querySelector('[data-field="下次复习"]');
+    txt(nd, cur >= 6 ? '已巩固' : (row['下次复习'] ? '下次 ' + dayOf(row['下次复习']) : ''));
+  }
+
+  function markDone(row, node, btn) {
+    if (!db || typeof db.updateRecord !== 'function') {
+      btn.textContent = '离线快照 · 打卡请用资料库页面';
+      return;
+    }
+    var cur = roundIndex(row['复习轮次']);
+    if (cur < 0) cur = 0;
+    if (cur >= 6) { btn.disabled = true; btn.textContent = '✓ 已巩固'; return; }
+    var next = cur + 1;
+    var props = {
+      '练习状态': { select: STATUS_RECORDED_ID },
+      '复习轮次': { select: ROUND_IDS[next] }
+    };
+    var nextDate = '';
+    if (next < 6) {
+      nextDate = addDays(todayStr(), INTERVALS[cur]);
+      props['下次复习'] = { date: nextDate + 'T00:00:00Z' };
+    }
+    btn.disabled = true;
+    btn.textContent = '记录中…';
+    db.updateRecord({ databaseId: DATABASE_ID, recordId: row._id, properties: props })
+      .then(function () {
+        row['练习状态'] = '已录制';
+        row['复习轮次'] = ROUNDS[next];
+        row['下次复习'] = nextDate ? nextDate + 'T00:00:00Z' : row['下次复习'];
+        updateEbbing(node, row);
+        btn.className = 'btn btn-done js-done done-ok';
+        btn.textContent = next >= 6 ? '✓ 已巩固' : ('✓ 已记录 · ' + (nextDate ? nextDate.slice(5).replace('-', '月') + '日' : '明天') + ' 复习');
+        if (REFRESH_FN) REFRESH_FN();
+      })
+      .catch(function (err) {
+        console.error('[database] 记录失败:', err);
+        btn.disabled = false;
+        btn.textContent = '记录失败，点我重试';
+      });
+  }
+
+  var SKILL_GROUPS = [
+    ['表达与观点', ['给出观点并留余地', '结构化回答', '礼貌反对', '提出建议', '澄清与核对']],
+    ['业务陈述', ['演示开场', '做推介 / 电梯演讲', '描述趋势与数据', '汇报进展', '用事实讲故事']],
+    ['交易与推进', ['谈判', '敲定交易', '项目管理', '下单与供应商', '传递坏消息']],
+    ['关系与场合', ['求职面试', '社交寒暄', '电话与视频会议', '商务邮件', '客户关系']]
+  ];
+  var TOPIC_ORDER = ['AI 硬件与穿戴', 'AI 商业化与融资', 'AI Agent 与生态',
+                     '消费品牌与出海', '内容平台与营销', '平台规则与合规'];
+  var SKILL_TARGET = 3;
+
+  function speak(text, btn) {
+    var label = btn ? (btn.getAttribute('data-label') || '▶ 朗读全文') : '';
+    try {
+      if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) {
+        if (btn) btn.textContent = '环境不支持朗读';
+        return;
+      }
+      window.speechSynthesis.cancel();
+      var u = new window.SpeechSynthesisUtterance(String(text || '').replace(/\n/g, ' '));
+      u.lang = 'en-US'; u.rate = 0.92; u.pitch = 1;
+      var vs = window.speechSynthesis.getVoices() || [];
+      for (var i = 0; i < vs.length; i++) {
+        if (vs[i].lang && vs[i].lang.toLowerCase().indexOf('en') === 0) { u.voice = vs[i]; break; }
+      }
+      if (btn) {
+        btn.textContent = '朗读中…';
+        var reset = function () { btn.textContent = label; };
+        u.onend = reset; u.onerror = reset;
+      }
+      window.speechSynthesis.speak(u);
+    } catch (e) { if (btn) btn.textContent = label; }
+  }
+
+  function fillStruct(ol, raw) {
+    if (!ol) return;
+    ol.textContent = '';
+    var ss = parseStruct(raw);
+    for (var i = 0; i < ss.length; i++) {
+      var li = newEl('li');
+      li.appendChild(newEl('div', 's-step', ss[i].step));
+      li.appendChild(newEl('span', 's-en', ss[i].en));
+      if (ss[i].note) li.appendChild(newEl('span', 's-note', ss[i].note));
+      ol.appendChild(li);
+      MARK(li);
+    }
+  }
+
+  function fillGloss(tbody, raw) {
+    if (!tbody) return;
+    tbody.textContent = '';
+    var gs = parseGloss(raw);
+    for (var i = 0; i < gs.length; i++) {
+      var g = gs[i], tr = newEl('tr');
+      tr.appendChild(newEl('td', 'g-word', g.word));
+      var tdIpa = newEl('td');
+      if (g.ipa) tdIpa.appendChild(newEl('span', 'g-ipa', g.ipa));
+      tr.appendChild(tdIpa);
+      tr.appendChild(newEl('td', 'g-pos', g.pos));
+      var tdCn = newEl('td', 'g-cn', g.cn);
+      if (g.ex) tdCn.appendChild(newEl('span', 'g-ex', g.ex));
+      tr.appendChild(tdCn);
+      tr.appendChild(newEl('td', 'g-freq', g.freq));
+      tbody.appendChild(tr);
+      MARK(tr);
+    }
+  }
+
+  function fillPatterns(ul, raw) {
+    if (!ul) return;
+    ul.textContent = '';
+    var ps = parsePatterns(raw);
+    for (var i = 0; i < ps.length; i++) {
+      var li = newEl('li');
+      li.appendChild(newEl('span', 'p-en', ps[i].en));
+      if (ps[i].cn) li.appendChild(newEl('span', 'p-cn', ps[i].cn));
+      ul.appendChild(li);
+      MARK(li);
+    }
+  }
+
+  function fillDiffs(ul, raw) {
+    if (!ul) return;
+    ul.textContent = '';
+    var ds = parseDiffs(raw);
+    for (var i = 0; i < ds.length; i++) {
+      var li = newEl('li');
+      if (ds[i].key) {
+        li.appendChild(newEl('span', 'd-key', ds[i].key));
+        li.appendChild(document.createTextNode(' — '));
+      }
+      li.appendChild(document.createTextNode(ds[i].val));
+      ul.appendChild(li);
+      MARK(li);
+    }
+  }
+
+  function joinList(v) {
+    if (!v) return '';
+    if (Object.prototype.toString.call(v) === '[object Array]') return v.join(' · ');
+    return String(v);
+  }
+
+  function buildCard(row, isMain, anchorId) {
+    var node = tpl.cloneNode(true);
+    node.id = anchorId || '';
+    node.className = 'card ' + (isMain ? 'is-main' : 'is-alt');
+    node.style.display = '';
+
+    var fType = node.querySelector('[data-field="类型"]');
+    txt(fType, row['类型'] || '');
+    if (fType && String(row['类型'] || '') !== '主推') fType.className = 'badge badge-type alt';
+    txt(node.querySelector('[data-field="领域"]'), row['领域'] || '');
+    txt(node.querySelector('[data-field="难度等级"]'), row['难度等级'] || '');
+    txt(node.querySelector('[data-field="播报日期"]'), dayOf(row['播报日期']));
+    txt(node.querySelector('[data-field="训练技能点"]'), joinList(row['训练技能点']));
+    txt(node.querySelector('[data-field="主题线"]'), joinList(row['主题线']));
+    txt(node.querySelector('[data-field="英文标题"]'), row['英文标题'] || '');
+    txt(node.querySelector('[data-field="中文标题"]'), row['中文标题'] || '');
+    txt(node.querySelector('[data-field="播报稿"]'), row['播报稿'] || '');
+    txt(node.querySelector('[data-field="中文翻译"]'), row['中文翻译'] || '');
+
+    fillStruct(node.querySelector('[data-field="口播结构"]'), row['口播结构']);
+    fillGloss(node.querySelector('[data-field="术语表"]'), row['术语表']);
+    fillPatterns(node.querySelector('[data-field="商务句型"]'), row['商务句型']);
+    fillDiffs(node.querySelector('[data-field="理解难点"]'), row['理解难点']);
+
+    var link = node.querySelector('[data-field="来源链接"]');
+    var lv = row['来源链接'], lurl = '', ltext = '原文';
+    if (lv && typeof lv === 'object') { lurl = lv.link || ''; ltext = lv.text || '原文'; }
+    else if (typeof lv === 'string') { lurl = lv; }
+    if (link) {
+      if (lurl) link.setAttribute('href', lurl); else link.removeAttribute('href');
+      txt(link, ltext);
+      MARK(link);
+    }
+
+    updateEbbing(node, row);
+    MARK(node.querySelector('[data-field="复习轮次"]'));
+    MARK(node.querySelector('[data-field="下次复习"]'));
+
+    var playBtn = node.querySelector('.js-play');
+    if (playBtn) {
+      playBtn.setAttribute('data-label', '▶ 朗读全文');
+      playBtn.addEventListener('click', function () { speak(row['播报稿'] || '', this); });
+    }
+    var blurBtn = node.querySelector('.js-blur');
+    if (blurBtn) {
+      blurBtn.addEventListener('click', function () {
+        var on = node.className.indexOf('hidden-cn') >= 0;
+        node.className = on ? node.className.replace(' hidden-cn', '') : node.className + ' hidden-cn';
+        this.className = on ? 'btn js-blur' : 'btn js-blur on';
+        this.textContent = on ? '遮中文' : '显示中文';
+      });
+    }
+    var blkHds = node.querySelectorAll('.blk-hd');
+    for (var b = 0; b < blkHds.length; b++) {
+      (function (hd) {
+        hd.addEventListener('click', function () {
+          var blk = hd.parentNode;
+          var shut = blk.className.indexOf('collapsed') >= 0;
+          blk.className = shut ? blk.className.replace(' collapsed', '') : blk.className + ' collapsed';
+          var c = hd.querySelector('.caret');
+          if (c) c.textContent = shut ? '▾' : '▸';
+        });
+      })(blkHds[b]);
+    }
+    var ctabs = node.querySelectorAll('.ctab');
+    for (var c2 = 0; c2 < ctabs.length; c2++) {
+      (function (tab) {
+        tab.addEventListener('click', function () {
+          var key = tab.getAttribute('data-ctab');
+          var ts = node.querySelectorAll('.ctab');
+          for (var i = 0; i < ts.length; i++) {
+            ts[i].className = 'ctab' + (ts[i] === tab ? ' on' : '');
+          }
+          var panes = node.querySelectorAll('.ctab-pane');
+          for (var j = 0; j < panes.length; j++) {
+            panes[j].className = 'ctab-pane' +
+              (panes[j].getAttribute('data-pane') === key ? ' on' : '');
+          }
+        });
+      })(ctabs[c2]);
+    }
+    var doneBtn = node.querySelector('.js-done');
+    if (doneBtn) {
+      if (roundIndex(row['复习轮次']) >= 6) {
+        doneBtn.disabled = true;
+        doneBtn.textContent = '✓ 已巩固';
+        doneBtn.className = 'btn btn-done js-done done-ok';
+      } else {
+        doneBtn.addEventListener('click', function () { markDone(row, node, this); });
+      }
+    }
+    var marked = node.querySelectorAll('[data-sp-bindable]');
+    for (var m = 0; m < marked.length; m++) MARK(marked[m]);
+    return node;
+  }
+
+  function stateBox(title, desc) {
+    var box = newEl('div', 'state');
+    box.appendChild(newEl('b', null, title));
+    box.appendChild(document.createTextNode(desc));
+    return box;
+  }
+
+  function kpi(value, label, sub) {
+    var d = newEl('div', 'kpi');
+    d.appendChild(newEl('div', 'kv', value));
+    d.appendChild(newEl('div', 'kl', label));
+    if (sub) d.appendChild(newEl('div', 'ks', sub));
+    return d;
+  }
+
+  function renderProgress(rows) {
+    var sec = document.getElementById('progress-sec');
+    sec.style.display = '';
+
+    var byDate = {}, dates = [];
+    for (var i = 0; i < rows.length; i++) {
+      var d = dayOf(rows[i]['播报日期']) || '未标日期';
+      if (!byDate[d]) { byDate[d] = 0; dates.push(d); }
+      byDate[d]++;
+    }
+
+    var skillCount = {}, covered = 0, totalTerms = 0;
+    var learning = 0, doneCount = 0;
+    for (var r = 0; r < rows.length; r++) {
+      var done = String(rows[r]['练习状态'] || '') === '已录制';
+      if (done) doneCount++;
+      var sk = rows[r]['训练技能点'];
+      if (done && sk && Object.prototype.toString.call(sk) === '[object Array]') {
+        for (var s = 0; s < sk.length; s++) skillCount[sk[s]] = (skillCount[sk[s]] || 0) + 1;
+      }
+      totalTerms += linesOf(rows[r]['术语表']).length;
+      if (String(rows[r]['复习轮次'] || '') !== '已巩固') learning++;
+    }
+    for (var k in skillCount) { if (skillCount.hasOwnProperty(k)) covered++; }
+
+    var kpis = document.getElementById('kpis');
+    kpis.textContent = '';
+    kpis.appendChild(kpi(String(doneCount), '已复述', '点「完成本次复述」才会计入'));
+    kpis.appendChild(kpi(covered + ' / 20', '已掌握技能点', '只按已复述的素材统计'));
+    kpis.appendChild(kpi(String(rows.length), '累计素材', '覆盖 ' + dates.length + ' 天'));
+    kpis.appendChild(kpi(String(learning), '复习进行中', '尚未巩固'));
+    var sum = document.getElementById('progress-summary');
+    if (sum) sum.textContent = '已复述 ' + doneCount + ' 篇 · 技能点 ' + covered + '/20 · 复习中 ' + learning;
+
+    var map = document.getElementById('skill-map');
+    map.textContent = '';
+    for (var g = 0; g < SKILL_GROUPS.length; g++) {
+      var cat = newEl('div', 'map-cat');
+      cat.appendChild(newEl('div', 'map-cat-hd', SKILL_GROUPS[g][0]));
+      var list = SKILL_GROUPS[g][1];
+      for (var j = 0; j < list.length; j++) {
+        var nm = list[j];
+        var n = skillCount[nm] || 0;
+        var row = newEl('div', 'skill' + (n >= SKILL_TARGET ? ' full' : (n === 0 ? ' zero' : '')));
+        row.appendChild(newEl('span', 'sn', nm));
+        var bar = newEl('span', 'bar');
+        var fill = newEl('span', 'fill');
+        fill.style.width = Math.min(100, Math.round(n / SKILL_TARGET * 100)) + '%';
+        bar.appendChild(fill);
+        row.appendChild(bar);
+        row.appendChild(newEl('span', 'sv', n >= SKILL_TARGET ? '✓ ' + n + ' 篇' : n + ' 篇'));
+        cat.appendChild(row);
+      }
+      map.appendChild(cat);
+    }
+  }
+
+  function renderTopics(rows, jump) {
+    var counts = {}, latest = {}, dates = {};
+    for (var i = 0; i < rows.length; i++) {
+      var ts = rows[i]['主题线'];
+      if (!ts || Object.prototype.toString.call(ts) !== '[object Array]') continue;
+      var dd = dayOf(rows[i]['播报日期']);
+      for (var t = 0; t < ts.length; t++) {
+        var nm = ts[t];
+        counts[nm] = (counts[nm] || 0) + 1;
+        if (!latest[nm] || dd > latest[nm].d) {
+          latest[nm] = { d: dd, title: rows[i]['中文标题'] || rows[i]['英文标题'] || '' };
+        }
+        if (!dates[nm]) dates[nm] = {};
+        dates[nm][dd] = 1;
+      }
+    }
+    var names = [];
+    for (var o = 0; o < TOPIC_ORDER.length; o++) { if (counts[TOPIC_ORDER[o]]) names.push(TOPIC_ORDER[o]); }
+    for (var k2 in counts) {
+      if (counts.hasOwnProperty(k2) && names.indexOf(k2) < 0) names.push(k2);
+    }
+    if (!names.length) return;
+
+    document.getElementById('topic-sec').style.display = '';
+    var box = document.getElementById('topic-list');
+    box.textContent = '';
+    for (var n2 = 0; n2 < names.length; n2++) {
+      var name = names[n2];
+      var cnt = counts[name];
+      var span = 0;
+      for (var k3 in dates[name]) { if (dates[name].hasOwnProperty(k3)) span++; }
+      var card = newEl('div', 'topic');
+      var hd = newEl('div', 'topic-hd');
+      hd.appendChild(newEl('span', 'topic-nm', name));
+      hd.appendChild(newEl('span', 'topic-cnt', cnt + ' 篇'));
+      var bar = newEl('span', 'topic-bar');
+      var fill = newEl('span', 'topic-fill');
+      fill.style.width = Math.min(100, Math.round(cnt / 5 * 100)) + '%';
+      bar.appendChild(fill);
+      hd.appendChild(bar);
+      var caret = newEl('span', 'topic-caret', '▸');
+      hd.appendChild(caret);
+      card.appendChild(hd);
+      card.appendChild(newEl('div', 'topic-last',
+        '跨度 ' + span + ' 天 · 最近：' + (latest[name] ? latest[name].title : '') +
+        (cnt >= 3 ? '（已可做专题串讲）' : '')));
+
+      var items = [];
+      for (var r3 = 0; r3 < rows.length; r3++) {
+        var ts3 = rows[r3]['主题线'];
+        if (ts3 && Object.prototype.toString.call(ts3) === '[object Array]' && ts3.indexOf(name) >= 0) {
+          items.push({ date: dayOf(rows[r3]['播报日期']) || '',
+                       title: rows[r3]['中文标题'] || rows[r3]['英文标题'] || '未命名',
+                       row: rows[r3] });
+        }
+      }
+      items.sort(function (a, b) { return a.date < b.date ? 1 : (a.date > b.date ? -1 : 0); });
+
+      var ilist = newEl('div', 'topic-items');
+      for (var q = 0; q < items.length; q++) {
+        (function (it) {
+          var line = newEl('div', 't-item');
+          line.appendChild(newEl('span', 't-idx', it.date ? it.date.slice(5) : '—'));
+          line.appendChild(newEl('span', 't-ti', it.title));
+          line.setAttribute('title', '查看这篇素材');
+          line.addEventListener('click', function (ev) {
+            if (ev && ev.stopPropagation) ev.stopPropagation();
+            if (jump) jump(it.row);
+          });
+          ilist.appendChild(line);
+        })(items[q]);
+      }
+      card.appendChild(ilist);
+      card.appendChild(newEl('div', 'topic-hint', '点一下展开这条线上的 ' + items.length + ' 篇素材'));
+
+      (function (c, ca) {
+        c.addEventListener('click', function () {
+          var open = c.className.indexOf('open') >= 0;
+          c.className = open ? 'topic' : 'topic open';
+          ca.textContent = open ? '▸' : '▾';
+        });
+      })(card, caret);
+      box.appendChild(card);
+    }
+  }
+
+  function renderRules(rules) {
+    if (!rules || !rules.length) return;
+    document.getElementById('rule-sec').style.display = '';
+    var box = document.getElementById('rule-list');
+    box.textContent = '';
+    var sorted = rules.slice(0);
+    sorted.sort(function (a, b) {
+      var wa = Number(a['权重'] || 0), wb = Number(b['权重'] || 0);
+      return wb - wa;
+    });
+    for (var i = 0; i < sorted.length; i++) {
+      var r = sorted[i];
+      if (String(r['状态'] || '生效') !== '生效') continue;
+      var card = newEl('div', 'rule');
+      var hd = newEl('div', 'rule-hd');
+      hd.appendChild(newEl('span', 'rule-nm', r['规则名称'] || ''));
+      hd.appendChild(newEl('span', 'rule-tag', r['类型'] || ''));
+      hd.appendChild(newEl('span', 'rule-w', '权重 ' + (r['权重'] === undefined ? '-' : r['权重'])));
+      card.appendChild(hd);
+      card.appendChild(newEl('div', 'rule-body', r['规则内容'] || ''));
+      card.appendChild(newEl('div', 'rule-src', '来源：' + (r['来源反馈'] || '')));
+      box.appendChild(card);
+    }
+  }
+
+  /* ---- 页面级分页切换（一级导航） ---- */
+  var SEC_DEFS = [
+    ['today-sec', '最新一期'],
+    ['review-sec', '今天该复习'],
+    ['arch-sec', '往期归档'],
+    ['topic-sec', '主题线'],
+    ['progress-sec', '我的积累'],
+    ['rule-sec', '选题规则']
+  ];
+  var SEC_LINKS = [];
+  var CUR_PAGE = '';
+  function hasContent(el) { return !!el && el.style.display !== 'none'; }
+  function setPage(id, keepScroll) {
+    var wrap = document.querySelector('.wrap');
+    if (!wrap) return;
+    wrap.className = 'wrap paged';
+    var secs = wrap.querySelectorAll('.sec'), found = false;
+    for (var i = 0; i < secs.length; i++) {
+      var s = secs[i];
+      var on = (s.id === id) && hasContent(s);
+      s.className = s.className.replace(/ ?pg-on/g, '') + (on ? ' pg-on' : '');
+      if (on) found = true;
+    }
+    if (!found) {
+      for (var j = 0; j < secs.length; j++) {
+        if (hasContent(secs[j])) { secs[j].className += ' pg-on'; id = secs[j].id; found = true; break; }
+      }
+    }
+    CUR_PAGE = found ? id : '';
+    for (var k = 0; k < SEC_LINKS.length; k++) {
+      SEC_LINKS[k].btn.className = 'secnav-a' + (SEC_LINKS[k].id === CUR_PAGE ? ' on' : '');
+    }
+    if (!keepScroll) { try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (e) {} }
+  }
+  function renderSecNav() {
+    var bar = document.getElementById('secnav'), inner = document.getElementById('secnav-in');
+    if (!bar || !inner) return;
+    inner.textContent = '';
+    SEC_LINKS = [];
+    for (var i = 0; i < SEC_DEFS.length; i++) {
+      var sec = document.getElementById(SEC_DEFS[i][0]);
+      if (!hasContent(sec)) continue;
+      (function (id, name) {
+        var b = newEl('button', 'secnav-a', name);
+        b.setAttribute('type', 'button');
+        b.addEventListener('click', function () { setPage(id); });
+        inner.appendChild(b);
+        SEC_LINKS.push({ id: id, btn: b });
+      })(SEC_DEFS[i][0], SEC_DEFS[i][1]);
+    }
+    if (!SEC_LINKS.length) { bar.style.display = 'none'; return; }
+    bar.style.display = '';
+    setPage(CUR_PAGE || SEC_LINKS[0].id);
+  }
+
+  function renderData(rows, rules) {
+    var stateSlot = document.getElementById('state-slot');
+    stateSlot.textContent = '';
+
+    if (!rows || !rows.length) {
+      stateSlot.appendChild(stateBox('还没有素材', '学习库目前是空的。等每日定时任务写入，或直接在表里手动加一行。'));
+      document.getElementById('hdr-sub').textContent = '学习库当前为空';
+      return;
+    }
+
+    renderProgress(rows);
+
+    var byDate = {}, dates = [];
+    for (var i = 0; i < rows.length; i++) {
+      var d = dayOf(rows[i]['播报日期']) || '未标日期';
+      if (!byDate[d]) { byDate[d] = []; dates.push(d); }
+      byDate[d].push(rows[i]);
+    }
+    dates.sort(function (a, b) { return a < b ? 1 : (a > b ? -1 : 0); });
+
+    var latest = dates[0], latestRows = byDate[latest];
+    var main = null, alts = [];
+    for (var m = 0; m < latestRows.length; m++) {
+      if (String(latestRows[m]['类型'] || '') === '主推') {
+        if (main) alts.push(main);
+        main = latestRows[m];
+      } else {
+        alts.push(latestRows[m]);
+      }
+    }
+    if (!main && latestRows.length) { main = latestRows[0]; alts.shift(); }
+
+    document.getElementById('today-sec').style.display = '';
+    document.getElementById('today-title').textContent = '最新一期 · ' + latest;
+    document.getElementById('today-note').textContent = '主推 1 篇精读，备选 ' + alts.length + ' 篇按需看';
+
+    var mainSlot = document.getElementById('main-slot'), altSlot = document.getElementById('alt-slot');
+    mainSlot.textContent = ''; altSlot.textContent = '';
+    if (main) mainSlot.appendChild(buildCard(main, true, 'card-' + latest + '-0'));
+    for (var a = 0; a < alts.length; a++) altSlot.appendChild(buildCard(alts[a], false, 'card-' + latest + '-' + (a + 1)));
+
+    /* ---- 目录与日期导航 ---- */
+    function orderedOf(items) {
+      return items.slice(0).sort(function (x, y) {
+        var xm = String(x['类型'] || '') === '主推' ? 0 : 1;
+        var ym = String(y['类型'] || '') === '主推' ? 0 : 1;
+        return xm - ym;
+      });
+    }
+    function anchorFor(date, row) {
+      var ordered = orderedOf(byDate[date] || []);
+      for (var i = 0; i < ordered.length; i++) {
+        if (ordered[i] === row) return 'card-' + date + '-' + i;
+      }
+      return '';
+    }
+    function shiftDay(base, delta) {
+      var p = base.split('-');
+      var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]) + delta);
+      var m = d.getMonth() + 1, dd = d.getDate();
+      return d.getFullYear() + '-' + (m < 10 ? '0' + m : m) + '-' + (dd < 10 ? '0' + dd : dd);
+    }
+    function relLabel(date) {
+      var t = todayStr();
+      if (date === t) return '今天';
+      if (date === shiftDay(t, -1)) return '昨天';
+      if (date === shiftDay(t, -2)) return '前天';
+      return '';
+    }
+    function closeNav() {
+      if (document.body.classList) document.body.classList.remove('nav-open');
+    }
+    function openArchDate(date) {
+      var g = document.getElementById('arch-' + date);
+      if (!g) return;
+      if (g.className.indexOf('open') < 0) {
+        var hd = g.querySelector('.ag-hd');
+        if (hd) hd.click();
+      }
+    }
+    function jumpToRow(row) {
+      var d = dayOf(row['播报日期']) || '未标日期';
+      if (d === latest) {
+        setPage('today-sec');
+      } else {
+        openArchDate(d);
+        setPage('arch-sec');
+      }
+      var target = document.getElementById(anchorFor(d, row));
+      if (target) {
+        window.setTimeout(function () {
+          target.scrollIntoView({ behavior: 'instant', block: 'start' });
+        }, 60);
+      }
+    }
+    function buildArchGroup(date, items) {
+      var g = newEl('div', 'ag');
+      g.id = 'arch-' + date;
+      var hd = newEl('div', 'ag-hd');
+      hd.appendChild(newEl('span', 'ag-date', date));
+      var rel = relLabel(date);
+      if (rel) hd.appendChild(newEl('span', 'ag-rel', rel));
+      hd.appendChild(newEl('span', 'ag-n', items.length + ' 篇'));
+      hd.appendChild(newEl('span', 'ag-caret', '▸'));
+      g.appendChild(hd);
+      var body = newEl('div', 'ag-body');
+      g.appendChild(body);
+      var filled = false;
+      hd.addEventListener('click', function () {
+        if (!filled) {
+          filled = true;
+          var ordered = orderedOf(items);
+          for (var i = 0; i < ordered.length; i++) {
+            body.appendChild(buildCard(ordered[i], String(ordered[i]['类型'] || '') === '主推', 'card-' + date + '-' + i));
+          }
+        }
+        var open = g.className.indexOf('open') >= 0;
+        g.className = open ? 'ag' : 'ag open';
+        var c = hd.querySelector('.ag-caret');
+        if (c) c.textContent = open ? '▸' : '▾';
+      });
+      return g;
+    }
+    function buildDateNav() {
+      var frag = document.createDocumentFragment();
+      var hd = newEl('div', 'nav-hd');
+      hd.appendChild(newEl('span', 'nt', '日期'));
+      var close = newEl('button', 'nx', '收起 ✕');
+      close.setAttribute('type', 'button');
+      close.addEventListener('click', closeNav);
+      hd.appendChild(close);
+      frag.appendChild(hd);
+
+      frag.appendChild(newEl('div', 'sn-sum', '共 ' + rows.length + ' 篇 · ' + dates.length + ' 天'));
+
+      var list = newEl('div', 'nav-sec');
+      for (var k = 0; k < dates.length; k++) {
+        (function (date, idx) {
+          var row = newEl('div', 'nav-date' + (idx === 0 ? ' main-item' : ''));
+          var rel = relLabel(date);
+          if (rel) row.appendChild(newEl('span', 'rel', rel));
+          row.appendChild(newEl('span', 'dd', date));
+          row.appendChild(newEl('span', 'dn', byDate[date].length + ' 篇'));
+          row.addEventListener('click', function () {
+            if (idx === 0) {
+              setPage('today-sec');
+            } else {
+              openArchDate(date);
+              setPage('arch-sec');
+              window.setTimeout(function () {
+                var g = document.getElementById('arch-' + date);
+                if (g) g.scrollIntoView({ behavior: 'instant', block: 'start' });
+              }, 60);
+            }
+            closeNav();
+          });
+          list.appendChild(row);
+        })(dates[k], k);
+      }
+      frag.appendChild(list);
+      return frag;
+    }
+    function renderNav() {
+      var sn = document.getElementById('sidenav'), nd3 = document.getElementById('nav-drawer');
+      if (sn) { sn.textContent = ''; sn.appendChild(buildDateNav()); }
+      if (nd3) { nd3.textContent = ''; nd3.appendChild(buildDateNav()); }
+    }
+
+    function renderReview() {
+      var today = todayStr(), due = [];
+      for (var r2 = 0; r2 < rows.length; r2++) {
+        var row = rows[r2], nd2 = dayOf(row['下次复习']);
+        if (String(row['复习轮次'] || '') !== '已巩固' && nd2 && nd2 <= today) due.push(row);
+      }
+      var rsec = document.getElementById('review-sec');
+      if (due.length) {
+        rsec.style.display = '';
+        document.getElementById('review-count').textContent = String(due.length);
+        var rl = document.getElementById('review-list');
+        rl.textContent = '';
+        for (var q = 0; q < due.length; q++) {
+          var it = newEl('div', 'review-item');
+          it.appendChild(newEl('span', 'rt', due[q]['中文标题'] || due[q]['英文标题'] || '未命名'));
+          it.appendChild(newEl('span', 'rmeta',
+            (due[q]['复习轮次'] || '') + ' · 到期 ' + dayOf(due[q]['下次复习'])));
+          (function (row, el) {
+            el.style.cursor = 'pointer';
+            el.title = '点击跳到这篇素材';
+            el.addEventListener('click', function () { jumpToRow(row); });
+          })(due[q], it);
+          rl.appendChild(it);
+        }
+      } else { rsec.style.display = 'none'; }
+    }
+    renderReview();
+    REFRESH_FN = function () { renderProgress(rows); renderReview(); renderSecNav(); };
+
+    renderTopics(rows, jumpToRow);
+
+    var past = dates.slice(1), asec = document.getElementById('arch-sec');
+    if (past.length) {
+      asec.style.display = '';
+      var al = document.getElementById('arch-list');
+      al.textContent = '';
+      for (var p2 = 0; p2 < past.length; p2++) {
+        al.appendChild(buildArchGroup(past[p2], byDate[past[p2]]));
+      }
+    } else { asec.style.display = 'none'; }
+
+    renderRules(rules);
+    renderNav();
+    renderSecNav();
+
+    document.getElementById('hdr-sub').textContent =
+      '共 ' + rows.length + ' 篇素材 · 覆盖 ' + dates.length + ' 天 · 最新更新 ' + latest;
+  }
+
+  function loadRows(startCursor, acc, guard) {
+    acc = acc || []; guard = guard || 0;
+    if (guard > 100) return Promise.resolve(acc);
+    return db.query({
+      databaseId: DATABASE_ID,
+      sorts: [{ property: '播报日期', direction: 'descending' }],
+      pageSize: 200,
+      startCursor: startCursor
+    }).then(function (result) {
+      var list = (result && result.results) ? result.results : [];
+      acc = acc.concat(list);
+      var next = result ? result.nextCursor : '';
+      if (result && result.hasMore && next && next !== startCursor && list.length) {
+        return loadRows(next, acc, guard + 1);
+      }
+      return acc;
+    }).catch(function (err) {
+      console.error('[database] 素材加载失败:', err);
+      throw err;
+    });
+  }
+
+  function loadRules() {
+    return db.query({ databaseId: 'VjgbbmCoEUnC0NFX2eNdxa', pageSize: 100 })
+      .then(function (r) { return (r && r.results) ? r.results : []; })
+      .catch(function () { return []; });
+  }
+
+  function boot() {
+    if (!db || typeof db.query !== 'function') {
+      var slot = document.getElementById('state-slot');
+      slot.appendChild(stateBox('请在资料库中打开本页',
+        '本页内容是从你的「每日英文播报学习库」实时读取的，直接打开本地文件不会显示数据。'));
+      document.getElementById('hdr-sub').textContent = '等待资料库数据';
+      return;
+    }
+    var hd = document.getElementById('rule-hd'), box = document.getElementById('rule-list'),
+        caret = document.getElementById('rule-caret');
+    if (hd && box) {
+      hd.addEventListener('click', function () {
+        var open = box.style.display !== 'none';
+        box.style.display = open ? 'none' : 'grid';
+        if (caret) caret.textContent = open ? '▸' : '▾';
+      });
+    }
+    var fab = document.getElementById('nav-fab'), navMask = document.getElementById('nav-mask');
+    if (fab) fab.addEventListener('click', function () {
+      if (document.body.classList) document.body.classList.add('nav-open');
+    });
+    if (navMask) navMask.addEventListener('click', function () {
+      if (document.body.classList) document.body.classList.remove('nav-open');
+    });
+    var phd = document.getElementById('progress-hd'), pbody = document.getElementById('progress-body'),
+        pcaret = document.getElementById('progress-caret');
+    if (phd && pbody) {
+      phd.addEventListener('click', function () {
+        var open = pbody.style.display !== 'none';
+        pbody.style.display = open ? 'none' : '';
+        if (pcaret) pcaret.textContent = open ? '▸' : '▾';
+      });
+    }
+    Promise.all([loadRows(undefined, [], 0), loadRules()])
+      .then(function (res) { renderData(res[0], res[1]); })
+      .catch(function (err) {
+        console.error('[database] 加载失败:', err);
+        var slot = document.getElementById('state-slot');
+        slot.textContent = '';
+        slot.appendChild(stateBox('素材加载失败', '请刷新页面重试；若持续失败，检查学习表是否正常。'));
+      });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
+</body>
+</html>
