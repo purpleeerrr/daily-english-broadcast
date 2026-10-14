@@ -533,6 +533,7 @@
         <input id="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="11 位手机号">
       </div>
       <div class="row-btn"><button class="btn primary grow" id="send-btn" type="button">获取验证码</button></div>
+      <div class="row-btn"><button class="btn ghost grow" id="to-pwd-btn" type="button">用密码登录</button></div>
     </div>
 
     <div id="step2" hidden>
@@ -545,6 +546,45 @@
         <button class="btn" id="resend-btn" type="button">重发</button>
       </div>
       <p class="tip" id="code-tip"></p>
+    </div>
+
+    <!-- 密码登录：手机号 + 密码，不用等验证码 -->
+    <div id="stepPwd" hidden>
+      <div class="field">
+        <label for="phone-p">手机号</label>
+        <input id="phone-p" type="tel" inputmode="numeric" autocomplete="tel" placeholder="11 位手机号">
+      </div>
+      <div class="field">
+        <label for="pwd">密码</label>
+        <input id="pwd" type="password" autocomplete="current-password" placeholder="登录密码">
+      </div>
+      <div class="row-btn"><button class="btn primary grow" id="pwd-btn" type="button">登录</button></div>
+      <div class="row-btn">
+        <button class="btn ghost grow" id="to-code-btn" type="button">用验证码登录</button>
+        <button class="btn ghost grow" id="to-new-btn" type="button">设置密码</button>
+      </div>
+      <p class="tip">没设过密码就点「设置密码」，用验证码验证一次即可。</p>
+    </div>
+
+    <!-- 设置 / 重置密码：验证码验证一次 → 写新密码 → 直接登录 -->
+    <div id="stepNew" hidden>
+      <p class="tip" style="margin-top:0">用手机验证码验证一次，就能设一个新密码。以后用手机号 + 密码登录，不用再等短信。</p>
+      <div class="field">
+        <label for="phone-n">手机号</label>
+        <input id="phone-n" type="tel" inputmode="numeric" autocomplete="tel" placeholder="11 位手机号">
+      </div>
+      <div class="row-btn"><button class="btn primary grow" id="n-send-btn" type="button">获取验证码</button></div>
+      <div class="field">
+        <label for="ncode">验证码</label>
+        <input id="ncode" type="tel" inputmode="numeric" autocomplete="one-time-code" placeholder="6 位数字">
+      </div>
+      <div class="field">
+        <label for="npwd">新密码</label>
+        <input id="npwd" type="password" autocomplete="new-password" placeholder="至少 8 位">
+      </div>
+      <div class="row-btn"><button class="btn primary grow" id="n-save-btn" type="button">保存并登录</button></div>
+      <div class="row-btn"><button class="btn ghost grow" id="to-pwd-btn2" type="button">返回</button></div>
+      <p class="tip" id="n-tip"></p>
     </div>
 
     <div class="err" id="login-err"></div>
@@ -977,6 +1017,142 @@
       btn.textContent = '登录 / 注册';
       setLoginErr(mapError(e));
     });
+  }
+
+  /* ================= 密码登录 =================
+     云服务的认证原生就支持密码：SDK 的 signInWithPassword → POST /v1/signin {username, password}。
+     已有账号没有密码，所以另给一条路：验证码验证一次 → POST /v1/reset 写新密码。
+     这两个接口直接打同源的 /.cloud/auth/v1 —— WorkBuddy 域名下本身就是同源；
+     Vercel 域名下由 vercel.json 把 /.cloud/* 重写到 api/proxy 转发（服务端发起，不带 Origin）。 */
+  var AUTH = '/.cloud/auth/v1';
+  var LMODE = 'rt_login_mode';   /* 记上次用的登录方式：设过密码就直接给密码屏 */
+
+  /* 与 SDK 内部 normalizePhone 同一套规则：11 位 → '+86 13800138000'。
+     服务端的手机号正则是 ^\+[1-9][0-9]{0,3}\s[0-9]{4,20}$，不归一化会被拒。 */
+  function normPhone(v) {
+    var t = String(v || '').replace(/\D/g, '');
+    if (t.indexOf('0086') === 0) t = t.slice(4);
+    else if (t.indexOf('86') === 0 && t.length === 13) t = t.slice(2);
+    return /^1\d{10}$/.test(t) ? '+86 ' + t : '';
+  }
+  function maskPhone(np) { return np.slice(4, 7) + '****' + np.slice(-4); }
+
+  function authPost(path, body) {
+    return fetch(AUTH + path, {
+      method: 'POST',
+      headers: {
+        'x-wb-webapp-access-key': CONFIG.publishableKey,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    }).then(function (r) {
+      return r.text().then(function (t) {
+        var j = {};
+        try { j = JSON.parse(t) || {}; } catch (e) {}
+        if (!r.ok) {
+          var err = new Error(j.error_description || j.error || ('请求失败 ' + r.status));
+          err.code = j.code || '';
+          err.error = j;
+          throw err;
+        }
+        return j;
+      });
+    });
+  }
+
+  function showLoginStep(which) {
+    ['step1', 'step2', 'stepPwd', 'stepNew'].forEach(function (id) {
+      var el = $(id); if (el) el.hidden = (id !== which);
+    });
+    setLoginErr('');
+  }
+
+  /* ---- 手机号 + 密码 ---- */
+  function submitPassword() {
+    var phone = $('phone-p').value.replace(/\s/g, '');
+    if (!/^1\d{10}$/.test(phone)) { setLoginErr('请输入正确的 11 位手机号'); return; }
+    var pw = $('pwd').value;
+    if (!pw) { setLoginErr('请输入密码。'); return; }
+    setLoginErr('');
+    var b = $('pwd-btn');
+    b.disabled = true; b.textContent = '登录中…';
+    cloud.auth.signInWithPassword({ username: phone, password: pw }).then(function (done) {
+      b.disabled = false; b.textContent = '登录';
+      var err = done && done.error;
+      if (err) {
+        setLoginErr(err.code === 'invalid_username_or_password'
+          ? '手机号或密码不对。还没设过密码就点下面的「设置密码」。'
+          : mapError(err));
+        return;
+      }
+      try { localStorage.setItem(LMODE, 'pwd'); } catch (e) {}
+      SESSION = done.data;
+      enterApp();
+    }, function (e) {
+      b.disabled = false; b.textContent = '登录';
+      setLoginErr(mapError(e));
+    });
+  }
+
+  /* ---- 设置 / 重置密码：验证码验证一次 → 写新密码 → 直接登录 ---- */
+  var pendingNew = null;
+
+  function sendNewCode() {
+    var np = normPhone($('phone-n').value);
+    if (!np) { setLoginErr('请输入正确的 11 位手机号'); return; }
+    setLoginErr('');
+    var b = $('n-send-btn');
+    b.disabled = true; b.textContent = '发送中…';
+    authPost('/verification', { phone_number: np, usage: 'PASSWORD_RESET', target: 'USER' }).then(function (d) {
+      if (!d.verification_id) { b.disabled = false; b.textContent = '获取验证码'; setLoginErr('没拿到验证码编号，再试一次。'); return; }
+      pendingNew = { np: np, vid: d.verification_id };
+      $('n-tip').textContent = '验证码已发到 ' + maskPhone(np) + '。';
+      $('ncode').focus();
+      var n = 60;
+      b.textContent = '重发 ' + n + 's';
+      var t = setInterval(function () {
+        n--;
+        if (n <= 0) { clearInterval(t); b.disabled = false; b.textContent = '获取验证码'; return; }
+        b.textContent = '重发 ' + n + 's';
+      }, 1000);
+    }, function (e) {
+      b.disabled = false; b.textContent = '获取验证码';
+      setLoginErr(mapError(e));
+    });
+  }
+
+  function saveNewPassword() {
+    if (!pendingNew) { setLoginErr('先获取验证码。'); return; }
+    var code = $('ncode').value.replace(/\s/g, '');
+    var pw = $('npwd').value;
+    if (!code) { setLoginErr('请输入验证码。'); return; }
+    if (pw.length < 8) { setLoginErr('密码至少 8 位。'); return; }
+    setLoginErr('');
+    var b = $('n-save-btn');
+    b.disabled = true; b.textContent = '保存中…';
+    authPost('/verification/verify', { verification_id: pendingNew.vid, verification_code: code })
+      .then(function (v) {
+        var tok = (v && v.verification_token) || '';
+        if (!tok) throw new Error('验证码不对或者已经过期，重新获取一次。');
+        return authPost('/reset', {
+          phone_number: pendingNew.np, new_password: pw, verification_token: tok
+        });
+      })
+      .then(function () {
+        return cloud.auth.signInWithPassword({ username: pendingNew.np, password: pw });
+      })
+      .then(function (done) {
+        b.disabled = false; b.textContent = '保存并登录';
+        var err = done && done.error;
+        if (err) { setLoginErr(mapError(err)); return; }
+        try { localStorage.setItem(LMODE, 'pwd'); } catch (e) {}
+        pendingNew = null;
+        SESSION = done.data;
+        enterApp();
+      }, function (e) {
+        b.disabled = false; b.textContent = '保存并登录';
+        setLoginErr(mapError(e));
+      });
   }
 
   /* ================= 数据 ================= */
@@ -2280,6 +2456,24 @@
   $('code').addEventListener('keydown', function (e) { if (e.key === 'Enter') submitCode(); });
   $('phone').addEventListener('keydown', function (e) { if (e.key === 'Enter') sendCode(); });
   $('phone').addEventListener('input', function () { setLoginErr(''); });
+
+  /* 密码登录 / 设置密码：也在 init() 之前绑，SDK 挂了至少界面能点 */
+  var on = function (id, ev, fn) { var el = $(id); if (el) el.addEventListener(ev, fn); };
+  on('to-pwd-btn', 'click', function () { showLoginStep('stepPwd'); $('phone-p').focus(); });
+  on('to-code-btn', 'click', function () { showLoginStep('step1'); });
+  on('to-new-btn', 'click', function () { showLoginStep('stepNew'); });
+  on('to-pwd-btn2', 'click', function () { showLoginStep('stepPwd'); });
+  on('pwd-btn', 'click', submitPassword);
+  on('n-send-btn', 'click', sendNewCode);
+  on('n-save-btn', 'click', saveNewPassword);
+  on('pwd', 'keydown', function (e) { if (e.key === 'Enter') submitPassword(); });
+  on('phone-p', 'keydown', function (e) { if (e.key === 'Enter') $('pwd').focus(); });
+  on('npwd', 'keydown', function (e) { if (e.key === 'Enter') saveNewPassword(); });
+  ['phone-p', 'pwd', 'phone-n', 'ncode', 'npwd'].forEach(function (id) {
+    on(id, 'input', function () { setLoginErr(''); });
+  });
+  /* 之前设过密码就直接给密码屏，省一次点击 */
+  try { if (localStorage.getItem(LMODE) === 'pwd') showLoginStep('stepPwd'); } catch (e) {}
 
   /* 游客入口：不碰 SDK，所以放在 init() 之前先绑上，SDK 挂了也能进 */
   var gb = $('guest-btn');
