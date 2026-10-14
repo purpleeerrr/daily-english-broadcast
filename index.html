@@ -729,6 +729,9 @@
     if (!e) return '出了点问题，稍后再试。';
     var msg = e.message || String(e);
     var code = (e.error && e.error.code) || e.code || '';
+    var kind = (e.error && e.error.kind) || '';
+    /* SDK 前端自己抛的参数错（例如漏传 phone/email），别把英文原话甩给用户 */
+    if (kind === 'invalid-request') return '登录信息没填全，检查一下手机号和密码再试。';
     if (code.indexOf('quota_') === 0 && code !== 'quota_rate_limited') return 'AI 判定的额度用完了，去 WorkBuddy 里看一下用量。';
     if (code === 'quota_rate_limited') return '调用太频繁了，等一会儿再试。';
     if (code.indexOf('auth_') === 0) return '登录状态失效了，重新登录一次。';
@@ -1021,6 +1024,10 @@
 
   /* ================= 密码登录 =================
      云服务的认证原生就支持密码：SDK 的 signInWithPassword → POST /v1/signin {username, password}。
+     ⚠️ 但传给 SDK 的参数必须是 { phone } 或 { email } 二选一：传 username 或两个都不传，SDK 的
+     resolveAuthIdentifier 会直接抛「signInWithPassword requires exactly one of email or phone」。
+     手机号由 SDK 的 normalizePhone 归一化成 '+86 13800138000'（带一个空格），再由它当 username 发出去，
+     所以这里不要自己拼 +86。这也是 REST 直连与走 SDK 的区别：直连 /v1/signin 可以自己给 username。
      已有账号没有密码，所以另给一条路：验证码验证一次 → POST /v1/reset 写新密码。
      这两个接口直接打同源的 /.cloud/auth/v1 —— WorkBuddy 域名下本身就是同源；
      Vercel 域名下由 vercel.json 把 /.cloud/* 重写到 api/proxy 转发（服务端发起，不带 Origin）。 */
@@ -1076,7 +1083,7 @@
     setLoginErr('');
     var b = $('pwd-btn');
     b.disabled = true; b.textContent = '登录中…';
-    cloud.auth.signInWithPassword({ username: phone, password: pw }).then(function (done) {
+    cloud.auth.signInWithPassword({ phone: phone, password: pw }).then(function (done) {
       b.disabled = false; b.textContent = '登录';
       var err = done && done.error;
       if (err) {
@@ -1139,7 +1146,7 @@
         });
       })
       .then(function () {
-        return cloud.auth.signInWithPassword({ username: pendingNew.np, password: pw });
+        return cloud.auth.signInWithPassword({ phone: pendingNew.np, password: pw });
       })
       .then(function (done) {
         b.disabled = false; b.textContent = '保存并登录';
