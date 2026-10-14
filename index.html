@@ -40,33 +40,36 @@
     --warn:#b9832a;
     --shadow:0 1px 2px rgba(92,72,40,.06),0 6px 18px rgba(92,72,40,.08);
     --radius:14px;
-    /* 分组层：--border-2 偏金褐，--grp-bg 比底色再深一档的纸，白卡才能「浮」起来 */
-    --border-2:#cbba98; --grp-bg:#e8dfc9;
+    /* 分组层：--border-2 偏金褐，比 --line 重一档，用来画「组头那条线」
+       （原 --grp-bg 在第三版随板块框一起撤掉了 —— 现在分组靠金轨，不靠底色块） */
+    --border-2:#cbba98;
     /* ── 1999 那一支的金。第二版把不透明度从 .42 提到 .60 —— 上一版淡到看不见，
        等于没做。它仍是氧化黄铜（#987d45/#caae5c），不是纯金，压在纸上不会发亮刺眼。 ── */
     --gold:#987d45; --gold2:#c9a94f; --gold-line:rgba(152,125,69,.60);
+    /* ── 第三版新增：把「装饰」换成「版式」要用的两支色 ──
+       --plate / --plate-2：金属标牌的深棕底板（§5.3 第二种容器 + §4.1 第 7 条角上那块牌）。
+                           §8 明写「深色底永不用纯黑」，所以是带红味的棕，不是 #000。
+       --gold-emb：牌面上的浮雕字色，比 --gold2 亮一档，压在棕底上才浮得出来。 */
+    --plate:#3b2a1e; --plate-2:#4b352a; --gold-emb:#e6cd93;
     /* 字体分工：名字走 --serif，数字走 --num，正文不动 */
     --serif:"Noto Serif SC","Songti SC",serif;
     --num:"Cinzel","Noto Serif SC -Num",ui-monospace,SFMono-Regular,Menlo,monospace;
   }
 
-  /* ---------- 1999 的三条图形规则（回归自「UI视觉参考_重返未来1999_v1.md §4」）----------
-     ① 框线：不用整条 border，改成「一条 1px 金线 + 两端各一枚 3–4px 菱形收头」。
-        §4.1 末尾的原话就是「这一条就能立刻有 1999 味，成本极低」。
-     ② 半调网点：规则排列的圆点当质感，极低透明度，只做底不抢内容（§4.3）。
-     ③ 疏密：8:2 甚至 9:1 —— 大面积留白托局部细节，所以板块间距要拉开。 */
-  .grule{position:relative;height:1px;background:var(--gold-line)}
-  .grule::before,.grule::after{content:'';position:absolute;top:50%;width:4px;height:4px;
-    margin-top:-2px;background:var(--gold2);transform:rotate(45deg)}
-  .grule::before{left:0} .grule::after{right:0}
-  /* 菱形串：边中段的装饰中继，绝对定位一枚即可（§4.1 第 4 条） */
-  .glattice{position:absolute;height:7px;width:34px;opacity:.75;
-    background-image:
-      linear-gradient(135deg,transparent 46%,var(--gold2) 46% 54%,transparent 54%),
-      linear-gradient(45deg,transparent 46%,var(--gold2) 46% 54%,transparent 54%);
-    background-size:7px 7px}
-  .dots{background-image:radial-gradient(circle,rgba(152,125,69,.20) 1px,transparent 1.1px);
-    background-size:6px 6px}
+  /* ---------- 1999 的图形规则落在哪（依据「UI视觉参考_重返未来1999_v1.md」）----------
+     第一版（.42 淡金 + 4px 菱形）和它留下的 .grule / .glattice / .dots 三个工具类已经删掉：
+     那三个类从头到尾没有一处 markup 用过，等于写了三个没人引用的样式；真正生效的几处
+     都写在组件的规则里，列在这，改的时候别去别处找：
+       ① 框线语法（§4.1：1px 金主线 + 两端 3–6px 菱形收头）→ .sec-hd / .grp-hd 的 ::before/::after
+       ② 半调网点（§4.3：只铺局部块，别铺满整页）      → 只有 .kpi 一处，.14 透明度
+       ③ 双轨直角（§4.1 第 3 条）                      → .plate-in::before（标牌内缩 6px 的一道线）
+       ④ 燕尾切角（§5.3 第 9 条）                      → .badge / .verdict
+       ⑤ 车票拱顶 + 角部信息（§5.3 第 7 条 / §5.1）     → .card / .title-card / .result
+       ⑥ 疏密 8:2（§4.6）                              → .sec 的 clamp(44px,7vh,88px) 段间距
+       ⑦ 尺度错位（§4.5）                              → .sec-no 的 30px Cinzel 编号
+       ⑧ 单色单形（§4.4）：整页只有两个原形 —— 线（金轨 / 金线）与面（票券卡），
+          唯一的圆点是卡片页脚那排轮次点（.ebbing .dot）。 */
+
   /* 名字走宋体。行高 1.1–1.2、字间距 .05em 是字体定稿页那三条附带规矩之一 */
   .serif{font-family:var(--serif);letter-spacing:.05em;line-height:1.2}
   .num{font-family:var(--num);font-weight:900;font-variant-numeric:tabular-nums;
@@ -87,28 +90,41 @@
   /* ---------- 启动 / 登录 ---------- */
   #boot{display:flex;align-items:center;justify-content:center;min-height:70vh;color:var(--ink-3);font-size:14px}
   .login{max-width:400px;margin:0 auto;padding:56px 20px 40px}
-  .login h1{font-family:var(--serif);font-size:25px;font-weight:700;letter-spacing:.05em;line-height:1.2}
-  .login .sub{color:var(--ink-3);font-size:13px;margin-top:8px;line-height:1.7}
+  /* 登录屏也带同一块金属标牌 —— 否则第一眼是「一张光纸」，进到里面才突然换语言。
+     §5.3 要求「一端做成燕尾缺口」，窄栏里 22px 的缺口会吃掉太多宽度，这里收到 16px。 */
+  .login .plate{clip-path:polygon(0 0,100% 0,calc(100% - 16px) 50%,100% 100%,0 100%)}
+  .login .plate .plate-in{padding:14px 28px 13px 15px}
+  .login .plate .plate-in::before{left:5px;top:5px;bottom:5px}
+  .login h1{font-family:var(--serif);font-size:19px;font-weight:900;letter-spacing:.06em;line-height:1.2;
+    color:var(--gold-emb);text-shadow:0 1px 0 rgba(0,0,0,.6),0 -1px 0 rgba(255,240,205,.10)}
+  .login .sub{color:var(--ink-2);font-size:13px;margin-top:16px;line-height:1.75}
   .field{margin-top:22px}
   .field label{display:block;font-size:12.5px;color:var(--ink-2);font-weight:650;margin-bottom:7px}
   .field input{
     width:100%;font-family:inherit;font-size:16px;color:var(--ink);background:var(--card);
-    border:1px solid var(--border);border-radius:11px;padding:12px 14px;
+    border:1px solid var(--border);border-radius:8px;padding:12px 14px;
   }
   .field input:focus{outline:none;border-color:var(--accent)}
   .row-btn{display:flex;gap:9px;margin-top:14px}
   .row-btn .grow{flex:1}
   .btn{
     font-size:14px;font-weight:650;border:1px solid var(--border);background:var(--card);
-    color:var(--ink-2);border-radius:11px;padding:11px 16px;transition:all .14s;line-height:1.35;
+    color:var(--ink-2);border-radius:6px;padding:11px 16px;transition:all .14s;line-height:1.35;
   }
   .btn:hover{border-color:#d6cfc3;color:var(--ink)}
   .btn:active{transform:translateY(1px)}
   .btn:disabled{opacity:.5;cursor:default;transform:none}
-  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  /* 主按钮＝胶囊 + 双描边（§7 第 8 条、§5.3「胶囊 + 双描边，内层 1px，间距 2–3px」）。
+     内层那圈用 inset 阴影画：不额外占位，窄屏也不会把字压扁。
+     §5.3 还要求两端各加一个扇形饰 —— 那个只在「推进回合」这种主行动上才值，
+     这里一天要点十几次，加了就是噪音，所以只取胶囊 + 双描边。 */
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;border-radius:999px;
+    box-shadow:inset 0 0 0 3px rgba(255,255,255,.15)}
   .btn.primary:hover{background:var(--accent-deep);border-color:var(--accent-deep);color:#fff}
   .btn.ghost{background:transparent}
-  .btn.sm{font-size:12.5px;padding:7px 12px;border-radius:9px}
+  .btn.sm{font-size:12.5px;padding:7px 12px;border-radius:6px}
+  /* 特异性要顶住上面那条 .btn.sm：两个类一起上时必须还是胶囊 */
+  .btn.sm.primary{border-radius:999px;padding:7px 16px}
   .err{color:#c0392b;font-size:12.5px;margin-top:10px;min-height:18px}
   .tip{font-size:12px;color:var(--ink-3);margin-top:14px;line-height:1.75}
   .or{display:flex;align-items:center;gap:10px;margin:20px 0 4px;color:var(--ink-3);font-size:11.8px}
@@ -138,96 +154,137 @@
     border:1px solid #f0dcc6;border-radius:8px;padding:3px 10px;line-height:1.5;
   }
 
-  /* ---------- 页头（跟着内容滚走，只有板块条吸顶） ---------- */
+  /* ---------- 页头：金属标牌（§5.3 第二种容器 + §4.1 第 7 条「角上的深棕金属牌」）----------
+     第三版换的就是这里。上一版页头是一行宋体字，跟下面每一个板块头同构 —— 满页「同一个框」，
+     看不出「这页叫什么」。现在把它提成一块牌：深棕底板 + 金浮雕字 + 右端一枚燕尾缺口
+     （§5.3 的原话是「一端做成锯齿/燕尾 notch」），牌内再压一道内缩的双轨细线（§4.1 第 3 条）。
+     一整页只有这一块深色，视觉起点就落在这，下面的纸面才有对比可言。 */
   .top{padding:20px 0 0;padding-top:calc(20px + env(safe-area-inset-top))}
-  .top-in{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
-  .top h1{font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:.05em;line-height:1.2}
-  .top .who{font-size:11.8px;color:var(--ink-3);margin-left:auto;text-align:right;line-height:1.5}
-  .top .who b{display:block;color:var(--accent-deep);font-size:12.8px;font-weight:700}
-  .howto{
-    margin-top:14px;background:var(--soft);border:1px solid var(--soft-line);border-radius:11px;
-    padding:12px 15px;font-size:12.7px;color:#7c3f29;line-height:1.85;
+  .plate{
+    position:relative;background:linear-gradient(178deg,var(--plate-2),var(--plate));
+    /* 右端的燕尾：clip-path 裁掉一个尖角，比画个三角伪元素稳，也不会被圆角吃掉 */
+    clip-path:polygon(0 0,100% 0,calc(100% - 22px) 50%,100% 100%,0 100%);
   }
-  .howto b{font-weight:650;color:var(--accent-deep)}
-  .howto .hw{margin-top:4px}
+  .plate-in{position:relative;padding:16px 34px 15px 19px}
+  /* 内缩 5px 的一道线，只在左/上/下三边 —— 和外缘合起来就是「双轨直角」 */
+  .plate-in::before{content:'';position:absolute;left:6px;top:6px;bottom:6px;right:0;
+    border:1px solid rgba(230,205,147,.34);border-right:0;pointer-events:none}
+  .plate .kicker{
+    font-family:var(--num);font-weight:900;font-size:9.5px;letter-spacing:.36em;
+    text-transform:uppercase;color:rgba(230,205,147,.66);line-height:1;
+  }
+  .plate-row{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-top:7px}
+  /* 金浮雕字：往上偏一档的暗影 + 底下一道极淡的提亮，压在棕底上才「凸」得出来 */
+  .top h1{
+    font-family:var(--serif);font-size:23px;font-weight:900;letter-spacing:.07em;line-height:1.2;
+    color:var(--gold-emb);text-shadow:0 1px 0 rgba(0,0,0,.6),0 -1px 0 rgba(255,240,205,.10);
+  }
+  .top .who{
+    font-size:11.5px;color:rgba(230,205,147,.60);margin-left:auto;text-align:right;line-height:1.55;
+  }
+  .top .who b{
+    display:block;font-family:var(--num);font-weight:900;font-size:13.5px;
+    color:var(--gold-emb);letter-spacing:.02em;
+  }
+  /* 练法 / 复习那块不再是粉底小方块，改成纸上一条左侧金轨的注记 —— 底色块一多，
+     整页就回到「到处是框」。这里只留一条竖线做归属。 */
+  .howto{
+    margin-top:16px;border-left:2px solid var(--gold-line);padding:2px 0 2px 14px;
+    font-size:12.7px;color:var(--ink-2);line-height:1.9;
+  }
+  .howto b{font-weight:800;color:var(--accent-deep);
+    font-family:var(--serif);letter-spacing:.06em;margin-right:2px}
+  .howto .hw{margin-top:5px}
 
-  /* ---------- 主区 ---------- */
+  /* ---------- 主区：开放章节（第三版）----------
+     上一版每个板块都是「白底板块头 + 深色板块身」的一个框，整页套了三层框
+     （页 → 板块 → 卡），层与层之间只靠 12px 内边距分开 —— 所以「到处一样」。
+     1999 文档 §5.2 的原话是「板块之间用大面积留白隔开，不要用背景色块硬切」。
+     这一版把板块的框整个撤掉，靠三样东西分块：
+       ① 一枚超大的罗马编号 —— §4.5「尺度错位」：把一个很小的元素做得异常大。
+          它现在是全页最大的字，一眼就能数出「这是第几块」。
+       ② 一条只属于这个板块的金线（§4.1：1px 主线 + 两端菱形收头）。
+       ③ 段间距 —— §4.6 疏密比要 8:2，上一版给的是 20px，密得看不出分块。
+          现在按视口高给（clamp 44–88px）：§5.2 说的是「相邻板块间距 ≥ 单屏高的 12%」，
+          矮屏按 44 兜底，免得在手机上要滑很久才到下一条。 */
   main{padding:2px 0 72px}
-  /* 板块框：主列里每个板块自成一个框，和「篇目」的分组同一套语言
-     —— 板块头（竖条 + 16px 大字 + 说明 + 计数）在最上面，内容在下面的组底上。
-     不这么框的话，一节接一节平铺下去，看不出这是几块。 */
-  .sec{border:1px solid var(--border-2);border-radius:var(--radius);background:var(--grp-bg);overflow:hidden;margin-bottom:20px}
-  /* 板块身铺一层半调网点：1999 那层质感里最轻的一层（§4.3），
-     只做底、不抢内容。密度 7px 比 KPI 卡的 6px 再疏一点，大片铺开才不显脏。 */
-  .sec-bd{padding:12px;display:grid;gap:12px;
-    background-image:radial-gradient(circle,rgba(152,125,69,.16) 1px,transparent 1.05px);
-    background-size:7px 7px}
+  .sec{margin-bottom:clamp(44px,7vh,88px)}
+  .sec-bd{display:grid;gap:14px}
   .sec-bd[hidden]{display:none!important}
   .sec-bd > .empty{margin:0}
-  .sec-hd{display:flex;align-items:center;gap:9px;margin:22px 0 11px;flex-wrap:wrap}
-  .sec-hd:first-child{margin-top:6px}
+  .sec-hd{
+    display:flex;align-items:baseline;gap:13px;flex-wrap:wrap;
+    padding-bottom:10px;margin-bottom:16px;position:relative;
+    border-bottom:1px solid var(--gold-line);
+  }
+  .sec-hd::before,.sec-hd::after{content:'';position:absolute;bottom:-3px;width:5px;height:5px;
+    background:var(--gold2);transform:rotate(45deg)}
+  .sec-hd::before{left:0}
+  .sec-hd::after{right:0}
+  /* 编号占固定 40px 一栏：两位数字宽窄一样，下面每个板块的标题才会落在同一条竖线上。
+     沉底区那一行的 caret 也占同一栏（见 .sec-hd.sunk-hd .caret），标题才对得齐。 */
+  .sec-no{
+    flex:0 0 auto;min-width:40px;font-family:var(--num);font-weight:900;font-size:30px;line-height:.8;
+    color:var(--gold2);letter-spacing:.01em;font-variant-numeric:tabular-nums;
+  }
+  .sec-tx{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
   /* 板块名＝「名字」，走宋体（1999 那支的字体分工规则） */
-  .sec-hd h2{font-family:var(--serif);font-size:16.5px;font-weight:700;letter-spacing:.05em;line-height:1.25}
+  .sec-hd h2{font-family:var(--serif);font-size:17.5px;font-weight:700;letter-spacing:.06em;line-height:1.25}
   .sec-hd .note{font-size:11.8px;color:var(--ink-3)}
-  .sec-hd .g-bar{flex:0 0 auto;width:4px;align-self:stretch;min-height:18px;border-radius:2px;background:var(--accent)}
   .sec-hd .badge{margin-left:auto}
-  /* 框里的板块头：白底 + 底部金线。底线走 1999 的框线语法（§4.1）：
-     1.5px 金线 + 左端一枚 6px 菱形 + 右端一小段菱形串。
-     上一版写的是「1px 线 + 两端各 4px 菱形」，在那个尺寸下正常视距看不见，等于没做。 */
-  .sec > .sec-hd{margin:0;padding:11px 16px 13px 11px;background:var(--card);
-    border-bottom:1.5px solid var(--gold-line);position:relative}
-  .sec > .sec-hd::before{content:'';position:absolute;bottom:-4px;left:8px;
-    width:6px;height:6px;background:var(--gold2);transform:rotate(45deg)}
-  .sec > .sec-hd::after{content:'';position:absolute;right:12px;bottom:-4px;width:54px;height:7px;
-    background-image:
-      linear-gradient(135deg,transparent 44%,var(--gold2) 44% 56%,transparent 56%),
-      linear-gradient(45deg,transparent 44%,var(--gold2) 44% 56%,transparent 56%);
-    background-size:7px 7px;opacity:.85}
-  .badge{font-size:11.5px;font-weight:700;color:var(--accent-deep);background:var(--soft);border-radius:99px;padding:2px 9px}
-  /* 篇数这类计数走 Cinzel，和数字列同一套等宽衬线 */
-  .badge .n,.secnav button .n,.sn-hd .nc{font-family:var(--num);font-weight:900;font-variant-numeric:tabular-nums}
+  /* 沉底区也是这一套，只是编号换成 caret，整块压灰 */
+  .sec-hd.sunk-hd{cursor:pointer}
+  .sec-hd.sunk-hd:hover{border-bottom-color:var(--gold2)}
+  .sec-hd.sunk-hd .caret{flex:0 0 auto;font-size:11px;color:var(--ink-3)}
+  /* 计数签：燕尾切角（§5.3 第 9 条）。上一版是圆角胶囊 —— 全页的圆角胶囊太多，
+     和下面的按钮、tab 长得一样，看久了全变成同一个形状。切角让它一眼是「签」，不是「按钮」。 */
+  .badge{
+    font-size:11.5px;font-weight:700;color:#fff;background:var(--accent);
+    padding:3px 15px 3px 9px;letter-spacing:.02em;line-height:1.35;
+    clip-path:polygon(0 0,calc(100% - 7px) 0,100% 50%,calc(100% - 7px) 100%,0 100%);
+  }
+  .badge .n{font-family:var(--num);font-weight:900;font-variant-numeric:tabular-nums}
+  /* 空态：不再是一个虚线框。§5.2 说板块之间靠留白分，框一多就都成了「块」。
+     改成纸上的一段说明，前面压一枚极小的金色四边形做「力点」（§4.2：点要少、要孤立）。 */
   .empty{
-    background:var(--card);border:1px dashed var(--border);border-radius:var(--radius);
-    padding:20px 18px;color:var(--ink-2);font-size:13.2px;line-height:1.8;
+    padding:2px 0 2px 17px;position:relative;color:var(--ink-2);font-size:13.2px;line-height:1.85;
   }
-  .empty b{display:block;color:var(--ink);font-size:13.8px;margin-bottom:5px}
+  .empty::before{content:'';position:absolute;left:0;top:9px;width:7px;height:7px;
+    background:var(--gold2);transform:rotate(45deg)}
+  .empty b{display:block;color:var(--ink);font-size:14px;margin-bottom:5px;
+    font-family:var(--serif);letter-spacing:.04em}
 
-  .list{display:grid;gap:12px}
-  .row{
-    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-    box-shadow:var(--shadow);padding:14px 15px;display:flex;gap:12px;align-items:center;
-  }
-  .row.hot{border-color:var(--soft-line);background:linear-gradient(0deg,var(--soft),#fff 62%)}
-  .row-main{flex:1;min-width:0}
-  .row-main .en{font-family:var(--serif);font-size:14.5px;font-weight:700;letter-spacing:.02em;line-height:1.4;word-break:break-word}
-  .row-main .zh{font-size:12.5px;color:var(--ink-2);margin-top:3px;word-break:break-word}
-  .row-main .meta{font-size:11.5px;color:var(--ink-3);margin-top:7px;display:flex;gap:8px;flex-wrap:wrap}
-  .row-main .meta i{font-style:normal;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:1px 7px}
-  .row-main .meta i.due{background:var(--soft);border-color:var(--soft-line);color:var(--accent-deep);font-weight:650}
-  .row-main .meta i.done{background:var(--ok-soft);border-color:#dbe8d4;color:var(--ok);font-weight:650}
-  .row .go{flex-shrink:0}
+  /* 素材列表容器（「今天该复习」那一列卡片用） */
+  .list{display:grid;gap:14px}
 
   /* ---------- 板块条（吸顶分页） ---------- */
+  /* 底色必须跟着纸色走：改版后如果还留 #f7f5f2，吸顶条会在奶油纸上显出一条发白的带子。
+     底线走金线（1999 框线语法的第二处）。底色任何宽度都别去掉 —— 去掉之后内容会从它底下透出来。 */
   .secnav{
-    position:sticky;top:0;z-index:30;margin:15px -16px 2px;padding:9px 16px 10px;
-    background:rgba(247,245,242,.94);backdrop-filter:saturate(180%) blur(12px);
-    /* 底线走金线（1999 框线语法的第二处）。底色任何宽度都别去掉 —— 去掉之后内容会从它底下透出来 */
-    border-bottom:1.5px solid var(--gold-line);
+    position:sticky;top:0;z-index:30;margin:15px -16px 2px;padding:9px 16px 0;
+    background:rgba(240,233,219,.94);backdrop-filter:saturate(180%) blur(12px);
+    border-bottom:1px solid var(--gold-line);
   }
   .secnav-in{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
   .secnav-in::-webkit-scrollbar{display:none}
+  /* tab 也不是胶囊 —— 悬空的下划线 tab，选中的那条压成 2px 强调色并加长。
+     §4.2 说「每个板块只选一种主形」：这一栏选的是「线」，所以不再出现任何圆角块。
+     padding-bottom 给 10px 且外层底部内边距归零 —— 下划线正好压在底色条的金线上，不悬空。 */
   .secnav button{
-    flex:0 0 auto;font-size:12.5px;font-weight:650;color:var(--ink-2);background:var(--card);
-    border:1px solid var(--border);border-radius:18px;padding:5px 13px;white-space:nowrap;
-    line-height:1.45;transition:all .14s;display:inline-flex;align-items:center;gap:6px;
+    flex:0 0 auto;font-size:12.8px;font-weight:650;color:var(--ink-3);background:none;
+    border:none;border-bottom:2px solid transparent;padding:3px 2px 10px;white-space:nowrap;
+    line-height:1.5;display:inline-flex;align-items:center;gap:6px;
+    font-family:var(--serif);letter-spacing:.05em;
   }
-  .secnav button:hover{border-color:#d6cfc3;color:var(--ink)}
-  .secnav button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .secnav button:hover{color:var(--ink)}
+  .secnav button.on{color:var(--accent-deep);border-bottom-color:var(--accent)}
   .secnav button .n{
-    font-size:10.5px;font-weight:400;background:var(--soft);color:var(--accent-deep);
-    border-radius:99px;padding:0 6px;min-width:17px;text-align:center;line-height:1.6;
+    font-family:var(--num);font-weight:900;font-size:11px;font-variant-numeric:tabular-nums;
+    color:var(--ink-3);min-width:12px;text-align:center;line-height:1.6;
   }
-  .secnav button.on .n{background:rgba(255,255,255,.24);color:#fff}
+  .secnav button .n.zero{opacity:.45}
+  .secnav button.on .n{color:var(--accent-deep)}
+  .sn-hd .nc{font-family:var(--num);font-weight:900;font-variant-numeric:tabular-nums}
 
   /* ---------- 骨架：常驻侧栏目录 + 主列 ---------- */
   .bb{max-width:760px;margin:0 auto;padding:0 16px}
@@ -249,49 +306,59 @@
   body.nav-open .nav-mask{display:block}
   body.nav-open .nav-drawer{transform:none}
 
-  /* 侧栏也走「框」那套：顶部控制块 / 每个主题组各是一个框，组里每条素材是一张小卡。
-     之前是一列平铺的文字（组名 + 缩进条目），组与组之间只靠留白分开。 */
-  .sn-top{background:var(--card);border:1px solid var(--border-2);border-radius:9px;padding:11px 11px 10px;margin-bottom:11px}
+  /* ---------- 侧栏目录（第三版：跟着主列换成轨） ----------
+     上一版侧栏是「顶部一个白框 + 每个主题组一个白框 + 组里每条一张白卡」——
+     六个组就是六个框，是全页最重的一叠，主列刚撤掉的「到处是框」全跑到这儿来了。
+     现在和主列同一套：组名与篇数在一条线上，条目挂在一条浅金竖轨上。
+     顶部那个控制块也不再是框，靠一条金线和下面分开。 */
+  .sn-top{padding:0 0 12px;margin-bottom:14px;border-bottom:1px solid var(--gold-line)}
   .sn-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
-  .sn-hd .nt{font-size:13.5px;font-weight:800;letter-spacing:.3px}
+  .sn-hd .nt{font-family:var(--serif);font-size:15px;font-weight:700;letter-spacing:.1em}
   .sn-hd .nx{font-size:12px;color:var(--ink-3);background:none;border:none;padding:2px 6px}
   .sidenav .sn-hd .nx{display:none}
-  .sn-sum{font-size:11.5px;color:var(--ink-3);line-height:1.75;padding:0 0 9px;border-bottom:1px solid var(--line);margin-bottom:9px}
-  .sn-sw{display:flex;gap:6px}
+  .sn-sum{font-size:11.5px;color:var(--ink-3);line-height:1.8;margin-bottom:11px}
+  .sn-sw{display:flex;border:1px solid var(--border-2);border-radius:4px;overflow:hidden}
   .sn-sw button{
-    flex:1;font-size:12px;font-weight:650;color:var(--ink-2);background:var(--card);
-    border:1px solid var(--border);border-radius:9px;padding:5px 8px;line-height:1.4;
+    flex:1;font-size:11.8px;font-weight:650;color:var(--ink-3);background:none;border:none;
+    border-right:1px solid var(--border-2);border-radius:0;padding:5px 8px;line-height:1.5;
+    font-family:var(--serif);letter-spacing:.05em;
   }
-  .sn-sw button.on{background:var(--accent);border-color:var(--accent);color:#fff}
-  .sn-sec{font-size:11.5px;font-weight:700;color:var(--ink-3);letter-spacing:.8px;margin:13px 2px 6px}
-  .sn-grp{
-    border:1px solid var(--border-2);border-radius:9px;background:var(--grp-bg);
-    overflow:hidden;margin-bottom:9px;
-  }
+  .sn-sw button:last-child{border-right:none}
+  .sn-sw button.on{background:var(--accent);color:#fff}
+  .sn-sec{font-family:var(--num);font-weight:900;font-size:10px;color:var(--ink-3);
+    letter-spacing:.2em;margin:15px 0 8px;text-transform:uppercase}
+  .sn-grp{margin-bottom:12px}
   .sn-grp-hd{
-    display:flex;align-items:center;gap:6px;padding:7px 8px 7px 6px;font-size:12.8px;color:var(--ink-2);
-    background:var(--card);border-bottom:1px solid var(--border-2);cursor:pointer;line-height:1.45;
+    display:flex;align-items:center;gap:6px;padding:0 0 6px;font-size:12.8px;color:var(--ink-2);
+    border-bottom:1px solid var(--border-2);cursor:pointer;line-height:1.45;
   }
-  .sn-grp:not(.open) .sn-grp-hd{border-bottom-color:transparent}
-  .sn-grp-hd:hover{background:var(--soft)}
-  .sn-grp-hd .g-bar{flex:0 0 auto;width:3px;align-self:stretch;min-height:15px;border-radius:2px;background:var(--accent)}
-  .sn-grp-hd .gn{flex:1 1 auto;min-width:0;font-weight:750;color:var(--ink);word-break:break-word}
-  .sn-grp-hd .gcn{flex:0 0 auto;font-size:11px;color:var(--ink-3)}
+  .sn-grp:not(.open) .sn-grp-hd{border-bottom-color:var(--line)}
+  .sn-grp-hd:hover .gn{color:var(--accent-deep)}
+  /* 竖条撤掉 —— 全页的「分组」只由金轨这一条线承担 */
+  .sn-grp-hd .g-bar{display:none}
+  .sn-grp-hd .gn{flex:1 1 auto;min-width:0;font-weight:700;color:var(--ink);word-break:break-word}
+  .sn-grp-hd .gcn{flex:0 0 auto;font-family:var(--num);font-weight:900;font-size:10.5px;
+    color:var(--ink-3);font-variant-numeric:tabular-nums}
   .sn-grp-hd .caret{flex:0 0 auto;font-size:10px;color:var(--ink-3)}
   /* 必须写 minmax(0,1fr)：grid 的列不会自动收缩到容器宽，只写 auto 会被最长的那条标题顶宽 */
-  .sn-items{display:none;padding:7px;gap:5px}
-  .sn-grp.open .sn-items{display:grid;grid-template-columns:minmax(0,1fr)}
+  .sn-items{display:none;padding:8px 0 0;gap:3px}
+  .sn-grp.open .sn-items{
+    display:grid;grid-template-columns:minmax(0,1fr);
+    padding-left:11px;border-left:2px solid var(--gold-line);margin-left:1px;
+  }
   .sn-grp .sn-items[hidden]{display:none!important}
   .sn-item{
-    display:flex;gap:6px;align-items:baseline;padding:5px 7px;font-size:12.2px;
-    color:var(--ink-2);background:var(--card);border:1px solid var(--border-2);
-    border-radius:7px;cursor:pointer;line-height:1.5;
+    display:flex;gap:6px;align-items:baseline;padding:4px 7px;font-size:12.2px;
+    color:var(--ink-2);background:none;border:none;border-radius:4px;cursor:pointer;line-height:1.5;
   }
-  .sn-item:hover{border-color:#c9bcaa;color:var(--accent-deep)}
+  .sn-item:hover{background:var(--card);color:var(--accent-deep)}
   .sn-item .si-t{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .sn-item .si-k{flex:0 0 auto;font-size:10.5px;color:var(--accent-deep);background:var(--soft);border-radius:4px;padding:0 5px}
-  .sn-item.cur{border-color:var(--accent);background:var(--soft);color:var(--accent-deep);font-weight:650}
-  .sn-item.cur .si-k{background:#fff}
+  .sn-item .si-k{flex:0 0 auto;font-family:var(--num);font-weight:900;font-size:10px;
+    color:var(--accent-deep);background:var(--soft);border-radius:3px;padding:0 5px;font-style:normal}
+  /* 当前这一条：白底 + 左侧 2px 强调色，和主列卡片一样只用一个「面」 */
+  .sn-item.cur{background:var(--card);color:var(--accent-deep);font-weight:650;
+    box-shadow:inset 2px 0 0 var(--accent)}
+  .sn-item.cur .si-k{background:var(--soft)}
 
   @media (min-width:1100px){
     .bb{display:flex;align-items:flex-start;gap:26px;max-width:1180px;padding:0 20px}
@@ -309,19 +376,28 @@
   /* ---------- 复述页 ---------- */
   .back{display:flex;align-items:center;gap:9px;margin-bottom:14px}
   .back button{font-size:13px;font-weight:650;color:var(--accent-deep);background:none;border:none;padding:4px 0}
-  .title-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 16px 14px}
-  .title-card .en{font-family:var(--serif);font-size:17px;font-weight:700;letter-spacing:.02em;line-height:1.4}
-  .title-card .zh{font-size:12.8px;color:var(--ink-2);margin-top:5px}
-  .title-card .tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
-  .title-card .tags i{font-style:normal;font-size:11.3px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:2px 8px;color:var(--ink-2)}
-  .title-card .tags i.round{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
-  .hint{
-    margin-top:11px;background:var(--soft);border:1px solid var(--soft-line);border-radius:11px;
-    padding:11px 13px;font-size:12.8px;color:#7a3626;line-height:1.75;
+  /* 复述页的标题卡 = 同一张票券，拱顶 + 角部编号 / 日期（§5.3 + §5.1）。
+     上一版它是又一个白方块，和列表里的卡只差一个投影。 */
+  .title-card{
+    background:var(--card);border:1px solid var(--border-2);box-shadow:var(--shadow);
+    border-radius:50% 50% var(--radius) var(--radius) / 34px 34px var(--radius) var(--radius);
+    padding:27px 18px 16px;
   }
-  .hint b{color:var(--accent-deep)}
+  .title-card .en{font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:.02em;line-height:1.4}
+  .title-card .zh{font-size:12.8px;color:var(--ink-2);margin-top:5px;line-height:1.7}
+  .title-card .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+  .title-card .tags i{font-style:normal;font-size:11.3px;background:none;border:1px solid var(--border);border-radius:3px;padding:2px 8px;color:var(--ink-3)}
+  .title-card .tags i.round{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+  /* 这一轮的提示不再是一个粉底框：框一多，整页就回到「到处是框」。
+     改成一条左侧强调色竖轨 —— 和页头的 .howto 同一套写法（§4.2：竖线担分隔）。 */
+  .hint{
+    margin-top:16px;border-left:2px solid var(--accent);padding:2px 0 2px 13px;
+    font-size:12.8px;color:var(--ink-2);line-height:1.85;
+  }
+  .hint b{color:var(--accent-deep);font-weight:800}
+  .title-card .hint{border-left-color:var(--gold2)}
 
-  .mask{margin-top:13px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .mask{margin-top:13px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
   .mask-lid{padding:22px 18px;text-align:center}
   .mask-lid .t{font-size:14px;font-weight:700}
   .mask-lid .n{font-size:12.5px;color:var(--ink-3);margin-top:6px;line-height:1.7}
@@ -336,7 +412,7 @@
   .script-en{border-bottom:1px dashed var(--line)}
   .script-zh{padding:13px 16px;font-size:12.8px;line-height:1.9;color:var(--ink-2);white-space:pre-wrap;background:#fbfaf8}
 
-  .fold{margin-top:11px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+  .fold{margin-top:11px;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
   .fold-hd{padding:12px 15px;font-size:13px;font-weight:650;color:var(--ink-2);display:flex;align-items:center;gap:8px;cursor:pointer}
   .fold-hd .caret{margin-left:auto;color:var(--ink-3);font-size:11px}
   .fold-body{padding:0 15px 15px;font-size:12.8px;line-height:1.85;color:var(--ink-2);white-space:pre-wrap;word-break:break-word}
@@ -345,7 +421,7 @@
   .say label{display:block;font-size:12.8px;font-weight:650;color:var(--ink-2);margin-bottom:8px}
   .say textarea{
     width:100%;min-height:150px;font-family:inherit;font-size:15px;line-height:1.75;color:var(--ink);
-    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 14px;resize:vertical;
+    background:var(--card);border:1px solid var(--border);border-radius:8px;padding:13px 14px;resize:vertical;
   }
   .say textarea:focus{outline:none;border-color:var(--accent)}
   .say .tools{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap}
@@ -355,10 +431,17 @@
   .say .count{font-size:11.5px;color:var(--ink-3);margin-left:auto}
 
   /* ---------- 结果 ---------- */
-  .result{margin-top:14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  /* 判定结果是复述页最要读的一块，也做成票券（拱顶），和列表里的卡同族。
+     但它没有「角部元数据」，所以拱形只负责「这是一张单据」的观感，不抢内容。 */
+  .result{
+    margin-top:14px;background:var(--card);border:1px solid var(--border-2);box-shadow:var(--shadow);overflow:hidden;
+    border-radius:50% 50% 8px 8px / 30px 30px 8px 8px;
+  }
   .result-hd{padding:15px 16px 13px;border-bottom:1px solid var(--line)}
   .result-hd .top-line{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-  .verdict{font-size:12.5px;font-weight:700;border-radius:99px;padding:3px 11px}
+  /* 判定签也用燕尾（§5.3 第 9 条），和板块头上的篇数签是同一个形状 */
+  .verdict{font-size:12.5px;font-weight:700;padding:3px 15px 3px 10px;
+    clip-path:polygon(0 0,calc(100% - 7px) 0,100% 50%,calc(100% - 7px) 100%,0 100%)}
   .verdict.ok{background:var(--ok-soft);color:var(--ok)}
   .verdict.mid{background:#fdf3e3;color:var(--warn)}
   .verdict.bad{background:#fbeceb;color:#c0392b}
@@ -396,13 +479,19 @@
   .sheet-in .foot .grow{flex:1}
 
   /* ---------- 记录 ---------- */
-  .log{display:grid;gap:9px}
-  .log-row{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px;box-shadow:var(--shadow)}
+  /* 复述记录也不再是一叠白框：一列，虚线分开，判定结果用左侧 2px 竖轨标出色。
+     §4.2：一个区块里「线」只管分隔，不再兼做装饰。 */
+  .log{display:grid}
+  .log-row{padding:13px 0;border-bottom:1px dashed var(--line)}
+  .log-row:last-child{border-bottom:none}
   .log-row .l1{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-  .log-row .l1 .t{font-size:13.5px;font-weight:650;flex:1;min-width:120px}
-  .log-row .l1 .s{font-size:12.5px;font-weight:700;color:var(--ink-2)}
+  .log-row .l1 .t{font-family:var(--serif);font-size:14px;font-weight:700;letter-spacing:.01em;
+    flex:1;min-width:120px}
+  .log-row .l1 .s{font-family:var(--num);font-weight:900;font-size:13px;color:var(--ink-2);
+    font-variant-numeric:tabular-nums}
   .log-row .l2{font-size:11.8px;color:var(--ink-3);margin-top:6px}
-  .log-row .l3{font-size:12.5px;color:var(--ink-2);margin-top:8px;line-height:1.75}
+  .log-row .l3{font-size:12.5px;color:var(--ink-2);margin-top:8px;line-height:1.75;
+    border-left:2px solid var(--gold-line);padding-left:12px}
   .log-row .l3 ul{margin:0;padding-left:17px}
   .log-row .tr{margin-top:9px;font-size:12.3px;color:var(--ink-3);line-height:1.75;white-space:pre-wrap;word-break:break-word;max-height:120px;overflow:hidden}
 
@@ -418,40 +507,56 @@
   .spin.dark{border-color:var(--border);border-top-color:var(--accent);}
 
   /* ---------- 学习台：目录分段开关 ---------- */
-  .seg{display:inline-flex;background:var(--bg);border:1px solid var(--border);border-radius:99px;padding:2px;gap:2px;margin-bottom:13px}
-  .seg button{font-size:12.3px;font-weight:650;color:var(--ink-3);background:none;border:none;border-radius:99px;padding:6px 14px}
-  .seg button.on{background:var(--card);color:var(--accent-deep);box-shadow:0 1px 2px rgba(60,50,40,.08)}
+  /* 方角小开关，不用胶囊 —— 上一版从 tab 到按钮到计数签全是圆角胶囊，
+     满页同一个形状，看不出哪个是「可以点的」。 */
+  .seg{display:inline-flex;border:1px solid var(--border-2);border-radius:4px;overflow:hidden;margin-bottom:16px}
+  .seg button{font-size:12.3px;font-weight:650;color:var(--ink-3);background:none;border:none;
+    border-right:1px solid var(--border-2);border-radius:0;padding:6px 16px;
+    font-family:var(--serif);letter-spacing:.05em}
+  .seg button:last-child{border-right:none}
+  .seg button.on{background:var(--accent);color:#fff}
 
-  /* ---------- 学习台：素材卡 ---------- */
-  /* 卡片用比 --shadow 重一档的投影：组底压深之后，卡片得真的「浮」起来才像一块块独立的纸片 */
+  /* ---------- 学习台：素材卡 = 票券 ----------
+     第三版把卡从「白方块」改成「车票」（§5.3 第一种容器 + §7 第 7 条）：
+     顶部一道拱形 + 四角放元数据 + 中央只留篇名（§5.1「角部信息 + 中央留白」）。
+     上一版的卡是自上而下五层等距堆叠（标签 / 元信息 / 英文 / 中文 / 按钮），
+     每层行高差不多、字号也挨着，正是 §8 那条被打回过的「大字小字穿插、按行平均」。
+     另外：上一版左上角那枚 L 形金角在拱形下会被裁掉，已撤，改用「角部的编号」承担同一件事 ——
+     装饰换成信息，还省掉一层。 */
   .card{
-    background:var(--card);border:1px solid var(--border-2);border-radius:var(--radius);overflow:hidden;
-    box-shadow:0 1px 2px rgba(60,50,40,.05),0 4px 14px rgba(60,50,40,.07);position:relative;
+    background:var(--card);border:1px solid var(--border-2);
+    /* 拱形的写法：上层两个角的水平半径给 50%（铺满整宽），垂直半径 34px，就成了一道平缓的拱顶 */
+    border-radius:50% 50% var(--radius) var(--radius) / 34px 34px var(--radius) var(--radius);
+    overflow:hidden;position:relative;
+    box-shadow:0 1px 2px rgba(60,50,40,.05),0 5px 16px rgba(60,50,40,.07);
   }
-  /* 左上角一枚 L 形金角 —— 字体定稿页 .card::before 的同一招，是 1999 框线语法里最小的一处。
-     上一版给的是 7px，一样看不见；这版放到 9px、线宽 1.5px。
-     定位 5px 是为了避开 .card-hd 的 15px 左内边距，线尾正好停在内容开始处。 */
-  .card::before{content:'';position:absolute;left:5px;top:5px;width:9px;height:9px;
-    border:1.5px solid var(--gold2);border-right:0;border-bottom:0;
-    border-radius:3px 0 0 0;pointer-events:none;z-index:1}
-  .card.is-main{border-color:var(--soft-line);background:linear-gradient(0deg,var(--soft),#fff 30%)}
-  .card-hd{padding:14px 15px 12px}
-  .card-hd .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-  .card-hd .tags i{font-style:normal;font-size:11.3px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:2px 8px;color:var(--ink-2)}
+  .card.is-main{border-color:var(--gold-line)}
+  /* 顶部内边距要给到 27px —— 拱形在左边缘处已经吃到 y≈24，给小了第一行会被弧线切掉 */
+  .card-hd{padding:27px 17px 14px}
+  /* 【角】编号在左上、日期在右上。两者都是「元数据」，所以都走 Cinzel 小字，不做强调色 */
+  .ch-top{display:flex;align-items:baseline;gap:10px;margin-bottom:11px}
+  .ch-no{font-family:var(--num);font-weight:900;font-size:12.5px;color:var(--gold2);letter-spacing:.08em}
+  .ch-when{font-family:var(--num);font-weight:900;font-size:11px;color:var(--ink-3);
+    margin-left:auto;letter-spacing:.06em;font-variant-numeric:tabular-nums}
+  /* 【中】中央只放篇名。它是这张卡唯一的「大字」，和上下两圈 11px 的元数据拉开 6px 以上 */
+  .card-hd .en{font-family:var(--serif);font-size:17px;font-weight:700;letter-spacing:.015em;
+    line-height:1.42;word-break:break-word}
+  .card-hd .zh{font-size:12.6px;color:var(--ink-2);margin-top:5px;word-break:break-word;line-height:1.7}
+  /* 【脚】状态签 + 技能点 / 主题线 */
+  .card-hd .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:13px}
+  .card-hd .tags i{font-style:normal;font-size:11.3px;background:none;border:1px solid var(--border);
+    border-radius:3px;padding:2px 8px;color:var(--ink-3)}
   .card-hd .tags i.pick{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
-  .card-hd .tags i.alt{background:#fff;color:var(--ink-3)}
-  .card-hd .tags i.due{background:var(--soft);border-color:var(--soft-line);color:var(--accent-deep);font-weight:650}
-  .card-hd .tags i.ok{background:var(--ok-soft);border-color:#dbe8d4;color:var(--ok);font-weight:650}
-  .card-hd .tags i.cat,.card-hd .tags i.lv{background:#fff;color:var(--ink-3)}
+  .card-hd .tags i.alt{color:var(--ink-3)}
+  .card-hd .tags i.due{background:none;border-color:var(--soft-line);color:var(--accent-deep);font-weight:650}
+  .card-hd .tags i.ok{background:none;border-color:#cfdfc6;color:var(--ok);font-weight:650}
+  .card-hd .tags i.cat,.card-hd .tags i.lv{color:var(--ink-3)}
   /* 播报台的元信息行：技能点 / 主题线 —— 与资料库页面上的卡片一一对应 */
-  .card-hd .meta-row{display:flex;gap:15px;flex-wrap:wrap;margin:0 0 8px;font-size:11.8px;color:var(--ink-3);line-height:1.55}
+  .card-hd .meta-row{display:flex;gap:15px;flex-wrap:wrap;margin:9px 0 0;font-size:11.8px;
+    color:var(--ink-3);line-height:1.6}
   .card-hd .meta-row .mk-k{color:var(--ink-3)}
   .card-hd .meta-row .mk{color:var(--ink-2);font-weight:650}
-  /* 篇目名＝「名字」，走宋体。字母用思源宋体的拉丁部分（Source Serif 的字形），
-     不是中文宋体硬套英文，所以行尾不会有奇怪的字距 */
-  .card-hd .en{font-family:var(--serif);font-size:15.5px;font-weight:700;letter-spacing:.02em;line-height:1.4;word-break:break-word}
-  .card-hd .zh{font-size:12.6px;color:var(--ink-2);margin-top:4px;word-break:break-word}
-  .card-hd .hd-btn{margin-top:11px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .card-hd .hd-btn{margin-top:14px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
   .card-hd .hd-btn .stamp{font-size:11.5px;color:var(--ink-3);margin-left:auto}
 
   .ctabs{display:flex;gap:4px;padding:0 11px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow-x:auto}
@@ -517,35 +622,37 @@
   .dlist li{font-size:12.6px;color:var(--ink-2);line-height:1.8;margin-bottom:6px}
   .dlist li .d-key{font-weight:700;color:var(--ink)}
 
-  /* ---------- 学习台：分组折叠 ----------
-     三层要一眼分得开（原来的毛病就是「组头白底、卡片也白底、组底只有一丝灰」，
-     日期跟日期、篇目跟篇目糊成一片）：
-       组头  白底 + 左侧 4px 竖条 + 16px/800 大字 + 底部实线  ← 最重
-       组底  #f2efe8（比页面底色更深）                        ← 中间层
-       卡片  纯白 + 深一档边框 + 阴影，间距 12px               ← 最轻但边界清楚 */
-  .grp{border:1px solid var(--border-2);border-radius:var(--radius);background:var(--grp-bg);overflow:hidden;margin-bottom:20px}
+  /* ---------- 学习台：分组折叠 = 时间轨 ----------
+     第三版把「框里套框」换成「轨上挂票」：
+       组头 = 一行文字 + 一条只到文字下方的线（不再是一条通栏白底）
+       组身 = 左侧一条 2px 金轨，卡片挂在轨上
+     上一版组头是白底条、组底是深色块、卡是白块 —— 三层都是「面」，只能靠底色深浅分，
+     所以怎么看都是「到处一样」。现在改成「线 + 面」，对上 §4.2 那张表的规矩：
+       线（金轨）担分组，面（白票券）担内容，各司其职，不再互相模仿。 */
+  .grp{margin-bottom:clamp(30px,4.5vh,54px);position:relative}
   .grp-hd{
-    display:flex;align-items:center;gap:11px;padding:10px 14px 12px 11px;cursor:pointer;
-    background:var(--card);border-bottom:1.5px solid var(--gold-line);position:relative;
+    display:flex;align-items:baseline;gap:10px;cursor:pointer;
+    padding:0 0 9px;margin-bottom:0;
+    border-bottom:1px solid var(--border-2);position:relative;
   }
-  /* 日期也是「名字」，所以走宋体；底线用和板块头同一套框线语法 */
-  .grp-hd::before{content:'';position:absolute;bottom:-4px;left:8px;
-    width:6px;height:6px;background:var(--gold2);transform:rotate(45deg)}
-  .grp-hd::after{content:'';position:absolute;right:12px;bottom:-4px;width:54px;height:7px;
-    background-image:
-      linear-gradient(135deg,transparent 44%,var(--gold2) 44% 56%,transparent 56%),
-      linear-gradient(45deg,transparent 44%,var(--gold2) 44% 56%,transparent 56%);
-    background-size:7px 7px;opacity:.85}
-  .grp-hd:hover{background:#fdfcfa}
-  .grp-hd .g-bar{flex:0 0 auto;width:4px;align-self:stretch;min-height:22px;border-radius:2px;background:var(--accent)}
-  .grp-hd .g-txt{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
-  .grp-hd .g-name{font-family:var(--serif);font-size:16.5px;font-weight:700;letter-spacing:.05em;line-height:1.25;word-break:break-word;color:var(--ink)}
-  .grp-hd .g-sub{font-size:11.6px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums}
-  .grp-hd .g-n{flex:0 0 auto;font-family:var(--num);font-weight:900;font-size:11.4px;color:var(--accent-deep);background:var(--soft);border-radius:99px;padding:2px 9px}
-  .grp-hd .caret{flex:0 0 auto;color:var(--ink-3);font-size:11px}
-  .grp-bd{padding:12px;display:grid;gap:12px;
-    background-image:radial-gradient(circle,rgba(152,125,69,.16) 1px,transparent 1.05px);
-    background-size:7px 7px}
+  /* 两端各一枚菱形收头（§4.1 第 5 条：收头用菱形）。上一版只给了左端，右边秃着。 */
+  .grp-hd::before,.grp-hd::after{content:'';position:absolute;bottom:-3px;width:5px;height:5px;
+    background:var(--gold2);transform:rotate(45deg)}
+  .grp-hd::before{left:0}
+  .grp-hd::after{right:0}
+  .grp-hd:hover .g-name{color:var(--accent-deep)}
+  /* 竖条撤掉：整页只有金轨一条竖线，多一条就多一个「同一个形状」 */
+  .grp-hd .g-bar{display:none}
+  .grp-hd .g-txt{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .grp-hd .g-name{font-family:var(--serif);font-size:17.5px;font-weight:700;letter-spacing:.06em;line-height:1.25;word-break:break-word;color:var(--ink)}
+  .grp-hd .g-sub{font-family:var(--num);font-weight:900;font-size:11px;color:var(--ink-3);
+    letter-spacing:.06em;font-variant-numeric:tabular-nums}
+  .grp-hd .g-n{flex:0 0 auto;font-family:var(--num);font-weight:900;font-size:12px;
+    color:var(--accent-deep);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+  .grp-hd .caret{flex:0 0 auto;color:var(--ink-3);font-size:10px}
+  /* 组身：金轨从组头那条线底下直接接下去，中间不留缝 —— 这样「轨」是连着组头的，
+     而不是一段悬空的装饰线。上内边距补回原来 margin-bottom 的 15px。 */
+  .grp-bd{padding:15px 0 0 17px;border-left:2px solid var(--gold-line);display:grid;gap:13px}
   .grp-bd[hidden]{display:none!important}
   /* 折叠起来时，组头底下那条线就没意义了（下面没东西），收掉；菱形收头也一起收 */
   .grp:has(.grp-bd[hidden]) .grp-hd{border-bottom-color:transparent}
@@ -553,55 +660,67 @@
   .grp:has(.grp-bd[hidden]) .grp-hd::after{display:none}
   /* 组头收窄时（窄屏 / 抽屉里）别把篇数挤下去 */
   @media (max-width:420px){
-    .grp-hd{padding:10px 12px 10px 9px;gap:9px}
-    .grp-hd .g-name{font-size:15px}
-    .grp-hd .g-sub{font-size:11.2px}
+    .grp-hd{gap:9px}
+    .grp-hd .g-name{font-size:16px}
+    .grp-hd .g-sub{font-size:10.5px}
+    .grp-bd{padding-left:13px}
   }
 
   /* ---------- 学习台：排期表 ---------- */
-  .plan{border:1px solid var(--border);border-radius:var(--radius);background:var(--card);overflow:hidden}
-  .plan-row{display:flex;gap:10px;align-items:center;padding:13px 14px;border-bottom:1px solid var(--border)}
+  /* 不再是一个大白框 —— 板块里再套一个框，是上一版「到处是框」的主要来源之一。
+     现在就是纸上一列，靠虚线分开，篇名回到宋体（它是「名字」）。 */
+  .plan{display:grid}
+  .plan-row{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line)}
   .plan-row:last-child{border-bottom:none}
   .plan-row .pm{flex:1;min-width:0}
-  .plan-row .pm .t{font-size:13.2px;font-weight:650;line-height:1.45;word-break:break-word}
+  .plan-row .pm .t{font-family:var(--serif);font-size:13.6px;font-weight:700;letter-spacing:.01em;
+    line-height:1.5;word-break:break-word}
   .plan-row .pm .m{font-size:11.4px;color:var(--ink-3);margin-top:5px;display:flex;gap:6px;flex-wrap:wrap}
-  .plan-row .pm .m i{font-style:normal;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:1px 7px}
-  .plan-row .pm .m i.due{background:var(--soft);border-color:var(--soft-line);color:var(--accent-deep);font-weight:650}
-  .plan-row .pm .m i.ok{background:var(--ok-soft);border-color:#dbe8d4;color:var(--ok);font-weight:650}
-  .plan-row.soft{opacity:.62}
+  .plan-row .pm .m i{font-style:normal;border:1px solid var(--border);border-radius:3px;padding:1px 7px}
+  .plan-row .pm .m i.due{border-color:var(--soft-line);color:var(--accent-deep);font-weight:650}
+  .plan-row .pm .m i.ok{border-color:#cfdfc6;color:var(--ok);font-weight:650}
+  .plan-row.soft{opacity:.55}
 
   /* ---------- 学习台：沉底 ---------- */
-  /* 沉底区现在也是一个板块框（头是 .sec-hd，身是 .sec-bd），这里只管「它是灰色的」 */
-  .sunk-hd{cursor:pointer}
-  .sunk-hd:hover{background:#fdfcfa}
-  .sunk-hd .g-bar{background:var(--ink-3)}
-  .sunk-hd .caret{color:var(--ink-3);font-size:11px}
-  .sunk-bd{opacity:.62}
+  /* 沉底区跟着新的板块头走：编号位让给 caret，但那一栏宽度要和 .sec-no 一致（40px），
+     不然后面每个板块的标题会比「今天已经动过」这一行的标题往左跑 18px */
+  .sec-hd.sunk-hd .caret{font-size:18px;line-height:1;color:var(--ink-3);flex:0 0 auto;
+    min-width:40px;text-align:left}
+  .sunk-bd{opacity:.6}
 
   /* ---------- 学习台：我的积累 ---------- */
-  .kpis{display:grid;grid-template-columns:1fr;gap:9px;margin-bottom:3px}
-  /* KPI 卡照字体定稿页 .mini 那套排：极淡的半调网点底 + Cinzel 数字。
-     网点是 1999 那三层质感里最轻的一层，只做底、不抢内容（§4.3），
-     透明度压到 .14 是为了浅底上不显脏 —— 深底那版是 .28。 */
-  .kpi{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:12px 15px;
+  .kpis{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:3px}
+  /* KPI 卡是整页唯一保留半调网点的地方 —— §4.3 的原话是「只用在局部填充块上，别铺满整页」。
+     铺满整页那版已经撤掉了，这一小块留着，才有 8:2 的疏密落差。
+     数字放到 26px，和下面 12px 的标签隔开两档：这张卡只有一个重点，就是那个数。 */
+  .kpi{background:var(--card);border:1px solid var(--border-2);border-radius:10px;
+    padding:13px 15px 14px;position:relative;
     background-image:radial-gradient(circle,rgba(152,125,69,.14) 1px,transparent 1.05px);
     background-size:6px 6px}
-  .kpi .kv{font-family:var(--num);font-weight:900;font-size:23px;color:var(--accent-deep);line-height:1.25;
+  /* 顶上一条 26px 的短金线：§4.1 那条「线不是一整条」的规矩，用最小的成本落在卡上 */
+  .kpi::before{content:'';position:absolute;left:15px;top:0;width:26px;height:2px;background:var(--gold2)}
+  .kpi .kv{font-family:var(--num);font-weight:900;font-size:26px;color:var(--accent-deep);line-height:1.2;
     letter-spacing:.01em;font-variant-numeric:tabular-nums}
-  .kpi .kl{font-size:12.2px;color:var(--ink-2);margin-top:3px}
+  .kpi .kl{font-size:12.2px;color:var(--ink-2);margin-top:4px}
   .kpi .ks{font-size:11.3px;color:var(--ink-3);margin-top:2px}
-  .map{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:15px 16px}
-  .skill{display:flex;align-items:center;gap:9px;padding:5px 0}
+  /* 技能点也不再是一个框：一列，靠虚线分开。
+     进度条去掉圆角 —— 这一块选的主形是「方」，全页只剩 KPI 那处是圆点。 */
+  .map{display:grid}
+  .skill{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line)}
+  .skill:last-child{border-bottom:none}
   .skill .sn{font-size:12.8px;color:var(--ink-2);flex:0 0 auto;min-width:132px;line-height:1.45}
-  .skill .bar{flex:1 1 auto;height:7px;background:var(--bg);border:1px solid var(--line);border-radius:5px;overflow:hidden;min-width:40px}
-  .skill .fill{display:block;height:100%;background:var(--accent);border-radius:5px}
-  .skill .sv{font-size:11.3px;color:var(--ink-3);flex:0 0 auto;min-width:36px;text-align:right}
-  .skill.full .sv{color:var(--accent-deep);font-weight:650}
+  .skill .bar{flex:1 1 auto;height:6px;background:var(--line);overflow:hidden;min-width:40px}
+  .skill .fill{display:block;height:100%;background:var(--accent)}
+  .skill .sv{font-family:var(--num);font-weight:900;font-size:11.5px;color:var(--ink-3);
+    flex:0 0 auto;min-width:40px;text-align:right;font-variant-numeric:tabular-nums}
+  .skill.full .sv{color:var(--accent-deep)}
   .skill.zero .sn{color:var(--ink-3)}
 
   /* ---------- 学习台：卡片页脚与内页补充 ---------- */
+  /* 页脚左右各补 17px 内边距 —— 它是 .card 的直接子元素，不跟 .card-hd 一起缩进，
+     不补的话轮次圆点和「下次复习」会贴着卡片边线走。 */
   .card-foot{
-    margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+    margin-top:16px;padding:12px 17px 14px;border-top:1px solid var(--line);
     display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
     font-size:11.8px;color:var(--ink-3);
   }
@@ -635,7 +754,12 @@
 
 <div id="login" hidden>
   <div class="login">
-    <h1>每日英语学习台</h1>
+    <div class="plate">
+      <div class="plate-in">
+        <div class="kicker">Daily English</div>
+        <div class="plate-row"><h1>每日英语学习台</h1></div>
+      </div>
+    </div>
     <p class="sub">每天几篇英文播报：先跟读打卡，再合上讲一遍，交给 AI 判。<br>素材、判定、复习排期都在这里，跨设备不丢。</p>
 
     <div id="step1">
@@ -707,9 +831,14 @@
     <div class="col">
       <div class="guest-bar" id="guest-bar" hidden></div>
       <header class="top">
-        <div class="top-in">
-          <h1 id="top-title">每日英语学习台</h1>
-          <div class="who" id="top-who"></div>
+        <div class="plate">
+          <div class="plate-in">
+            <div class="kicker">Daily English &middot; 学习台</div>
+            <div class="plate-row">
+              <h1 id="top-title">每日英语学习台</h1>
+              <div class="who" id="top-who"></div>
+            </div>
+          </div>
         </div>
         <div class="howto">
           <div><b>练法</b> 先看「口播结构」，把 4 步的骨架记住（别背稿）→ 通读英文稿 → 点「遮中文」盲测 → 再按结构用自己的话讲一遍，录 1–3 分钟</div>
@@ -1511,6 +1640,8 @@
     renderTabs();
     var v = $('view');
     clear(v);
+    /* 板块编号每次重排都从 I 重新数 —— 不清零的话，切一次 tab 编号就接着往下走 */
+    SEC_I = 0;
     if (CUR) renderRetell(v);
     else if (VIEW === 'today') renderToday(v);
     else if (VIEW === 'lib') renderLib(v);
@@ -1519,29 +1650,9 @@
     if (keepScroll) window.scrollTo(0, y); else window.scrollTo(0, 0);
   }
 
-  function matRow(m, opts) {
-    opts = opts || {};
-    var t = today();
-    var due = m.review_round < 6 && (isNew(m) || !m.next_review || String(m.next_review).slice(0, 10) <= t);
-    var meta = [];
-    meta.push(h('i', { class: m.review_round >= 6 ? 'done' : (due ? 'due' : ''), text: isNew(m) ? '新学' : (ROUND_NAMES[m.review_round] || '新学') }));
-    if (m.verdict && m.verdict !== '未判定') meta.push(h('i', { text: '上次 ' + m.verdict + (m.mastery === null || m.mastery === undefined ? '' : ' · ' + m.mastery + ' 分档') }));
-    if (m.review_round >= 6) meta.push(h('i', { class: 'done', text: '已巩固' }));
-    else if (isNew(m)) meta.push(h('i', { class: 'due', text: '还没讲过第一遍' }));
-    else if (m.next_review) meta.push(h('i', { class: due ? 'due' : '', text: '下次 ' + dayLabel(String(m.next_review).slice(0, 10)) }));
-
-    return h('div', { class: 'row' + (due ? ' hot' : '') }, [
-      h('div', { class: 'row-main' }, [
-        h('div', { class: 'en', text: m.en_title }),
-        h('div', { class: 'zh', text: m.zh_title || '' }),
-        h('div', { class: 'meta' }, meta)
-      ]),
-      h('button', {
-        class: 'btn sm primary go', type: 'button', text: opts.label || '复述',
-        onclick: function () { openRetell(m.id); }
-      })
-    ]);
-  }
+  /* 2026-10-14 第三版删掉了 matRow() 与它的 .row / .row-main 样式：
+     它是早期「细条列表」的写法，后来列表全部改走 matCard()，全文件里已经没有一处调用它，
+     .row 的那套 CSS 也没有任何 markup 引用。留着只会让人以为页面里还有第二种列表形态。 */
 
   /* ================= 学习台：目录与素材卡 ================= */
   var TOPIC_ORDER = ['AI 硬件与穿戴', 'AI 商业化与融资', 'AI Agent 与生态', '消费品牌与出海', '内容平台与营销', '平台规则与合规'];
@@ -1728,7 +1839,8 @@
     if (m.practice_status && m.practice_status !== '未开始') tags.push(h('i', { text: m.practice_status }));
     if (m.verdict && m.verdict !== '未判定') tags.push(h('i', { text: '上次 ' + m.verdict }));
     if (m.difficulty) tags.push(h('i', { class: 'lv', text: m.difficulty }));
-    tags.push(h('i', { text: dateKey(m) }));
+    /* 日期不再混在状态签里 —— 它升到卡的右上角，和左上角的编号一起构成 §5.1 说的「角部信息」。
+       签一栏只留「状态」，读者扫一眼就知道这篇到哪一步了。 */
 
     /* 技能点 / 主题线：搬播报台的元信息行，别让这两个字段只活在表里 */
     var sk = csvTags(m.skills), tp = csvTags(m.topic_line);
@@ -1772,11 +1884,19 @@
     acts.push(h('button', { class: 'btn sm primary', type: 'button', text: soft ? '再讲一遍' : '复述这篇', onclick: function () { openRetell(m.id); } }));
     acts.push(h('button', { class: 'btn sm', type: 'button', text: '改轮次', onclick: function () { openFix(m); } }));
 
+    /* 卡头按 §5.1「角部信息 + 中央留白」排：
+         角（编号 / 日期，两枚 Cinzel 小字）→ 中央（篇名，这张卡唯一的大字）→ 脚（状态签 + 元信息 + 动作）。
+       上一版是标签行在最上、篇名在中间被三行 11px 的小字夹着，谁重谁轻读不出来。 */
+    var when = dateKey(m);
     card.appendChild(h('div', { class: 'card-hd' }, [
-      h('div', { class: 'tags' }, tags),
-      meta,
+      h('div', { class: 'ch-top' }, [
+        h('span', { class: 'ch-no', text: 'No.' + m.id }),
+        h('span', { class: 'ch-when', text: when === '（没记日期）' ? '—' : when })
+      ]),
       h('div', { class: 'en', text: m.en_title }),
       h('div', { class: 'zh', text: m.zh_title || '' }),
+      h('div', { class: 'tags' }, tags),
+      meta,
       h('div', { class: 'hd-btn' }, acts)
     ]));
 
@@ -1861,13 +1981,21 @@
     });
   }
 
-  /* 板块框：头 = 竖条 + 标题 + 说明 + 计数，身 = 组底上的一层内容。
-     页面里每个板块都走这两个函数，形状才不会一页一个样。 */
+  /* 板块：开放章节（第三版）。
+     头不再是一个白底框，而是「超大编号 + 宋体板块名 + 一条金线」。
+     编号由 render 每次重排时从 01 重数（见 render 里 SEC_I = 0）。
+     用阿拉伯两位数是试出来的：先写的罗马数字，但「I」在 Cinzel 里就是一根细竖杆，
+     跟标题左边那条装饰竖线长得一样，读不出「这是第几块」；II / III 又要数杠。
+     两位阿拉伯数字一眼是「01」，也和卡券上的 No.13 呼应成同一套编号。 */
+  var SEC_I = 0;
   function secHead(title, note, badge) {
+    var i = ++SEC_I;
     return h('div', { class: 'sec-hd' }, [
-      h('span', { class: 'g-bar' }),
-      h('h2', { text: title }),
-      note ? h('span', { class: 'note', text: note }) : null,
+      h('span', { class: 'sec-no', text: (i < 10 ? '0' : '') + i }),
+      h('div', { class: 'sec-tx' }, [
+        h('h2', { text: title }),
+        note ? h('span', { class: 'note', text: note }) : null
+      ]),
       badge ? h('span', { class: 'badge', text: badge }) : null
     ]);
   }
@@ -1914,11 +2042,14 @@
           caret.textContent = shut ? '▾' : '▸';
         }
       }, [
-        h('span', { class: 'g-bar' }),
-        h('h2', { text: '今天已经动过' }),
-        h('span', { class: 'note', text: '等下次复习' }),
-        h('span', { class: 'badge', text: sunk.length + ' 篇' }),
-        caret
+        /* 沉底区不占板块编号 —— 它是「今天」的附注，不是并列的第三章。
+           编号位让给 caret，宽度和罗马数字那一栏对齐，标题才不会左右跳。 */
+        caret,
+        h('div', { class: 'sec-tx' }, [
+          h('h2', { text: '今天已经动过' }),
+          h('span', { class: 'note', text: '等下次复习' })
+        ]),
+        h('span', { class: 'badge', text: sunk.length + ' 篇' })
       ]);
       v.appendChild(h('div', { class: 'sec' }, [skHd, bd]));
     }
@@ -2118,7 +2249,12 @@
       })
     ]));
 
+    var tw = dateKey(m);
     v.appendChild(h('div', { class: 'title-card' }, [
+      h('div', { class: 'ch-top' }, [
+        h('span', { class: 'ch-no', text: 'No.' + m.id }),
+        h('span', { class: 'ch-when', text: tw === '（没记日期）' ? '—' : tw })
+      ]),
       h('div', { class: 'en', text: m.en_title }),
       h('div', { class: 'zh', text: m.zh_title || '' }),
       h('div', { class: 'tags' }, [
