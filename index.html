@@ -3,19 +3,74 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f7f5f2">
+<meta name="theme-color" content="#f0e9db">
 <title>每日英语学习台</title>
 <style>
+  /* ─────────────────────────────────────────────────────────────
+     字体（2026-10-14 引入）
+     依据 紫人的个人网页/字体定稿_能力页_v1.html：中文＝思源宋体（Noto Serif
+     SC）三档，数字＝Cinzel 900。分工规则比选哪个字体更要紧 ——
+     凡是「名字」（页标题 / 板块头 / 篇目名 / 日期）上宋体；描述性正文留系统
+     黑体。分界看字号：12px 的事实条目用宋体会糊，而它们是拿来逐条读的。
+     文件放在同目录 fonts/ 下，不走 CDN —— CDN 被墙时页面不至于瞎。
+     两个字体都是 SIL OFL 1.1，可商用。
+     ───────────────────────────────────────────────────────────── */
+  @font-face{font-family:"Cinzel";src:url("fonts/Cinzel-900.woff2") format("woff2");
+    font-weight:100 900;font-style:normal;font-display:swap}
+  @font-face{font-family:"Noto Serif SC";src:url("fonts/NotoSerifSC-Medium-sub.woff2") format("woff2");
+    font-weight:500;font-style:normal;font-display:swap}
+  @font-face{font-family:"Noto Serif SC";src:url("fonts/NotoSerifSC-Bold-sub.woff2") format("woff2");
+    font-weight:700;font-style:normal;font-display:swap}
+  @font-face{font-family:"Noto Serif SC";src:url("fonts/NotoSerifSC-Black-sub.woff2") format("woff2");
+    font-weight:900;font-style:normal;font-display:swap}
+  /* --num 的兜底顺序：Cinzel → 思源宋体 Bold → 等宽。
+     数值里常夹汉字（89万 / 第 3 轮），那些汉字必须落在 Bold、不能落 Black ——
+     同一行里 Cinzel 是细横粗竖，旁边一个 Black 的「万」会重得从数字里跳出来。 */
+  @font-face{font-family:"Noto Serif SC -Num";src:url("fonts/NotoSerifSC-Bold-sub.woff2") format("woff2");
+    font-weight:900;font-style:normal;font-display:swap}
+
   :root{
-    --bg:#f7f5f2; --card:#fff; --ink:#241f1a; --ink-2:#5b544c; --ink-3:#8d857a;
-    --line:#efece6; --border:#e3ddd3; --accent:#c2543a; --accent-deep:#a03f2a;
-    --soft:#f9eae4; --soft-line:#f0d9cf; --ok:#4f7a3f; --ok-soft:#eef4e9;
-    --warn:#b9832a; --shadow:0 1px 2px rgba(60,50,40,.04),0 6px 18px rgba(60,50,40,.05);
+    /* ── 底：奶油纸（2026-10-14 第二版）
+       原来是 #f7f5f2，太接近纯白，纸上那层「年代感」出不来。
+       1999 浅色支的底是奶油/羊皮纸（UI视觉参考 §2.1-B：#f0ece0 / #e9c97d），
+       这里取偏暖的一端并压住饱和度 —— 要纸味，不要真的发黄到影响读小字。 ── */
+    --bg:#f0e9db; --card:#fffdf9; --ink:#241f1a; --ink-2:#5b544c; --ink-3:#8d857a;
+    --line:#e5dac3; --border:#d9ccb0; --accent:#c2543a; --accent-deep:#a03f2a;
+    --soft:#f8e7de; --soft-line:#ebccba; --ok:#4f7a3f; --ok-soft:#eaf2e4;
+    --warn:#b9832a;
+    --shadow:0 1px 2px rgba(92,72,40,.06),0 6px 18px rgba(92,72,40,.08);
     --radius:14px;
-    /* 分组层用：--border-2 比 --border 深一档，卡片边界才看得出来；
-       --grp-bg 比页面底色 (#f7f5f2) 再深一点，白卡才能「浮」在组底上 */
-    --border-2:#d7ccbc; --grp-bg:#efeae0;
+    /* 分组层：--border-2 偏金褐，--grp-bg 比底色再深一档的纸，白卡才能「浮」起来 */
+    --border-2:#cbba98; --grp-bg:#e8dfc9;
+    /* ── 1999 那一支的金。第二版把不透明度从 .42 提到 .60 —— 上一版淡到看不见，
+       等于没做。它仍是氧化黄铜（#987d45/#caae5c），不是纯金，压在纸上不会发亮刺眼。 ── */
+    --gold:#987d45; --gold2:#c9a94f; --gold-line:rgba(152,125,69,.60);
+    /* 字体分工：名字走 --serif，数字走 --num，正文不动 */
+    --serif:"Noto Serif SC","Songti SC",serif;
+    --num:"Cinzel","Noto Serif SC -Num",ui-monospace,SFMono-Regular,Menlo,monospace;
   }
+
+  /* ---------- 1999 的三条图形规则（回归自「UI视觉参考_重返未来1999_v1.md §4」）----------
+     ① 框线：不用整条 border，改成「一条 1px 金线 + 两端各一枚 3–4px 菱形收头」。
+        §4.1 末尾的原话就是「这一条就能立刻有 1999 味，成本极低」。
+     ② 半调网点：规则排列的圆点当质感，极低透明度，只做底不抢内容（§4.3）。
+     ③ 疏密：8:2 甚至 9:1 —— 大面积留白托局部细节，所以板块间距要拉开。 */
+  .grule{position:relative;height:1px;background:var(--gold-line)}
+  .grule::before,.grule::after{content:'';position:absolute;top:50%;width:4px;height:4px;
+    margin-top:-2px;background:var(--gold2);transform:rotate(45deg)}
+  .grule::before{left:0} .grule::after{right:0}
+  /* 菱形串：边中段的装饰中继，绝对定位一枚即可（§4.1 第 4 条） */
+  .glattice{position:absolute;height:7px;width:34px;opacity:.75;
+    background-image:
+      linear-gradient(135deg,transparent 46%,var(--gold2) 46% 54%,transparent 54%),
+      linear-gradient(45deg,transparent 46%,var(--gold2) 46% 54%,transparent 54%);
+    background-size:7px 7px}
+  .dots{background-image:radial-gradient(circle,rgba(152,125,69,.20) 1px,transparent 1.1px);
+    background-size:6px 6px}
+  /* 名字走宋体。行高 1.1–1.2、字间距 .05em 是字体定稿页那三条附带规矩之一 */
+  .serif{font-family:var(--serif);letter-spacing:.05em;line-height:1.2}
+  .num{font-family:var(--num);font-weight:900;font-variant-numeric:tabular-nums;
+    letter-spacing:.01em}
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
   body{
@@ -32,7 +87,7 @@
   /* ---------- 启动 / 登录 ---------- */
   #boot{display:flex;align-items:center;justify-content:center;min-height:70vh;color:var(--ink-3);font-size:14px}
   .login{max-width:400px;margin:0 auto;padding:56px 20px 40px}
-  .login h1{font-size:25px;letter-spacing:-.01em}
+  .login h1{font-family:var(--serif);font-size:25px;font-weight:700;letter-spacing:.05em;line-height:1.2}
   .login .sub{color:var(--ink-3);font-size:13px;margin-top:8px;line-height:1.7}
   .field{margin-top:22px}
   .field label{display:block;font-size:12.5px;color:var(--ink-2);font-weight:650;margin-bottom:7px}
@@ -59,6 +114,17 @@
   .or{display:flex;align-items:center;gap:10px;margin:20px 0 4px;color:var(--ink-3);font-size:11.8px}
   .or:before,.or:after{content:"";flex:1;height:1px;background:var(--border)}
 
+  /* 登录屏里「按需展开」的验证码块：默认收起，密码没登进去才出现。
+     左侧一道 3px 金竖条 + 极浅金色渐变，和上面的输入框区分开 ——
+     一眼能看出「这是多出来的一步」，而不是又一个必填项。 */
+  #otpFold{margin-top:16px;border-left:3px solid var(--gold2);
+    background:linear-gradient(90deg,rgba(202,174,92,.11),rgba(202,174,92,0));
+    border-radius:0 11px 11px 0;padding:13px 14px 6px}
+  .otp-note{font-size:12.4px;color:#6b4a1f;line-height:1.8;margin-bottom:14px}
+  .otp-row{display:flex;gap:9px;align-items:center}
+  .otp-row input{width:auto;flex:1 1 auto;min-width:0}
+  .otp-row .btn{flex:0 0 auto;white-space:nowrap}
+
   /* ---------- 游客模式提示条 ---------- */
   .guest-bar{
     display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:16px 0 0;
@@ -75,7 +141,7 @@
   /* ---------- 页头（跟着内容滚走，只有板块条吸顶） ---------- */
   .top{padding:20px 0 0;padding-top:calc(20px + env(safe-area-inset-top))}
   .top-in{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
-  .top h1{font-size:21px;font-weight:700;letter-spacing:-.01em}
+  .top h1{font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:.05em;line-height:1.2}
   .top .who{font-size:11.8px;color:var(--ink-3);margin-left:auto;text-align:right;line-height:1.5}
   .top .who b{display:block;color:var(--accent-deep);font-size:12.8px;font-weight:700}
   .howto{
@@ -90,19 +156,36 @@
   /* 板块框：主列里每个板块自成一个框，和「篇目」的分组同一套语言
      —— 板块头（竖条 + 16px 大字 + 说明 + 计数）在最上面，内容在下面的组底上。
      不这么框的话，一节接一节平铺下去，看不出这是几块。 */
-  .sec{border:1px solid var(--border-2);border-radius:var(--radius);background:var(--grp-bg);overflow:hidden;margin-bottom:16px}
-  .sec-bd{padding:12px;display:grid;gap:12px}
+  .sec{border:1px solid var(--border-2);border-radius:var(--radius);background:var(--grp-bg);overflow:hidden;margin-bottom:20px}
+  /* 板块身铺一层半调网点：1999 那层质感里最轻的一层（§4.3），
+     只做底、不抢内容。密度 7px 比 KPI 卡的 6px 再疏一点，大片铺开才不显脏。 */
+  .sec-bd{padding:12px;display:grid;gap:12px;
+    background-image:radial-gradient(circle,rgba(152,125,69,.16) 1px,transparent 1.05px);
+    background-size:7px 7px}
   .sec-bd[hidden]{display:none!important}
   .sec-bd > .empty{margin:0}
   .sec-hd{display:flex;align-items:center;gap:9px;margin:22px 0 11px;flex-wrap:wrap}
   .sec-hd:first-child{margin-top:6px}
-  .sec-hd h2{font-size:16px;font-weight:800;letter-spacing:-.01em;line-height:1.3}
+  /* 板块名＝「名字」，走宋体（1999 那支的字体分工规则） */
+  .sec-hd h2{font-family:var(--serif);font-size:16.5px;font-weight:700;letter-spacing:.05em;line-height:1.25}
   .sec-hd .note{font-size:11.8px;color:var(--ink-3)}
   .sec-hd .g-bar{flex:0 0 auto;width:4px;align-self:stretch;min-height:18px;border-radius:2px;background:var(--accent)}
   .sec-hd .badge{margin-left:auto}
-  /* 框里的板块头：白底 + 底部实线，和 .grp-hd 对齐 */
-  .sec > .sec-hd{margin:0;padding:11px 15px 11px 11px;background:var(--card);border-bottom:1px solid var(--border-2)}
+  /* 框里的板块头：白底 + 底部金线。底线走 1999 的框线语法（§4.1）：
+     1.5px 金线 + 左端一枚 6px 菱形 + 右端一小段菱形串。
+     上一版写的是「1px 线 + 两端各 4px 菱形」，在那个尺寸下正常视距看不见，等于没做。 */
+  .sec > .sec-hd{margin:0;padding:11px 16px 13px 11px;background:var(--card);
+    border-bottom:1.5px solid var(--gold-line);position:relative}
+  .sec > .sec-hd::before{content:'';position:absolute;bottom:-4px;left:8px;
+    width:6px;height:6px;background:var(--gold2);transform:rotate(45deg)}
+  .sec > .sec-hd::after{content:'';position:absolute;right:12px;bottom:-4px;width:54px;height:7px;
+    background-image:
+      linear-gradient(135deg,transparent 44%,var(--gold2) 44% 56%,transparent 56%),
+      linear-gradient(45deg,transparent 44%,var(--gold2) 44% 56%,transparent 56%);
+    background-size:7px 7px;opacity:.85}
   .badge{font-size:11.5px;font-weight:700;color:var(--accent-deep);background:var(--soft);border-radius:99px;padding:2px 9px}
+  /* 篇数这类计数走 Cinzel，和数字列同一套等宽衬线 */
+  .badge .n,.secnav button .n,.sn-hd .nc{font-family:var(--num);font-weight:900;font-variant-numeric:tabular-nums}
   .empty{
     background:var(--card);border:1px dashed var(--border);border-radius:var(--radius);
     padding:20px 18px;color:var(--ink-2);font-size:13.2px;line-height:1.8;
@@ -116,7 +199,7 @@
   }
   .row.hot{border-color:var(--soft-line);background:linear-gradient(0deg,var(--soft),#fff 62%)}
   .row-main{flex:1;min-width:0}
-  .row-main .en{font-size:14.2px;font-weight:650;line-height:1.45;word-break:break-word}
+  .row-main .en{font-family:var(--serif);font-size:14.5px;font-weight:700;letter-spacing:.02em;line-height:1.4;word-break:break-word}
   .row-main .zh{font-size:12.5px;color:var(--ink-2);margin-top:3px;word-break:break-word}
   .row-main .meta{font-size:11.5px;color:var(--ink-3);margin-top:7px;display:flex;gap:8px;flex-wrap:wrap}
   .row-main .meta i{font-style:normal;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:1px 7px}
@@ -128,7 +211,8 @@
   .secnav{
     position:sticky;top:0;z-index:30;margin:15px -16px 2px;padding:9px 16px 10px;
     background:rgba(247,245,242,.94);backdrop-filter:saturate(180%) blur(12px);
-    border-bottom:1px solid var(--line);
+    /* 底线走金线（1999 框线语法的第二处）。底色任何宽度都别去掉 —— 去掉之后内容会从它底下透出来 */
+    border-bottom:1.5px solid var(--gold-line);
   }
   .secnav-in{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
   .secnav-in::-webkit-scrollbar{display:none}
@@ -226,7 +310,7 @@
   .back{display:flex;align-items:center;gap:9px;margin-bottom:14px}
   .back button{font-size:13px;font-weight:650;color:var(--accent-deep);background:none;border:none;padding:4px 0}
   .title-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 16px 14px}
-  .title-card .en{font-size:16.5px;font-weight:700;line-height:1.45}
+  .title-card .en{font-family:var(--serif);font-size:17px;font-weight:700;letter-spacing:.02em;line-height:1.4}
   .title-card .zh{font-size:12.8px;color:var(--ink-2);margin-top:5px}
   .title-card .tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
   .title-card .tags i{font-style:normal;font-size:11.3px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:2px 8px;color:var(--ink-2)}
@@ -278,7 +362,8 @@
   .verdict.ok{background:var(--ok-soft);color:var(--ok)}
   .verdict.mid{background:#fdf3e3;color:var(--warn)}
   .verdict.bad{background:#fbeceb;color:#c0392b}
-  .result-hd .score{font-size:22px;font-weight:700;margin-left:auto;letter-spacing:-.02em}
+  .result-hd .score{font-family:var(--num);font-weight:900;font-size:23px;margin-left:auto;
+    letter-spacing:.01em;font-variant-numeric:tabular-nums}
   .result-hd .score small{font-size:12px;color:var(--ink-3);font-weight:600;margin-left:5px;letter-spacing:0}
   .result-hd .sub{font-size:12.5px;color:var(--ink-2);margin-top:9px;line-height:1.75}
   .result-hd .sub b{color:var(--accent-deep)}
@@ -341,8 +426,14 @@
   /* 卡片用比 --shadow 重一档的投影：组底压深之后，卡片得真的「浮」起来才像一块块独立的纸片 */
   .card{
     background:var(--card);border:1px solid var(--border-2);border-radius:var(--radius);overflow:hidden;
-    box-shadow:0 1px 2px rgba(60,50,40,.05),0 4px 14px rgba(60,50,40,.07);
+    box-shadow:0 1px 2px rgba(60,50,40,.05),0 4px 14px rgba(60,50,40,.07);position:relative;
   }
+  /* 左上角一枚 L 形金角 —— 字体定稿页 .card::before 的同一招，是 1999 框线语法里最小的一处。
+     上一版给的是 7px，一样看不见；这版放到 9px、线宽 1.5px。
+     定位 5px 是为了避开 .card-hd 的 15px 左内边距，线尾正好停在内容开始处。 */
+  .card::before{content:'';position:absolute;left:5px;top:5px;width:9px;height:9px;
+    border:1.5px solid var(--gold2);border-right:0;border-bottom:0;
+    border-radius:3px 0 0 0;pointer-events:none;z-index:1}
   .card.is-main{border-color:var(--soft-line);background:linear-gradient(0deg,var(--soft),#fff 30%)}
   .card-hd{padding:14px 15px 12px}
   .card-hd .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
@@ -356,7 +447,9 @@
   .card-hd .meta-row{display:flex;gap:15px;flex-wrap:wrap;margin:0 0 8px;font-size:11.8px;color:var(--ink-3);line-height:1.55}
   .card-hd .meta-row .mk-k{color:var(--ink-3)}
   .card-hd .meta-row .mk{color:var(--ink-2);font-weight:650}
-  .card-hd .en{font-size:15px;font-weight:700;line-height:1.45;word-break:break-word}
+  /* 篇目名＝「名字」，走宋体。字母用思源宋体的拉丁部分（Source Serif 的字形），
+     不是中文宋体硬套英文，所以行尾不会有奇怪的字距 */
+  .card-hd .en{font-family:var(--serif);font-size:15.5px;font-weight:700;letter-spacing:.02em;line-height:1.4;word-break:break-word}
   .card-hd .zh{font-size:12.6px;color:var(--ink-2);margin-top:4px;word-break:break-word}
   .card-hd .hd-btn{margin-top:11px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
   .card-hd .hd-btn .stamp{font-size:11.5px;color:var(--ink-3);margin-left:auto}
@@ -430,22 +523,34 @@
        组头  白底 + 左侧 4px 竖条 + 16px/800 大字 + 底部实线  ← 最重
        组底  #f2efe8（比页面底色更深）                        ← 中间层
        卡片  纯白 + 深一档边框 + 阴影，间距 12px               ← 最轻但边界清楚 */
-  .grp{border:1px solid var(--border-2);border-radius:var(--radius);background:var(--grp-bg);overflow:hidden;margin-bottom:18px}
+  .grp{border:1px solid var(--border-2);border-radius:var(--radius);background:var(--grp-bg);overflow:hidden;margin-bottom:20px}
   .grp-hd{
-    display:flex;align-items:center;gap:11px;padding:10px 14px 10px 11px;cursor:pointer;
-    background:var(--card);border-bottom:1px solid var(--border-2);
+    display:flex;align-items:center;gap:11px;padding:10px 14px 12px 11px;cursor:pointer;
+    background:var(--card);border-bottom:1.5px solid var(--gold-line);position:relative;
   }
+  /* 日期也是「名字」，所以走宋体；底线用和板块头同一套框线语法 */
+  .grp-hd::before{content:'';position:absolute;bottom:-4px;left:8px;
+    width:6px;height:6px;background:var(--gold2);transform:rotate(45deg)}
+  .grp-hd::after{content:'';position:absolute;right:12px;bottom:-4px;width:54px;height:7px;
+    background-image:
+      linear-gradient(135deg,transparent 44%,var(--gold2) 44% 56%,transparent 56%),
+      linear-gradient(45deg,transparent 44%,var(--gold2) 44% 56%,transparent 56%);
+    background-size:7px 7px;opacity:.85}
   .grp-hd:hover{background:#fdfcfa}
   .grp-hd .g-bar{flex:0 0 auto;width:4px;align-self:stretch;min-height:22px;border-radius:2px;background:var(--accent)}
   .grp-hd .g-txt{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
-  .grp-hd .g-name{font-size:16px;font-weight:800;letter-spacing:-.01em;line-height:1.3;word-break:break-word;color:var(--ink)}
+  .grp-hd .g-name{font-family:var(--serif);font-size:16.5px;font-weight:700;letter-spacing:.05em;line-height:1.25;word-break:break-word;color:var(--ink)}
   .grp-hd .g-sub{font-size:11.6px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums}
-  .grp-hd .g-n{flex:0 0 auto;font-size:11.4px;font-weight:700;color:var(--accent-deep);background:var(--soft);border-radius:99px;padding:2px 9px}
+  .grp-hd .g-n{flex:0 0 auto;font-family:var(--num);font-weight:900;font-size:11.4px;color:var(--accent-deep);background:var(--soft);border-radius:99px;padding:2px 9px}
   .grp-hd .caret{flex:0 0 auto;color:var(--ink-3);font-size:11px}
-  .grp-bd{padding:12px;display:grid;gap:12px}
+  .grp-bd{padding:12px;display:grid;gap:12px;
+    background-image:radial-gradient(circle,rgba(152,125,69,.16) 1px,transparent 1.05px);
+    background-size:7px 7px}
   .grp-bd[hidden]{display:none!important}
-  /* 折叠起来时，组头底下那条线就没意义了（下面没东西），收掉 */
+  /* 折叠起来时，组头底下那条线就没意义了（下面没东西），收掉；菱形收头也一起收 */
   .grp:has(.grp-bd[hidden]) .grp-hd{border-bottom-color:transparent}
+  .grp:has(.grp-bd[hidden]) .grp-hd::before,
+  .grp:has(.grp-bd[hidden]) .grp-hd::after{display:none}
   /* 组头收窄时（窄屏 / 抽屉里）别把篇数挤下去 */
   @media (max-width:420px){
     .grp-hd{padding:10px 12px 10px 9px;gap:9px}
@@ -475,8 +580,14 @@
 
   /* ---------- 学习台：我的积累 ---------- */
   .kpis{display:grid;grid-template-columns:1fr;gap:9px;margin-bottom:3px}
-  .kpi{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:12px 15px}
-  .kpi .kv{font-size:21px;font-weight:700;color:var(--accent-deep);line-height:1.25}
+  /* KPI 卡照字体定稿页 .mini 那套排：极淡的半调网点底 + Cinzel 数字。
+     网点是 1999 那三层质感里最轻的一层，只做底、不抢内容（§4.3），
+     透明度压到 .14 是为了浅底上不显脏 —— 深底那版是 .28。 */
+  .kpi{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:12px 15px;
+    background-image:radial-gradient(circle,rgba(152,125,69,.14) 1px,transparent 1.05px);
+    background-size:6px 6px}
+  .kpi .kv{font-family:var(--num);font-weight:900;font-size:23px;color:var(--accent-deep);line-height:1.25;
+    letter-spacing:.01em;font-variant-numeric:tabular-nums}
   .kpi .kl{font-size:12.2px;color:var(--ink-2);margin-top:3px}
   .kpi .ks{font-size:11.3px;color:var(--ink-3);margin-top:2px}
   .map{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:15px 16px}
@@ -533,7 +644,7 @@
         <input id="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="11 位手机号">
       </div>
       <div class="row-btn"><button class="btn primary grow" id="send-btn" type="button">获取验证码</button></div>
-      <div class="row-btn"><button class="btn ghost grow" id="to-pwd-btn" type="button">用密码登录</button></div>
+      <div class="row-btn"><button class="btn ghost grow" id="to-pwd-btn" type="button">返回密码登录</button></div>
     </div>
 
     <div id="step2" hidden>
@@ -548,43 +659,37 @@
       <p class="tip" id="code-tip"></p>
     </div>
 
-    <!-- 密码登录：手机号 + 密码，不用等验证码 -->
-    <div id="stepPwd" hidden>
+    <!-- 一屏搞定注册与登录（2026-10-14 合并）
+         以前是「密码屏 → 点设置密码 → 第三个屏」，要多点两下。
+         现在只有这一屏：手机号 + 密码 → 登录。
+         没登进去（第一次用 / 忘了密码）时不跳屏，在下面原地展开验证码，
+         验证一次就把上面那栏的密码设上，之后一直用手机号 + 密码进。 -->
+    <div id="stepPwd">
       <div class="field">
         <label for="phone-p">手机号</label>
         <input id="phone-p" type="tel" inputmode="numeric" autocomplete="tel" placeholder="11 位手机号">
       </div>
       <div class="field">
         <label for="pwd">密码</label>
-        <input id="pwd" type="password" autocomplete="current-password" placeholder="登录密码">
+        <input id="pwd" type="password" autocomplete="current-password" placeholder="第一次用就自己定一个，至少 8 位">
       </div>
       <div class="row-btn"><button class="btn primary grow" id="pwd-btn" type="button">登录</button></div>
-      <div class="row-btn">
-        <button class="btn ghost grow" id="to-code-btn" type="button">用验证码登录</button>
-        <button class="btn ghost grow" id="to-new-btn" type="button">设置密码</button>
-      </div>
-      <p class="tip">没设过密码就点「设置密码」，用验证码验证一次即可。</p>
-    </div>
 
-    <!-- 设置 / 重置密码：验证码验证一次 → 写新密码 → 直接登录 -->
-    <div id="stepNew" hidden>
-      <p class="tip" style="margin-top:0">用手机验证码验证一次，就能设一个新密码。以后用手机号 + 密码登录，不用再等短信。</p>
-      <div class="field">
-        <label for="phone-n">手机号</label>
-        <input id="phone-n" type="tel" inputmode="numeric" autocomplete="tel" placeholder="11 位手机号">
+      <!-- 默认收起：只有密码没登进去时才展开，
+           所以「验证手机号」这一步不会挡在正常登录前面。 -->
+      <div id="otpFold" hidden>
+        <p class="otp-note" id="otp-note"></p>
+        <div class="field">
+          <label for="ocode">验证码</label>
+          <div class="otp-row">
+            <input id="ocode" type="tel" inputmode="numeric" autocomplete="one-time-code" placeholder="6 位数字">
+            <button class="btn sm" id="o-send-btn" type="button">获取验证码</button>
+          </div>
+        </div>
+        <p class="tip" id="o-tip"></p>
       </div>
-      <div class="row-btn"><button class="btn primary grow" id="n-send-btn" type="button">获取验证码</button></div>
-      <div class="field">
-        <label for="ncode">验证码</label>
-        <input id="ncode" type="tel" inputmode="numeric" autocomplete="one-time-code" placeholder="6 位数字">
-      </div>
-      <div class="field">
-        <label for="npwd">新密码</label>
-        <input id="npwd" type="password" autocomplete="new-password" placeholder="至少 8 位">
-      </div>
-      <div class="row-btn"><button class="btn primary grow" id="n-save-btn" type="button">保存并登录</button></div>
-      <div class="row-btn"><button class="btn ghost grow" id="to-pwd-btn2" type="button">返回</button></div>
-      <p class="tip" id="n-tip"></p>
+
+      <div class="row-btn"><button class="btn ghost grow" id="to-code-btn" type="button">不想设密码，用验证码登录</button></div>
     </div>
 
     <div class="err" id="login-err"></div>
@@ -1032,7 +1137,8 @@
      这两个接口直接打同源的 /.cloud/auth/v1 —— WorkBuddy 域名下本身就是同源；
      Vercel 域名下由 vercel.json 把 /.cloud/* 重写到 api/proxy 转发（服务端发起，不带 Origin）。 */
   var AUTH = '/.cloud/auth/v1';
-  var LMODE = 'rt_login_mode';   /* 记上次用的登录方式：设过密码就直接给密码屏 */
+  /* 合并后的登录屏状态：验证码那一块是否已展开、本次验证对应的 verification_id */
+  var otpOpen = false, pendingReset = null;
 
   /* 与 SDK 内部 normalizePhone 同一套规则：11 位 → '+86 13800138000'。
      服务端的手机号正则是 ^\+[1-9][0-9]{0,3}\s[0-9]{4,20}$，不归一化会被拒。 */
@@ -1068,18 +1174,39 @@
   }
 
   function showLoginStep(which) {
-    ['step1', 'step2', 'stepPwd', 'stepNew'].forEach(function (id) {
+    ['step1', 'step2', 'stepPwd'].forEach(function (id) {
       var el = $(id); if (el) el.hidden = (id !== which);
     });
     setLoginErr('');
+    /* 离开这一屏就把验证码那块收回原位，免得下次进来带着上一次的展开状态 */
+    if (which !== 'stepPwd') closeOtpFold();
   }
 
-  /* ---- 手机号 + 密码 ---- */
+  function closeOtpFold() {
+    otpOpen = false; pendingReset = null;
+    var f = $('otpFold'); if (f) f.hidden = true;
+    var b = $('pwd-btn'); if (b) b.textContent = '登录';
+    var t = $('o-tip'); if (t) t.textContent = '';
+    var c = $('ocode'); if (c) c.value = '';
+  }
+
+  /* ---- 手机号 + 密码：这一屏同时也是「注册」屏 ----
+     点「登录」先试密码：通就进；不通（第一次用，或密码记错）就在原地展开验证码，
+     验证一次 → 用上面那栏的密码写进账号 → 再登录。全程不换屏。 */
+  function openOtpFold(note) {
+    otpOpen = true;
+    $('otpFold').hidden = false;
+    $('otp-note').textContent = note;
+    $('pwd-btn').textContent = '验证并进入';
+    var c = $('ocode'); if (c) c.focus();
+  }
+
   function submitPassword() {
     var phone = $('phone-p').value.replace(/\s/g, '');
     if (!/^1\d{10}$/.test(phone)) { setLoginErr('请输入正确的 11 位手机号'); return; }
     var pw = $('pwd').value;
     if (!pw) { setLoginErr('请输入密码。'); return; }
+    if (otpOpen) { verifyAndEnter(phone, pw); return; }
     setLoginErr('');
     var b = $('pwd-btn');
     b.disabled = true; b.textContent = '登录中…';
@@ -1087,34 +1214,38 @@
       b.disabled = false; b.textContent = '登录';
       var err = done && done.error;
       if (err) {
-        setLoginErr(err.code === 'invalid_username_or_password'
-          ? '手机号或密码不对。还没设过密码就点下面的「设置密码」。'
-          : mapError(err));
+        /* 服务端对「没这个号」和「密码不对」回同一个错码，这里没法区分，也不用区分 ——
+           两种情况都是「验证一次短信就能进来」，所以文案写成两者都成立的说法。 */
+        if (err.code === 'invalid_username_or_password') {
+          openOtpFold('没直接登进去。这个手机号要么是第一次用，要么密码对不上 —— 都验证一次短信就行，'
+            + '顺手把上面那栏的密码设上，以后再不用等短信。');
+          b.textContent = '验证并进入';
+          return;
+        }
+        setLoginErr(mapError(err));
         return;
       }
-      try { localStorage.setItem(LMODE, 'pwd'); } catch (e) {}
       SESSION = done.data;
       enterApp();
     }, function (e) {
-      b.disabled = false; b.textContent = '登录';
+      b.disabled = false; b.textContent = otpOpen ? '验证并进入' : '登录';
       setLoginErr(mapError(e));
     });
   }
 
-  /* ---- 设置 / 重置密码：验证码验证一次 → 写新密码 → 直接登录 ---- */
-  var pendingNew = null;
-
-  function sendNewCode() {
-    var np = normPhone($('phone-n').value);
+  /* ---- 展开后：发码 ---- */
+  function sendResetCode() {
+    var np = normPhone($('phone-p').value);
     if (!np) { setLoginErr('请输入正确的 11 位手机号'); return; }
     setLoginErr('');
-    var b = $('n-send-btn');
+    var b = $('o-send-btn');
     b.disabled = true; b.textContent = '发送中…';
     authPost('/verification', { phone_number: np, usage: 'PASSWORD_RESET', target: 'USER' }).then(function (d) {
-      if (!d.verification_id) { b.disabled = false; b.textContent = '获取验证码'; setLoginErr('没拿到验证码编号，再试一次。'); return; }
-      pendingNew = { np: np, vid: d.verification_id };
-      $('n-tip').textContent = '验证码已发到 ' + maskPhone(np) + '。';
-      $('ncode').focus();
+      b.textContent = '获取验证码';
+      if (!d.verification_id) { b.disabled = false; setLoginErr('没拿到验证码编号，再试一次。'); return; }
+      pendingReset = { np: np, vid: d.verification_id };
+      $('o-tip').textContent = '验证码已发到 ' + maskPhone(np) + '。';
+      var c = $('ocode'); if (c) c.focus();
       var n = 60;
       b.textContent = '重发 ' + n + 's';
       var t = setInterval(function () {
@@ -1128,36 +1259,35 @@
     });
   }
 
-  function saveNewPassword() {
-    if (!pendingNew) { setLoginErr('先获取验证码。'); return; }
-    var code = $('ncode').value.replace(/\s/g, '');
-    var pw = $('npwd').value;
+  /* ---- 展开后：验证码 + 那栏的密码 → 写进账号 → 直接登录 ---- */
+  function verifyAndEnter(phone, pw) {
+    var code = $('ocode').value.replace(/\s/g, '');
+    if (!pendingReset) { setLoginErr('先点「获取验证码」。'); return; }
     if (!code) { setLoginErr('请输入验证码。'); return; }
-    if (pw.length < 8) { setLoginErr('密码至少 8 位。'); return; }
+    if (pw.length < 8) { setLoginErr('密码至少 8 位 —— 改一下上面那栏，再点一次。'); return; }
     setLoginErr('');
-    var b = $('n-save-btn');
-    b.disabled = true; b.textContent = '保存中…';
-    authPost('/verification/verify', { verification_id: pendingNew.vid, verification_code: code })
+    var b = $('pwd-btn');
+    b.disabled = true; b.textContent = '验证中…';
+    authPost('/verification/verify', { verification_id: pendingReset.vid, verification_code: code })
       .then(function (v) {
         var tok = (v && v.verification_token) || '';
         if (!tok) throw new Error('验证码不对或者已经过期，重新获取一次。');
         return authPost('/reset', {
-          phone_number: pendingNew.np, new_password: pw, verification_token: tok
+          phone_number: pendingReset.np, new_password: pw, verification_token: tok
         });
       })
       .then(function () {
-        return cloud.auth.signInWithPassword({ phone: pendingNew.np, password: pw });
+        return cloud.auth.signInWithPassword({ phone: phone, password: pw });
       })
       .then(function (done) {
-        b.disabled = false; b.textContent = '保存并登录';
+        b.disabled = false; b.textContent = '验证并进入';
         var err = done && done.error;
         if (err) { setLoginErr(mapError(err)); return; }
-        try { localStorage.setItem(LMODE, 'pwd'); } catch (e) {}
-        pendingNew = null;
+        otpOpen = false; pendingReset = null;
         SESSION = done.data;
         enterApp();
       }, function (e) {
-        b.disabled = false; b.textContent = '保存并登录';
+        b.disabled = false; b.textContent = '验证并进入';
         setLoginErr(mapError(e));
       });
   }
@@ -2464,23 +2594,21 @@
   $('phone').addEventListener('keydown', function (e) { if (e.key === 'Enter') sendCode(); });
   $('phone').addEventListener('input', function () { setLoginErr(''); });
 
-  /* 密码登录 / 设置密码：也在 init() 之前绑，SDK 挂了至少界面能点 */
+  /* 密码登录（含按需展开的验证码）：也在 init() 之前绑，SDK 挂了至少界面能点 */
   var on = function (id, ev, fn) { var el = $(id); if (el) el.addEventListener(ev, fn); };
   on('to-pwd-btn', 'click', function () { showLoginStep('stepPwd'); $('phone-p').focus(); });
   on('to-code-btn', 'click', function () { showLoginStep('step1'); });
-  on('to-new-btn', 'click', function () { showLoginStep('stepNew'); });
-  on('to-pwd-btn2', 'click', function () { showLoginStep('stepPwd'); });
   on('pwd-btn', 'click', submitPassword);
-  on('n-send-btn', 'click', sendNewCode);
-  on('n-save-btn', 'click', saveNewPassword);
+  on('o-send-btn', 'click', sendResetCode);
   on('pwd', 'keydown', function (e) { if (e.key === 'Enter') submitPassword(); });
+  on('ocode', 'keydown', function (e) { if (e.key === 'Enter') submitPassword(); });
   on('phone-p', 'keydown', function (e) { if (e.key === 'Enter') $('pwd').focus(); });
-  on('npwd', 'keydown', function (e) { if (e.key === 'Enter') saveNewPassword(); });
-  ['phone-p', 'pwd', 'phone-n', 'ncode', 'npwd'].forEach(function (id) {
+  ['phone-p', 'pwd', 'ocode'].forEach(function (id) {
     on(id, 'input', function () { setLoginErr(''); });
   });
-  /* 之前设过密码就直接给密码屏，省一次点击 */
-  try { if (localStorage.getItem(LMODE) === 'pwd') showLoginStep('stepPwd'); } catch (e) {}
+  /* 默认就给这一屏 —— 登录和注册是同一个动作，不需要先选走哪条路。
+     （以前要记 localStorage 决定给哪屏，合并之后这一步省了。） */
+  showLoginStep('stepPwd');
 
   /* 游客入口：不碰 SDK，所以放在 init() 之前先绑上，SDK 挂了也能进 */
   var gb = $('guest-btn');

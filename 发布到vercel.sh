@@ -41,9 +41,12 @@ HOST=https://english-retell.app.workbuddy.host
 
 # 只清生成物
 rm -f index.html guest-seed.js vercel.json .vercelignore
-rm -rf api
+rm -rf api fonts
 mkdir -p api
 cp 复述台/index.html 复述台/guest-seed.js ./
+# 字体（2026-10-14 引入思源宋体三档 + Cinzel 900）：和页面同源放 fonts/，不走 CDN。
+# fonts/ 不能进 .vercelignore，否则线上标题会静默回退成系统宋体。
+cp -R 复述台/fonts ./
 
 # ---------- 站点首页：endpoint 指到同源 ----------
 python3 - "$PWD/index.html" <<'PY'
@@ -139,7 +142,7 @@ _归档
 每日英文播报台_离线快照.html
 IGN
 
-echo "✓ 已生成站点产物到仓库根：index.html / guest-seed.js / api/proxy.js / vercel.json / .vercelignore"
+echo "✓ 已生成站点产物到仓库根：index.html / guest-seed.js / api/proxy.js / vercel.json / .vercelignore / fonts/"
 
 if [ "$1" = "--local" ]; then
   echo "（--local：未提交）"
